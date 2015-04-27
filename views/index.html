@@ -1,0 +1,41 @@
+{%extends 'templates/layout.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div id="oscope-parent" class="col-md-7">
+    <canvas id="oscope" class="oscope-canvas" width="600" height="450"></canvas>
+    </div>
+    <div class="col-md-2">
+      <input type="button" value="A" class="btn btn-default w100"/>
+      <input type="button" value="A" class="btn btn-primary w100"/>
+      <input type="button" value="A" class="btn btn-success w100"/>
+      <input type="button" value="A" class="btn btn-info w100"/>
+      <input type="button" value="A" class="btn btn-warning w100"/>
+      <input type="button" value="A" class="btn btn-danger w100"/>
+    </div>
+    <div class="col-md-2">
+      <input type="button" value="A" class="btn btn-default w100"/>
+      <input type="button" value="A" class="btn btn-default w100"/>
+      <input type="button" value="A" class="btn btn-default w100"/>
+      <input type="button" value="A" class="btn btn-default w100"/>
+    </div>
+  </div>
+</div>
+
+
+<!-- scripts -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io.connect();
+  var messages = 0;
+  socket.on('interval', function (msg) {
+    var interval = JSON.parse(msg);
+    messages ++;
+    oscope.paint(interval);
+  });
+  socket.on('disconnect',function() {
+    console.log('disconnected');
+  })
+</script>
+{% endblock %}

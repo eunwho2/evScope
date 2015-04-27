@@ -1,0 +1,23 @@
+body {
+  padding: 50px;
+  font: 14px "Courier New", Courier,monospace;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.oscope-canvas {
+}
+
+.row {
+  background-color: lightgray;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+.w100 {
+  position:relative;
+  width:60px;
+  margin-top:6px;
+  margin-bottom:6px;
+}
