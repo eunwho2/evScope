@@ -7,37 +7,83 @@
     <canvas id="oscope" class="oscope-canvas" width="600" height="450"></canvas>
     </div>
     <div class="col-md-2">
-      <select name="sampleBits" id="sampleBits" class="w100">
-        <option> 8 bits/sample</option>
-        <option>12 bits/sample</option>
-        <option selected="selected">16 bits/sample</option>
-      </select>
-      <select name="voltsPerDiv" id="voltsPerDiv" class="w100">
-        <option>  1 volts/division</option>
-        <option>  2 volts/division</option>
-        <option selected="selected"> 5 volts/division</option>
-      </select>
-      <input type="button" value="A" class="btn btn-default w100"/>
-      <input type="button" value="A" class="btn btn-default w100"/>
-      <input type="button" value="A" class="btn btn-default w100"/>
+      <!-- VERTICAL CONTROLS -->
+      <h4><span class="label label-default">Vertical</span></h4>
+      <!-- Bits Per Sample -->
+      <div class="label label-default">Bits/Sample</div>
+      <div class="btn-group btn-group-md" data-toggle="buttons">
+        <label class="btn btn-primary ">
+          <input type="radio" name="bits8" id="bits8" autocomplete="off">8
+        </label>
+        <label class="btn btn-primary ">
+          <input type="radio" name="bits12" id="bits12" autocomplete="off">12
+        </label>
+        <label class="btn btn-primary active">
+          <input type="radio" name="bits16" id="bits16" autocomplete="off" checked>16
+        </label>
+      </div>
+      <div class="w100"></div>
+      <!-- Volts Per Division -->
+      <div class="label label-default ">Volts/Div</div>
+      <div class="btn-group btn-group-md" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="radio" name="volts1" id="volts1" autocomplete="off" checked>1
+        </label>
+        <label class="btn btn-primary ">
+          <input type="radio" name="volts5" id="volts5" autocomplete="off">5
+        </label>
+        <label class="btn btn-primary ">
+          <input type="radio" name="volts10" id="volts10" autocomplete="off">10
+        </label>
+      </div>
+      <!-- HORIZONTAL CONTROLS -->
+      <h4><span class="label label-default">Horizontal</span></h4>
+      <!-- Sample Rate -->
+      <div class="label label-default">Samples Per Second</div>
+      <div>
+        <input id='samplerate' type="number" class="form-control" value="600" min="1"/>
+      </div>
+      <div class="w100"></div>
+      <!-- Seconds Per Division -->
+      <div class="label label-default w100">Seconds/Div</div>
+      <div class="btn-group btn-group-md" data-toggle="buttons">
+        <label class="btn btn-primary active">
+          <input type="radio" name="s001" id="s001" autocomplete="off" checked>0.001
+        </label>
+        <label class="btn btn-primary ">
+          <input type="radio" name="s010" id="s010" autocomplete="off">0.010
+        </label>
+        <label class="btn btn-primary ">
+          <input type="radio" name="s100" id="s100" autocomplete="off">0.100
+        </label>
+        <label class="btn btn-primary ">
+          <input type="radio" name="s1000" id="s1000" autocomplete="off">1.000
+        </label>
+      </div>
     </div>
     <div class="col-md-2">
     </div>
   </div>
 </div>
 
-
-<!-- handle menu changes -->
+<!-- button handlers -->
 <script>
-  $(function() {
-    $( "#sampleBits").selectmenu();
-    $( "#sampleBits").on('selectmenuchange',function(event,ui) { oscope.onSampleBits(ui.item.index)});
+  $('#bits8' ).bind('change',null,function() {oscope.onSampleBits(8);});
+  $('#bits12').bind('change',null,function() {oscope.onSampleBits(12);});
+  $('#bits16').bind('change',null,function() {oscope.onSampleBits(16);});
 
-    $( "#voltsPerDiv" ).selectmenu();
-    $( "#voltsPerDiv").on('selectmenuchange',function(event,ui) { oscope.onVoltsPerDiv(ui.item.index)});
-  });
+  $('#volts1' ).bind('change',null,function() {oscope.onVoltsPerDiv(1);});
+  $('#volts5' ).bind('change',null,function() {oscope.onVoltsPerDiv(5);});
+  $('#volts10').bind('change',null,function() {oscope.onVoltsPerDiv(10);});
+
+  $('#samplerate' ).bind('change',null,function() {oscope.onSamplesPerSecond(0.001);});
+
+  $('#s001' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.001);});
+  $('#s010' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.010);});
+  $('#s100' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.100);});
+  $('#s1000').bind('change',null,function() {oscope.onSecondsPerDiv(1.000);});
+
 </script>
-
 <!-- get socket.io support -->
 <script src="/socket.io/socket.io.js"></script>
 
@@ -48,7 +94,7 @@
   socket.on('trace', function (msg) {
     var trace = JSON.parse(msg);
     messages ++;
-    oscope.paint(trace);
+    oscope.onPaint(trace);
   });
   socket.on('disconnect',function() {
     console.log('disconnected');
