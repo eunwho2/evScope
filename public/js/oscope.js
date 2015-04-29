@@ -6,7 +6,11 @@ var oscope = (function() {
   var m_width;
   var m_height;
   var m_h4;
-
+  var m_yscale = 32768;
+  var m_sample_bits = 16;
+  var m_min_y;
+  var m_max_y;
+  var m_volts;
 
   var outline_base = [
     [0.0,0.0],
@@ -18,25 +22,27 @@ var oscope = (function() {
   var outline;
 
   var xaxis_base = [
-    [0.0,4.5/6.0,1.0,4.5/6.0], // channel 1
-    [0.0,1.5/6.0,1.0,1.5/6.0]  // channel 2
+    [0.0,3.0/10.0,1.0,3.0/10.0], // channel 1
+    [0.0,7.0/10.0,1.0,7.0/10.0]  // channel 2
   ];
   var xaxis;
 
-  var hgrid_base = [
-    [0.0,0.5/6.0,1.0,0.5/6.0],
-    [0.0,1.0/6.0,1.0,1.0/6.0],
-    [0.0,1.5/6.0,1.0,1.5/6.0],
-    [0.0,2.0/6.0,1.0,2.0/6.0],
-    [0.0,2.5/6.0,1.0,2.5/6.0],
-    [0.0,3.0/6.0,1.0,3.0/6.0],
-    [0.0,3.5/6.0,1.0,3.5/6.0],
-    [0.0,4.0/6.0,1.0,4.0/6.0],
-    [0.0,4.5/6.0,1.0,4.5/6.0],
-    [0.0,5.0/6.0,1.0,5.0/6.0],
-    [0.0,5.5/6.0,1.0,5.5/6.0]
+  var mid_div_base = [
+    0.0,3.0/6.0,1.0,3.0/6.0
   ];
-  var hgrid;
+  var mid_div = [0,0,0,0];
+
+  var hgrid_base = [
+    [0.0,1.0/10.0,1.0,1.0/10.0],
+    [0.0,2.0/10.0,1.0,2.0/10.0],
+    [0.0,3.0/10.0,1.0,3.0/10.0],
+    [0.0,4.0/10.0,1.0,4.0/10.0],
+    [0.0,5.0/10.0,1.0,5.0/10.0],
+    [0.0,6.0/10.0,1.0,6.0/10.0],
+    [0.0,7.0/10.0,1.0,7.0/10.0],
+    [0.0,8.0/10.0,1.0,8.0/10.0],
+    [0.0,9.0/10.0,1.0,9.0/10.0],
+  ];var hgrid;
 
   var vgrid_base = [
     [1.0/8.0,0.0,1.0/8.0,1.0],
@@ -57,6 +63,7 @@ var oscope = (function() {
     {width:400,height:300},
     {width:200,height:150}
   ];
+
 
   // figure out height of canvas based on window and parent size
   // find the first fit from the canvas_size array
@@ -119,6 +126,12 @@ var oscope = (function() {
       d[1] = v[1] * h;
       return d;
     });
+
+    // rescale mid divider
+    mid_div[0] = mid_div_base[0] * w;
+    mid_div[1] = mid_div_base[1] * h;
+    mid_div[2] = mid_div_base[2] * w;
+    mid_div[3] = mid_div_base[3] * h;
   }
 
   function onResize() {
@@ -180,14 +193,14 @@ var oscope = (function() {
 
     // draw the outline
     ctx.strokeStyle = 'blue';
-    ctx.lineWidth   = 4;2
+    ctx.lineWidth   = 4;
     drawPath(ctx,outline);
 
     // draw the grid
     ctx.save();
     ctx.strokeStyle = "rgba(255,255,255,0.25)";
     ctx.lineWidth   = 1;
-    ctx.setLineDash([1,1]);  2
+    ctx.setLineDash([1,1]);
     drawLines(ctx,hgrid);
     drawLines(ctx,vgrid);
     ctx.restore();
@@ -196,6 +209,13 @@ var oscope = (function() {
     ctx.strokeStyle = "blue";
     ctx.lineWidth   = 1;
     drawLines(ctx,xaxis);
+    ctx.restore();
+
+    // draw the middle divider
+    ctx.save();
+    ctx.strokeStyle = "magenta";
+    ctx.lineWidth   = 2.0;
+    drawLine(ctx,mid_div[0],mid_div[1],mid_div[2],mid_div[3]);
     ctx.restore();
 
     // draw text with (0,0) upper left
@@ -229,7 +249,7 @@ var oscope = (function() {
     
     // scale the trace y axis
     // samples are Int16Array
-    ys = m_h4 / trace.yscale;
+    ys = m_h4 / m_yscale;
     for(i=0;i<trace.length;++i) {
       t.push([i,trace.sample[i] * ys]);
     }
@@ -248,10 +268,70 @@ var oscope = (function() {
     }
   }
 
+  // ===================================================
+  // event handler for setting number of bits per sample
+  // ===================================================
+  var sample_bits = [8,12,16];
+  function onSampleBits(index) {
+    var bits;
+    if (index > 2) return;
+
+    bits = sample_bits[index];
+    switch(bits) {
+    case 8:
+      m_sample_bits = 8;
+      m_min_y = -128;
+      m_max_y =  127;
+      break;
+    case 12:
+      m_sample_bits = 12;
+      m_min_y = -2048;
+      m_max_y =  2047;
+      break;
+    case 16:
+      m_sample_bits = 16;
+      m_min_y = -32768;
+      m_max_y =  32767;
+      break;
+    default:
+      m_sample_bits = 16;
+      m_min_y = -32768;
+      m_max_y =  32767;
+      break;
+    }
+    alert(bits);
+  }
+
+  // ===================================================
+  // event handler for setting volts per division
+  // ===================================================
+  var volts_per_div = [1,2,5];
+  function onVoltsPerDiv(index) {
+    var vd;
+    if (index > 2) return;
+    vd = volts_per_div[index];
+    switch(vd) {
+    case 1:
+      m_volts = 10.0;
+      break;
+    case 2:
+      m_volts = 20.0;
+      break;
+    case 5:
+      m_volts = 50.0;
+      break;
+    default:
+      break;
+    }
+    alert(vd);
+  }
+
   return {
-    init   : onInit,
-    resize : onResize,
-    paint  : onPaint
+    init          : onInit,
+    resize        : onResize,
+    paint         : onPaint,
+    onSampleBits  : onSampleBits,
+    onVoltsPerDiv : onVoltsPerDiv
   };
 })();
 

@@ -31,6 +31,8 @@ module.exports = function(grunt) {
         mocha : true,
         globals: {
           console: true,
+          window: true,
+          alert: true,
           $ : true
         }
       }

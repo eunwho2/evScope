@@ -17,7 +17,7 @@ a {
 }
 .w100 {
   position:relative;
-  width:60px;
   margin-top:6px;
   margin-bottom:6px;
+  width: 100%;
 }

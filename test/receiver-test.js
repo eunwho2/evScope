@@ -1,4 +1,4 @@
-"user strict";
+"use strict";
 var assert   = require('assert');
 var receiver = require('../lib/receiver.js');
 

@@ -7,35 +7,60 @@
     <canvas id="oscope" class="oscope-canvas" width="600" height="450"></canvas>
     </div>
     <div class="col-md-2">
+      <select name="sampleBits" id="sampleBits" class="w100">
+        <option> 8 bits/sample</option>
+        <option>12 bits/sample</option>
+        <option selected="selected">16 bits/sample</option>
+      </select>
+      <select name="voltsPerDiv" id="voltsPerDiv" class="w100">
+        <option>  1 volts/division</option>
+        <option>  2 volts/division</option>
+        <option selected="selected"> 5 volts/division</option>
+      </select>
       <input type="button" value="A" class="btn btn-default w100"/>
-      <input type="button" value="A" class="btn btn-primary w100"/>
-      <input type="button" value="A" class="btn btn-success w100"/>
-      <input type="button" value="A" class="btn btn-info w100"/>
-      <input type="button" value="A" class="btn btn-warning w100"/>
-      <input type="button" value="A" class="btn btn-danger w100"/>
+      <input type="button" value="A" class="btn btn-default w100"/>
+      <input type="button" value="A" class="btn btn-default w100"/>
     </div>
     <div class="col-md-2">
-      <input type="button" value="A" class="btn btn-default w100"/>
-      <input type="button" value="A" class="btn btn-default w100"/>
-      <input type="button" value="A" class="btn btn-default w100"/>
-      <input type="button" value="A" class="btn btn-default w100"/>
     </div>
   </div>
 </div>
 
 
-<!-- scripts -->
+<!-- handle menu changes -->
+<script>
+  $(function() {
+    $( "#sampleBits").selectmenu();
+    $( "#sampleBits").on('selectmenuchange',function(event,ui) { oscope.onSampleBits(ui.item.index)});
+
+    $( "#voltsPerDiv" ).selectmenu();
+    $( "#voltsPerDiv").on('selectmenuchange',function(event,ui) { oscope.onVoltsPerDiv(ui.item.index)});
+  });
+</script>
+
+<!-- get socket.io support -->
 <script src="/socket.io/socket.io.js"></script>
+
+<!-- set up socket.io connection -->
 <script>
   var socket = io.connect();
   var messages = 0;
-  socket.on('interval', function (msg) {
-    var interval = JSON.parse(msg);
+  socket.on('trace', function (msg) {
+    var trace = JSON.parse(msg);
     messages ++;
-    oscope.paint(interval);
+    oscope.paint(trace);
   });
   socket.on('disconnect',function() {
     console.log('disconnected');
   })
+</script>
+
+<!-- initialize oscope when document is ready -->
+<script>
+  $("document").ready(function() {
+    if (oscope) {
+      oscope.init();
+    }
+  });
 </script>
 {% endblock %}
