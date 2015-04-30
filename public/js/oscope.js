@@ -5,14 +5,17 @@ var oscope = (function() {
   var m_context;
   var m_width;
   var m_height;
-  var m_h4;
-  var m_yscale = 32768;
-  var m_sample_bits = 16;
-  var m_min_y;
-  var m_max_y;
-  var m_volts;
-  var m_seconds;
-  var m_rate;
+  var m_h2;
+
+  // these must match the initial values of the controls
+  // doh! no two way data bindind
+  var m_seconds_per_div    = 0.100;
+  var m_samples_per_second = 600;
+  var m_divisions          = 10;
+  var m_yscale             = 32768;
+  var m_sample_bits        = 16;
+  var m_volts_per_div      = 2.5;
+  var m_vrange             = 5;
 
   // ==============================================================
   // background display scaffolding
@@ -50,13 +53,15 @@ var oscope = (function() {
   ];var hgrid;
 
   var vgrid_base = [
-    [1.0/8.0,0.0,1.0/8.0,1.0],
-    [2.0/8.0,0.0,2.0/8.0,1.0],
-    [3.0/8.0,0.0,3.0/8.0,1.0],
-    [4.0/8.0,0.0,4.0/8.0,1.0],
-    [5.0/8.0,0.0,5.0/8.0,1.0],
-    [6.0/8.0,0.0,6.0/8.0,1.0],
-    [7.0/8.0,0.0,7.0/8.0,1.0]
+    [1.0/10.0,0.0,1.0/10.0,1.0],
+    [2.0/10.0,0.0,2.0/10.0,1.0],
+    [3.0/10.0,0.0,3.0/10.0,1.0],
+    [4.0/10.0,0.0,4.0/10.0,1.0],
+    [5.0/10.0,0.0,5.0/10.0,1.0],
+    [6.0/10.0,0.0,6.0/10.0,1.0],
+    [7.0/10.0,0.0,7.0/10.0,1.0],
+    [8.0/10.0,0.0,8.0/10.0,1.0],
+    [9.0/10.0,0.0,9.0/10.0,1.0]
   ];
   var vgrid;
 
@@ -78,6 +83,7 @@ var oscope = (function() {
    * figure out height of canvas based on window and parent size
    * find the first fit from the canvas_size array
    * @param window_height
+
    * @param parent_width
    * @param parent_height
    * @returns {*}
@@ -246,13 +252,31 @@ var oscope = (function() {
     ctx.lineWidth   = 2.0;
     drawLine(ctx,mid_div[0],mid_div[1],mid_div[2],mid_div[3]);
     ctx.restore();
+  }
 
-    // draw text with (0,0) upper left
-    ctx.font = "20px monospace";
-    ctx.fillStyle = "red";
-    ctx.fillText("1",xaxis[1][0]+2,xaxis[1][1]+5);
-    ctx.fillStyle = "green";
-    ctx.fillText("2",xaxis[0][0]+2,xaxis[0][1]+5);
+  /**
+   * vertical scale factor
+   * (voltage range/counts per sample) *  (pixels per yaxis / volts per yaxis) = pixel per count
+   * @param vrange
+   * @param yscale
+   * @param height
+   * @param volts
+   * @returns {number}
+   */
+  function computeVerticalScale(vrange,yscale,height,volts) {
+    // divide by 2 to make scale for signed value
+    return (vrange / yscale) * (height / volts) * 0.5;
+  }
+
+  /**
+   * horizontal scale factor in pixels/sample
+   * @param seconds
+   * @param sps
+   * @param width
+   * @returns {number}
+   */
+  function computeHorizontalScale(seconds,samples_per_second,width) {
+    return width / (seconds * samples_per_second);
   }
 
   /**
@@ -265,7 +289,14 @@ var oscope = (function() {
   function drawTrace(ctx,trace,width,height) {
     var t = [];
     var ys;
+    var hs;
     var i;
+
+    // compute scale factors
+    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div*10);
+    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
+
+    // compute horizonal scale
 
     ctx.save();
     ctx.translate(0,height);
@@ -285,9 +316,8 @@ var oscope = (function() {
     
     // scale the trace y axis
     // samples are Int16Array
-    ys = m_h4 / m_yscale;
     for(i=0;i<trace.length;++i) {
-      t.push([i,trace.sample[i] * ys]);
+      t.push([i*hs,trace.sample[i] * ys]);
     }
 
     // draw it
@@ -320,23 +350,19 @@ var oscope = (function() {
     switch(bits) {
     case 8:
       m_sample_bits = 8;
-      m_min_y = -128;
-      m_max_y =  127;
+      m_yscale      = 128;
       break;
     case 12:
       m_sample_bits = 12;
-      m_min_y = -2048;
-      m_max_y =  2047;
+      m_yscale      = 2048;
       break;
     case 16:
       m_sample_bits = 16;
-      m_min_y = -32768;
-      m_max_y =  32767;
+      m_yscale      = 32768;
       break;
     default:
       m_sample_bits = 16;
-      m_min_y = -32768;
-      m_max_y =  32767;
+      m_yscale      = 32768;
       break;
     }
   }
@@ -346,7 +372,7 @@ var oscope = (function() {
    * @param volts
    */
   function onVoltsPerDiv(volts) {
-    m_volts = volts;
+    m_volts_per_div = volts;
   }
 
   /**
@@ -354,19 +380,30 @@ var oscope = (function() {
    * @param seconds
    */
   function onSecondsPerDiv(seconds) {
-    m_seconds = seconds;
+    m_seconds_per_div = seconds;
   }
 
   /**
    * event handler for samples per second
-   * @param sps
+   * @param samples_per_second
    */
-  function onSamplesPerSecond(sps) {
+  function onSamplesPerSecond(samples_per_second) {
     // no zero or negative
-    if (sps < Number.MIN_VALUE) return;
+    if (samples_per_second < Number.MIN_VALUE) {
+      m_samples_per_second = 600;
+    }
+    else {
+      // rate is in samples/second
+      m_samples_per_second = samples_per_second;
+    }
+  }
 
-    // rate is in samples/second
-    m_rate = Math.floor(1.0 / sps);
+  /**
+   * set voltage range (maximum volts per sample)
+   * @param vrange
+   */
+  function onVoltageRange(vrange) {
+    m_vrange = vrange;
   }
 
   /**
@@ -379,7 +416,7 @@ var oscope = (function() {
     m_canvas = $("#oscope")[0];
     m_width  = m_canvas.width  = size.width;
     m_height = m_canvas.height = size.height;
-    m_h4     = m_height / 4;
+    m_h2     = m_height / 2;
     rescale(m_width,m_height);
     onPaint(null);
   }
@@ -404,7 +441,8 @@ var oscope = (function() {
     onSampleBits       : onSampleBits,
     onVoltsPerDiv      : onVoltsPerDiv,
     onSecondsPerDiv    : onSecondsPerDiv,
-    onSamplesPerSecond : onSamplesPerSecond
+    onSamplesPerSecond : onSamplesPerSecond,
+    onVoltageRange     : onVoltageRange
   };
 })();
 

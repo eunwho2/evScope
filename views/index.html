@@ -3,6 +3,9 @@
 
 <div class="container">
   <div class="row">
+    <div class="col-md-12 tcenter"><h2>Node-Oscope</h2></div>
+  </div>
+  <div class="row">
     <div id="oscope-parent" class="col-md-7">
     <canvas id="oscope" class="oscope-canvas" width="600" height="450"></canvas>
     </div>
@@ -23,11 +26,21 @@
         </label>
       </div>
       <div class="w100"></div>
+      <!-- Sample Rate -->
+      <div class="label label-default">Voltage Range</div>
+      <div>
+        <input id='vrange' type="number" class="form-control" value="5" min="1"/>
+      </div>
+
+      <div class="w100"></div>
       <!-- Volts Per Division -->
       <div class="label label-default ">Volts/Div</div>
       <div class="btn-group btn-group-md" data-toggle="buttons">
-        <label class="btn btn-primary active">
+        <label class="btn btn-primary ">
           <input type="radio" name="volts1" id="volts1" autocomplete="off" checked>1
+        </label>
+        <label class="btn btn-primary active">
+          <input type="radio" name="volts25" id="volts25" autocomplete="off" checked>2.5
         </label>
         <label class="btn btn-primary ">
           <input type="radio" name="volts5" id="volts5" autocomplete="off">5
@@ -47,14 +60,14 @@
       <!-- Seconds Per Division -->
       <div class="label label-default w100">Seconds/Div</div>
       <div class="btn-group btn-group-md" data-toggle="buttons">
-        <label class="btn btn-primary active">
-          <input type="radio" name="s001" id="s001" autocomplete="off" checked>0.001
+        <label class="btn btn-primary ">
+          <input type="radio" name="s001" id="s001" autocomplete="off" >0.001
         </label>
         <label class="btn btn-primary ">
           <input type="radio" name="s010" id="s010" autocomplete="off">0.010
         </label>
-        <label class="btn btn-primary ">
-          <input type="radio" name="s100" id="s100" autocomplete="off">0.100
+        <label class="btn btn-primary active">
+          <input type="radio" name="s100" id="s100" autocomplete="off checked">0.100
         </label>
         <label class="btn btn-primary ">
           <input type="radio" name="s1000" id="s1000" autocomplete="off">1.000
@@ -66,28 +79,50 @@
   </div>
 </div>
 
-<!-- button handlers -->
+<!-- ================ -->
+<!-- control handlers -->
+<!-- ================ -->
 <script>
   $('#bits8' ).bind('change',null,function() {oscope.onSampleBits(8);});
   $('#bits12').bind('change',null,function() {oscope.onSampleBits(12);});
   $('#bits16').bind('change',null,function() {oscope.onSampleBits(16);});
 
   $('#volts1' ).bind('change',null,function() {oscope.onVoltsPerDiv(1);});
+  $('#volts25').bind('change',null,function() {oscope.onVoltsPerDiv(2.5);});
   $('#volts5' ).bind('change',null,function() {oscope.onVoltsPerDiv(5);});
   $('#volts10').bind('change',null,function() {oscope.onVoltsPerDiv(10);});
 
-  $('#samplerate' ).bind('change',null,function() {oscope.onSamplesPerSecond(0.001);});
+  $('#vrange' ).bind('change',null,
+      function() {
+        var vrange = parseInt($('#vrange')[0].value);
+        oscope.onVoltageRange(vrange)
+      }
+  );
+
+
+  $('#samplerate' ).bind('change',null,
+      function() {
+        var rate = parseInt($('#samplerate')[0].value);
+        oscope.onSamplesPerSecond(rate);
+      }
+  );
+
 
   $('#s001' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.001);});
   $('#s010' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.010);});
   $('#s100' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.100);});
   $('#s1000').bind('change',null,function() {oscope.onSecondsPerDiv(1.000);});
 
+
 </script>
-<!-- get socket.io support -->
+<!-- =================== -->
+<!-- socket.io support   -->
+<!-- =================== -->
 <script src="/socket.io/socket.io.js"></script>
 
-<!-- set up socket.io connection -->
+<!-- =================== -->
+<!-- socket.io connetion -->
+<!-- =================== -->
 <script>
   var socket = io.connect();
   var messages = 0;
@@ -101,7 +136,9 @@
   })
 </script>
 
+<!-- ======================================== -->
 <!-- initialize oscope when document is ready -->
+<!-- ======================================== -->
 <script>
   $("document").ready(function() {
     if (oscope) {

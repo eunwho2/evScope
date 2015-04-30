@@ -52,7 +52,7 @@ Code is in test/oscope-linux/oscope.c and/or test/oscope-win32/oscope.c
 Step 2 : node.js UDP receiver backend
 -------------------------------------
 A node.js module that receives the formatted UDP datagrams and parses them into something that is friendlier to
-the javascript environment.
+the javascript environment.values
 
 * lib/receiver.js : udp datagram receiver 
 * test/receiver-test.js : simple Mocha test fixture
@@ -95,9 +95,8 @@ simplified code excerpt:
   
     }
 
-Step 3 : A node.js web application that can serve the app.
-----------------------------------------------------------
-* node-oscope.js : an Express.js scaffold to serve the web pages and realtime data.
+Step 3 : A node.js module that can stream data to the web app
+-------------------------------------------------------------
 * lib/socket.js  : a module that uses socket.io to send the real time data stream to the browser
 * localhost:3000/socket-test.html : test web page
     * npm start 
@@ -129,8 +128,66 @@ simplified code excerpt:
     
 Step 4 : A web app to actually display the digital data.
 --------------------------------------------------------
+
+* node-oscope.js       : server side code, Express.js scaffold to serve the web pages and realtime data.
+* public/js/oscope.js  : client side code to render the display
+* views/index.html     : web page to display the canvas and controls
+ 
 This web app will display the waveforms on a Canvas elements. It will include Jquery for DOM manipulation and Bootstrap
 to format the page and make it responsive.
+
+The Canvas display looks something like an oscilloscope screen arranged in a Bootstrap grid with controls to the right. 
+The operator can set parameters for the vertical and horizontal axes.
+
+Terminology:
+* counts     : values returned from an A/D are typically in units of 'counts'.
+* volts      : A/D's measure volts, although with the proper circuitry other signal types can be measured. but they always
+translate to volts on the display.
+ 
+### VERTICAL PARAMETERS
+
+* Bits per Sample    : this determines the range a sample can be in counts 
+    * 16 bits =  65536, 12 = 4096 and 8 = 256
+* Voltage Range      : sets the range of volts that the A/D sample can represent. in this case the user can enter any range
+* Volts Per Division : there are 10 vertical divisions, 5 for + values and 5 for - values. This parameter sets the number 
+of volts that can be displayed. for example if volts/division is 1 then the display can show +- 5 volts. if the sampled
+voltage is outside that range signals outside it will be off the screen.
+
+### HORIZONAL PARAMETERS
+
+* Samples Per Second   : the rate at which individual samples are taken by the embedded system. 
+* Seconds per Division : there are 10 horizontal divisions. This parameter sets the size in seconds or fractions of
+seconds for a single division. 
+
+
+### SCALING
+
+So now we have the samples coming in, and we have parameters defining the screen layout. We need to determine
+how to display the traces. 
+
+For the vertical scale, which shows the amplitude of the signal, we need to translate from 'counts' to pixels. Here
+is the formula for that translation:
+
+volts  per yaxis = volts per division * 10 divisions in the yaxis
+pixels per yaxis = height of canvas
+ 
+**(voltage range/counts per sample) *  (pixels per yaxis / volts per yaxis) * counts in a sample = height in pixels** 
+
+and since we are displaying a signed value, divide height in pixels by 2 to get the number of pixels offset from the 
+x axis.
+
+For the horizontal scale, which shows the x axis spacing of individual sample points. We use samples per second, 
+seconds per division and x axis size. is the formual for that translation:
+
+seconds per xaxis = seconds per division * 10 divisions
+pixels  per axis  = width of x axis in pixels
+
+**(seconds per xaxis / samples per second) * pixels per xaxis = pixels/sample**
+
+
+Both of these scaling parameters can be recomputed when a control changes one of the value. They don't need to 
+be recalc'ed every time a trace is displayed. On the other hand, the calculations are short and the code is a lot
+simpler if they are just recomputed on every paint.
 
 * * *
  
