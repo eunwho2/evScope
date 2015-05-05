@@ -25,20 +25,23 @@ a {
 
 .w50 {
   width: 50%;
-  text-align: center;
+  margin-top:1px;
+  margin-bottom:1px;
 }
 
 .tcenter {
   text-align: center;
 }
 
-.vertical-controls {
+.control-margin {
   margin-bottom:20px;
   margin-top:20px;
 }
 
-.horizontal-controls {
-  margin_bottom:20px;
-  margin-top:20px;
+.outline {
+  padding:2px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
 }
 

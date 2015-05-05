@@ -20,6 +20,9 @@ var oscope = (function() {
   var m_cursor_index       = 2;
   var m_cursor_seconds     = 0.0;
   var m_cursor_volts       = 0.0;
+  var m_run                = true;
+  var m_size_index         = 0;
+  var m_text_size          = 12;
 
   m_trace[0]           = null;
   m_trace[1]           = null;
@@ -94,6 +97,12 @@ var oscope = (function() {
     {width:200,height:150}
   ];
 
+  // responsive text size
+  var text_size = [
+      12,
+      8,
+      6
+  ];
 
   // ===================================================
   // SCALING AND LAYOUT
@@ -102,8 +111,8 @@ var oscope = (function() {
   /**
    * figure out height of canvas based on window and parent size
    * find the first fit from the canvas_size array
+   * only needs to be done when window is resized
    * @param window_height
-
    * @param parent_width
    * @param parent_height
    * @returns {*}
@@ -120,13 +129,30 @@ var oscope = (function() {
     // if nothing matches
     if (s.length <= 0) {
       // use the smallest
-      r = canvas_size[2];
+      r = s[2];
     }
     else {
       // use first fit
       r = s[0];
     }
+
     return r;
+  }
+
+  /**
+   * match text size with canvas width
+   * only needs to be done when window is resized
+   * @param width of canvas (canvas_size[n] maps to text size[n])
+   * @returns {*}
+   */
+  function getTextSize(width) {
+    var s;
+
+    s = canvas_size.reduce(function(p,v,i) {
+      return (width <= v.width) ? text_size[i] : p;
+    },text_size[2]);
+
+    return s;
   }
 
   /**
@@ -316,12 +342,23 @@ var oscope = (function() {
    * @param width
    * @param height
    */
-  function drawAnnotations(ctx,width,height)
+  function drawAnnotations(ctx,width,height,dy)
   {
-    ctx.font = "12px monospace";
-    ctx.fillStyle = "white";
-    ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),10,16);
-    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_volts_per_div.toFixed(4) ,10,32);
+    var t;
+    var y;
+
+    ctx.font = dy.toFixed(0) + "px monospace";
+    ctx.fillStyle = "lime";
+    y = dy + 1;
+    ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),2,y);
+    y += dy + 1;
+    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
+
+    t = (m_run) ? "RUN" : "STOP";
+    ctx.fillStyle = (m_run) ? 'lime' : 'red';
+    ctx.fillText(t,2,height-4);
+
+
   }
 
   /**
@@ -380,7 +417,7 @@ var oscope = (function() {
       break;
     case 2:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "green";
+      ctx.strokeStyle = "lime";
       break;
     }
     
@@ -402,17 +439,24 @@ var oscope = (function() {
    * @param trace optional trace
    */
   function onPaint(trace) {
+    // draw oscope background
     drawBackground(m_context,m_width,m_height,m_voffset);
-    if (trace) {
-      m_trace[trace.channel-1] = trace;
-      if (m_trace[0] !== null) {
-        drawTrace(m_context, m_trace[0], m_width, m_height,m_voffset[0]);
-      }
-      if (m_trace[1] !== null) {
-        drawTrace(m_context, m_trace[1], m_width, m_height,m_voffset[1]);
-      }
+
+    // update trace if running and there is a new trace
+    if (m_run & (trace !== null)) {
+      m_trace[trace.channel - 1] = trace;
     }
-    drawAnnotations(m_context,m_width,m_height);
+
+    // draw last traces
+    if (m_trace[0] !== null) {
+      drawTrace(m_context, m_trace[0], m_width, m_height, m_voffset[0]);
+    }
+    if (m_trace[1] !== null) {
+      drawTrace(m_context, m_trace[1], m_width, m_height, m_voffset[1]);
+    }
+
+    // draw text annotations
+    drawAnnotations(m_context,m_width,m_height,m_text_size);
   }
 
   // ===================================================
@@ -442,6 +486,7 @@ var oscope = (function() {
       m_yscale      = 32768;
       break;
     }
+    onPaint(null);
   }
 
   function onVerticalOffset(channel,offset)
@@ -450,6 +495,7 @@ var oscope = (function() {
       return;
     }
     m_voffset[channel-1] = offset * vdiv;
+    onPaint(null);
   }
 
   /**
@@ -460,6 +506,7 @@ var oscope = (function() {
     m_volts_per_div = volts;
 
     updateCursorDiff();
+    onPaint(null);
   }
 
   /**
@@ -470,6 +517,7 @@ var oscope = (function() {
     m_seconds_per_div = seconds;
 
     updateCursorDiff();
+    onPaint(null);
   }
 
   /**
@@ -485,6 +533,7 @@ var oscope = (function() {
       // rate is in samples/second
       m_samples_per_second = samples_per_second;
     }
+    onPaint(null);
   }
 
   /**
@@ -493,6 +542,7 @@ var oscope = (function() {
    */
   function onVoltageRange(vrange) {
     m_vrange = vrange;
+    onPaint(null);
   }
 
   /**
@@ -523,6 +573,7 @@ var oscope = (function() {
     }
 
     updateCursorDiff();
+    onPaint(null);
   }
 
   /**
@@ -534,12 +585,19 @@ var oscope = (function() {
   }
 
   /**
+   * run = show traces, stop = show last trace
+   * @param run
+   */
+  function onRunStop(run) {
+    m_run = run;
+  }
+  /**
    * event handler for window resize
    */
   function onResize() {
     var parent = $("#oscope-parent");
-    var size;
-    size = getCanvasSize($(window).height(),parent.width(),parent.height());
+    var size = getCanvasSize($(window).height(),parent.width(),parent.height());
+    m_text_size = getTextSize(size.width);
     m_canvas = $("#oscope")[0];
     m_width  = m_canvas.width  = size.width;
     m_height = m_canvas.height = size.height;
@@ -572,6 +630,7 @@ var oscope = (function() {
     onVoltageRange     : onVoltageRange,
     onVerticalOffset   : onVerticalOffset,
     onCursorMove       : onCursorMove,
-    onCursorSelect     : onCursorSelect
+    onCursorSelect     : onCursorSelect,
+    onRunStop          : onRunStop
   };
 })();
