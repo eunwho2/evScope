@@ -6,7 +6,8 @@ var oscope = (function() {
   var m_width;
   var m_height;
   var m_h2;
-
+  var m_trace = [];
+  var m_voffset = [];
   // these must match the initial values of the controls
   // doh! no two way data bindind
   var m_seconds_per_div    = 0.100;
@@ -14,8 +15,16 @@ var oscope = (function() {
   var m_divisions          = 10;
   var m_yscale             = 32768;
   var m_sample_bits        = 16;
-  var m_volts_per_div      = 2.5;
+  var m_volts_per_div      = 2;
   var m_vrange             = 5;
+  var m_cursor_index       = 2;
+  var m_cursor_seconds     = 0.0;
+  var m_cursor_volts       = 0.0;
+
+  m_trace[0]           = null;
+  m_trace[1]           = null;
+  m_voffset[0]         = 0;
+  m_voffset[1]         = 0;
 
   // ==============================================================
   // background display scaffolding
@@ -35,8 +44,11 @@ var oscope = (function() {
   ];
   var xaxis;
 
+  var vdiv_base  =  1.0/10.0;
+  var vdiv;
+
   var mid_div_base = [
-    0.0,3.0/6.0,1.0,3.0/6.0
+    0.0,5.0/10.0,1.0,5.0/10.0
   ];
   var mid_div = [0,0,0,0];
 
@@ -64,6 +76,14 @@ var oscope = (function() {
     [9.0/10.0,0.0,9.0/10.0,1.0]
   ];
   var vgrid;
+
+  var cursor_base = [
+    [0.0,0.0,0.0,1.0],  // 0 horizontal
+    [0.0,0.0,0.0,1.0],  // 1 horizontal
+    [0.0,0.0,1.0,0.0],  // 2 vertical
+    [0.0,0.0,1.0,0.0],  // 3 vertical
+  ];
+  var m_cursor;
 
   // responsive sizes for canvas
   // aspect ratio of available sizes needs to be 4 over 3
@@ -111,12 +131,14 @@ var oscope = (function() {
 
   /**
    * rescale layout when size changes
+   * start with 'base' for each layout item and
+   * rescale it using the new widht and height
    * @param w width
    * @param h height
    */
   function rescale(w,h) {
     // rescale horizontal divisions
-    hgrid = hgrid_base.map(function(v) {
+    hgrid = hgrid_base.map(function (v) {
       var d = new Array(4);
       d[0] = v[0] * w;
       d[1] = v[1] * h;
@@ -124,6 +146,9 @@ var oscope = (function() {
       d[3] = v[3] * h;
       return d;
     });
+
+    // rescale vertical division size
+    vdiv = vdiv_base * h;
 
     // rescale vertical divisions
     vgrid = vgrid_base.map(function(v) {
@@ -153,6 +178,16 @@ var oscope = (function() {
       return d;
     });
 
+    // rescale cursor
+    m_cursor = cursor_base.map(function(v) {
+      var d = new Array(4);
+      d[0] = v[0] * w;
+      d[1] = v[1] * h;
+      d[2] = v[2] * w;
+      d[3] = v[3] * h;
+      return d;
+    });
+
     // rescale mid divider
     mid_div[0] = mid_div_base[0] * w;
     mid_div[1] = mid_div_base[1] * h;
@@ -164,6 +199,9 @@ var oscope = (function() {
    * clear the background
    * @param ctx canvas context
    * @param width  of rect
+
+
+
    * @param height of rect
    */
   function clear(ctx,width,height) {
@@ -179,21 +217,21 @@ var oscope = (function() {
    * @param x1
    * @param y1
    */
-  function drawLine(ctx,x0,y0,x1,y1)  {
-    ctx.beginPath();
-    ctx.moveTo(x0,y0);
-    ctx.lineTo(x1,y1);
-    ctx.stroke();
+  function drawLine(ctx,line)  {
+      ctx.beginPath();
+      ctx.moveTo(line[0],line[1]);
+      ctx.lineTo(line[2],line[3]);
+      ctx.stroke();
   }
 
   /**
-   * draw a set of lines
+   * draw a set of linesvgrid_base
    * @param ctx
    * @param lines array of endpoints
    */
   function drawLines(ctx,lines) {
-    lines.forEach(function(v,i,a) {
-      drawLine(ctx,v[0],v[1],v[2],v[3]);
+    lines.forEach(function(v) {
+      drawLine(ctx,v);
     });
   }
 
@@ -217,7 +255,7 @@ var oscope = (function() {
    * @param width
    * @param height
    */
-  function drawBackground(ctx,width,height) {
+  function drawBackground(ctx,width,height,voffset) {
     // clear background
     clear(ctx,width,height);
 
@@ -227,9 +265,11 @@ var oscope = (function() {
     ctx.scale(1.0,-1.0);
 
     // draw the outline
+    ctx.save();
     ctx.strokeStyle = 'blue';
     ctx.lineWidth   = 4;
     drawPath(ctx,outline);
+    ctx.restore();
 
     // draw the grid
     ctx.save();
@@ -241,17 +281,47 @@ var oscope = (function() {
     ctx.restore();
 
     // draw the x axes
-    ctx.strokeStyle = "blue";
+    ctx.save();
+    ctx.translate(0,voffset[0]);
+    ctx.strokeStyle = "magenta";
     ctx.lineWidth   = 1;
-    drawLines(ctx,xaxis);
+    drawLine(ctx,xaxis[0]);
     ctx.restore();
 
-    // draw the middle divider
     ctx.save();
-    ctx.strokeStyle = "magenta";
-    ctx.lineWidth   = 2.0;
-    drawLine(ctx,mid_div[0],mid_div[1],mid_div[2],mid_div[3]);
+    ctx.translate(0,voffset[1]);
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth   = 1;
+    drawLine(ctx,xaxis[1]);
     ctx.restore();
+
+    // draw the cursors
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "blue";
+    drawLine(ctx,m_cursor[0]);
+    drawLine(ctx,m_cursor[2]);
+    ctx.strokeStyle = "orange";
+    drawLine(ctx,m_cursor[1]);
+    drawLine(ctx,m_cursor[3]);
+    ctx.restore();
+
+    ctx.restore();
+  }
+
+  /**
+   * draw text annotations
+   * for text, upper left corner is 0,0 regardless of translation
+   * @param ctx
+   * @param width
+   * @param height
+   */
+  function drawAnnotations(ctx,width,height)
+  {
+    ctx.font = "12px monospace";
+    ctx.fillStyle = "white";
+    ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),10,16);
+    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_volts_per_div.toFixed(4) ,10,32);
   }
 
   /**
@@ -286,7 +356,7 @@ var oscope = (function() {
    * @param width used to scale x axis
    * @param height used to scale y axis
    */
-  function drawTrace(ctx,trace,width,height) {
+  function drawTrace(ctx,trace,width,height,voffset) {
     var t = [];
     var ys;
     var hs;
@@ -305,11 +375,11 @@ var oscope = (function() {
     // set channel parameters
     switch(trace.channel) {
     case 1:
-      ctx.translate(xaxis[0][0],xaxis[0][1]);
+      ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
       ctx.strokeStyle = "red";
       break;
     case 2:
-      ctx.translate(xaxis[1][0],xaxis[1][1]);
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "green";
       break;
     }
@@ -332,10 +402,17 @@ var oscope = (function() {
    * @param trace optional trace
    */
   function onPaint(trace) {
-    drawBackground(m_context,m_width,m_height);
+    drawBackground(m_context,m_width,m_height,m_voffset);
     if (trace) {
-      drawTrace(m_context, trace,m_width,m_height);
+      m_trace[trace.channel-1] = trace;
+      if (m_trace[0] !== null) {
+        drawTrace(m_context, m_trace[0], m_width, m_height,m_voffset[0]);
+      }
+      if (m_trace[1] !== null) {
+        drawTrace(m_context, m_trace[1], m_width, m_height,m_voffset[1]);
+      }
     }
+    drawAnnotations(m_context,m_width,m_height);
   }
 
   // ===================================================
@@ -367,12 +444,22 @@ var oscope = (function() {
     }
   }
 
+  function onVerticalOffset(channel,offset)
+  {
+    if ((offset < -4)||(4 < offset)) {
+      return;
+    }
+    m_voffset[channel-1] = offset * vdiv;
+  }
+
   /**
    * event handler for setting volts per division
    * @param volts
    */
   function onVoltsPerDiv(volts) {
     m_volts_per_div = volts;
+
+    updateCursorDiff();
   }
 
   /**
@@ -381,6 +468,8 @@ var oscope = (function() {
    */
   function onSecondsPerDiv(seconds) {
     m_seconds_per_div = seconds;
+
+    updateCursorDiff();
   }
 
   /**
@@ -404,6 +493,44 @@ var oscope = (function() {
    */
   function onVoltageRange(vrange) {
     m_vrange = vrange;
+  }
+
+  /**
+   * compute cursor diff (changes with seconds/div)
+   */
+  function updateCursorDiff() {
+    // compute current cursor diff in seconds
+    m_cursor_seconds = Math.abs(m_cursor[0][0] - m_cursor[1][0]) * (m_seconds_per_div * 10.0 / m_width);
+    m_cursor_volts   = Math.abs(m_cursor[2][1] - m_cursor[3][1]) * (m_volts_per_div   * 10.0 / m_height);
+  }
+
+  /** set cursor
+   * @param x x position
+   */
+  function onCursorMove(x,y) {
+    var cursor = m_cursor[m_cursor_index];
+    switch(m_cursor_index) {
+    case 0:
+    case 1:
+      cursor[0] = x;
+      cursor[2] = x;
+      break;
+    case 2:
+    case 3:
+      cursor[1] = m_height - y;
+      cursor[3] = m_height - y;
+      break;
+    }
+
+    updateCursorDiff();
+  }
+
+  /**
+   * select which cursor to use
+   * @param index
+   */
+  function onCursorSelect(index) {
+    m_cursor_index = index;
   }
 
   /**
@@ -442,7 +569,9 @@ var oscope = (function() {
     onVoltsPerDiv      : onVoltsPerDiv,
     onSecondsPerDiv    : onSecondsPerDiv,
     onSamplesPerSecond : onSamplesPerSecond,
-    onVoltageRange     : onVoltageRange
+    onVoltageRange     : onVoltageRange,
+    onVerticalOffset   : onVerticalOffset,
+    onCursorMove       : onCursorMove,
+    onCursorSelect     : onCursorSelect
   };
 })();
-

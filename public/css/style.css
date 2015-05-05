@@ -23,6 +23,22 @@ a {
   width: 100%;
 }
 
+.w50 {
+  width: 50%;
+  text-align: center;
+}
+
 .tcenter {
   text-align: center;
 }
+
+.vertical-controls {
+  margin-bottom:20px;
+  margin-top:20px;
+}
+
+.horizontal-controls {
+  margin_bottom:20px;
+  margin-top:20px;
+}
+

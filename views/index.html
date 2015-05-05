@@ -11,6 +11,7 @@
     </div>
     <div class="col-md-2">
       <!-- VERTICAL CONTROLS -->
+      <div class="vertical-controls">
       <h4><span class="label label-default">Vertical</span></h4>
       <!-- Bits Per Sample -->
       <div class="label label-default">Bits/Sample</div>
@@ -21,7 +22,7 @@
         <label class="btn btn-primary ">
           <input type="radio" name="bits12" id="bits12" autocomplete="off">12
         </label>
-        <label class="btn btn-primary active">
+        <label class="btn btn-primary  active">
           <input type="radio" name="bits16" id="bits16" autocomplete="off" checked>16
         </label>
       </div>
@@ -29,7 +30,7 @@
       <!-- Sample Rate -->
       <div class="label label-default">Voltage Range</div>
       <div>
-        <input id='vrange' type="number" class="form-control" value="5" min="1"/>
+        <input id='vrange' type="number" class="form-control" value="5" min="1" step="1"/>
       </div>
 
       <div class="w100"></div>
@@ -39,8 +40,8 @@
         <label class="btn btn-primary ">
           <input type="radio" name="volts1" id="volts1" autocomplete="off" checked>1
         </label>
-        <label class="btn btn-primary active">
-          <input type="radio" name="volts25" id="volts25" autocomplete="off" checked>2.5
+        <label class="btn btn-primary  active">
+          <input type="radio" name="volts25" id="volts25" autocomplete="off">2
         </label>
         <label class="btn btn-primary ">
           <input type="radio" name="volts5" id="volts5" autocomplete="off">5
@@ -49,10 +50,13 @@
           <input type="radio" name="volts10" id="volts10" autocomplete="off">10
         </label>
       </div>
+      </div>
+
+      <div class="horizontal-controls">
       <!-- HORIZONTAL CONTROLS -->
       <h4><span class="label label-default">Horizontal</span></h4>
       <!-- Sample Rate -->
-      <div class="label label-default">Samples Per Second</div>
+      <activediv class="label label-default">Samples Per Second</activediv>
       <div>
         <input id='samplerate' type="number" class="form-control" value="600" min="1"/>
       </div>
@@ -60,21 +64,47 @@
       <!-- Seconds Per Division -->
       <div class="label label-default w100">Seconds/Div</div>
       <div class="btn-group btn-group-md" data-toggle="buttons">
-        <label class="btn btn-primary ">
+        <label class="btn btn-primary w50">
           <input type="radio" name="s001" id="s001" autocomplete="off" >0.001
         </label>
-        <label class="btn btn-primary ">
+        <label class="btn btn-primary w50">
           <input type="radio" name="s010" id="s010" autocomplete="off">0.010
         </label>
-        <label class="btn btn-primary active">
+        <label class="btn btn-primary w50 active">
           <input type="radio" name="s100" id="s100" autocomplete="off checked">0.100
         </label>
-        <label class="btn btn-primary ">
+        <label class="btn btn-primary w50">
           <input type="radio" name="s1000" id="s1000" autocomplete="off">1.000
         </label>
       </div>
+      </div>
     </div>
+
     <div class="col-md-2">
+      <div class="vertical-controls">
+        <h4><div class="label label-default">Channel 1</div></h4>
+        <div class="label label-default">vertical position</div>
+        <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><div class="label label-default">Channel 2</div></h4>
+        <div class="label label-default">vertical position</div>
+        <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+      </div>
+      <!-- cursor select -->
+      <h4><div class="label label-default ">Cursor Select</div></h4>
+      <div class="btn-group btn-group-md" data-toggle="buttons">
+        <label class="btn btn-primary active w50">
+          <input type="radio" name="vcursor1" id="vcursor1" autocomplete="off" checked>V1
+        </label>
+        <label class="btn btn-primary w50">
+          <input type="radio" name="vcursor2" id="vcursor2" autocomplete="off" >V2
+        </label>
+        <label class="btn btn-primary w50">
+          <input type="radio" name="hcursor1" id="hcursor1" autocomplete="off" >H1
+        </label>
+        <label class="btn btn-primary w50">
+          <input type="radio" name="hcursor2" id="hcursor2" autocomplete="off" >H2
+        </label>
+      </div>
     </div>
   </div>
 </div>
@@ -83,36 +113,114 @@
 <!-- control handlers -->
 <!-- ================ -->
 <script>
-  $('#bits8' ).bind('change',null,function() {oscope.onSampleBits(8);});
-  $('#bits12').bind('change',null,function() {oscope.onSampleBits(12);});
-  $('#bits16').bind('change',null,function() {oscope.onSampleBits(16);});
+  // =============================================
+  // sample size
+  // =============================================
+  $('#bits8' ).on('change',null,function() {oscope.onSampleBits(8);});
+  $('#bits12').on('change',null,function() {oscope.onSampleBits(12);});
+  $('#bits16').on('change',null,function() {oscope.onSampleBits(16);});
 
-  $('#volts1' ).bind('change',null,function() {oscope.onVoltsPerDiv(1);});
-  $('#volts25').bind('change',null,function() {oscope.onVoltsPerDiv(2.5);});
-  $('#volts5' ).bind('change',null,function() {oscope.onVoltsPerDiv(5);});
-  $('#volts10').bind('change',null,function() {oscope.onVoltsPerDiv(10);});
+  // =============================================
+  // volts per division
+  // =============================================
+  $('#volts1' ).on('change',null,function() {oscope.onVoltsPerDiv(1);});
+  $('#volts25').on('change',null,function() {oscope.onVoltsPerDiv(2.5);});
+  $('#volts5' ).on('change',null,function() {oscope.onVoltsPerDiv(5);});
+  $('#volts10').on('change',null,function() {oscope.onVoltsPerDiv(10);});
 
-  $('#vrange' ).bind('change',null,
+  // =============================================
+  // voltage range
+  // =============================================
+  $('#vrange' ).on('change',null,
       function() {
         var vrange = parseInt($('#vrange')[0].value);
         oscope.onVoltageRange(vrange)
       }
   );
 
-
-  $('#samplerate' ).bind('change',null,
+  // =============================================
+  // sample rate
+  // =============================================
+  $('#samplerate' ).on('change',null,
       function() {
         var rate = parseInt($('#samplerate')[0].value);
         oscope.onSamplesPerSecond(rate);
       }
   );
 
+  // =============================================
+  // seconds per division
+  // =============================================
+  $('#s001' ).on('change',null,function() {oscope.onSecondsPerDiv(0.001);});
+  $('#s010' ).on('change',null,function() {oscope.onSecondsPerDiv(0.010);});
+  $('#s100' ).on('change',null,function() {oscope.onSecondsPerDiv(0.100);});
+  $('#s1000').on('change',null,function() {oscope.onSecondsPerDiv(1.000);});
 
-  $('#s001' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.001);});
-  $('#s010' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.010);});
-  $('#s100' ).bind('change',null,function() {oscope.onSecondsPerDiv(0.100);});
-  $('#s1000').bind('change',null,function() {oscope.onSecondsPerDiv(1.000);});
 
+  // =============================================
+  // canvas mouse event for cursor drag
+  // =============================================
+  var mouse_state = 0;
+  $('#oscope').on('mousedown',function(event) {
+    mouse_state = 1;
+    oscope.onCursorMove(event.offsetX,event.offsetY);
+  });
+
+  $('#oscope').on('mouseup',function() {
+    mouse_state = 0;
+  });
+
+  $('#oscope').on('mouseout',function() {
+    mouse_state = 0;
+  });
+
+  $('#oscope').on('mousemove',function(event) {
+    switch(mouse_state) {
+    case 0:
+      // do nothing
+      break;
+    case 1:
+      oscope.onCursorMove(event.offsetX,event.offsetY);
+      break;
+    }
+  });
+  // =============================================
+  // cursor select
+  // =============================================
+  $('#hcursor1' ).on('change',null,function() {oscope.onCursorSelect(0);});
+  $('#hcursor2' ).on('change',null,function() {oscope.onCursorSelect(1);});
+  $('#vcursor1' ).on('change',null,function() {oscope.onCursorSelect(2);});
+  $('#vcursor2' ).on('change',null,function() {oscope.onCursorSelect(3);});
+
+  // =============================================
+  // x axis offset handling
+  // =============================================
+  function setChannelOffset(channel,element) {
+    var offset = parseInt(element.value);
+    if (offset < -4) {
+      element.value = "-4";
+      offset = -4;
+    }
+    if (offset > 4) {
+      element.value = "4";
+      offset = 4;
+    }
+    oscope.onVerticalOffset(channel,offset);
+  }
+
+  $('#channel1v').bind('change',null,
+      function() {
+        var element = $('#channel1v')[0];
+        setChannelOffset(1,element);
+      }
+  );
+
+  $('#channel2v').bind('change',null,
+      function() {
+        var element = $('#channel2v')[0];
+        setChannelOffset(2,element);
+      }
+  );
 
 </script>
 <!-- =================== -->
