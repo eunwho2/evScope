@@ -186,6 +186,7 @@ For the horizontal scale, which shows the x axis spacing of individual sample po
 seconds per division and x axis size. is the formual for that translation:
 
 seconds per xaxis = seconds per division * 10 divisions
+
 pixels  per axis  = width of x axis in pixels
 
 **(seconds per xaxis / samples per second) * pixels per xaxis = pixels/sample**
