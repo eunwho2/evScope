@@ -16,14 +16,14 @@ I have interfaced to quite a few different embedded system devices. One type of 
 or A/D. An A/D device reads a voltage and converts it to a digital format that a CPU can deal with. Typical A/D's
 provide a sample as an 8, 12 or 16 bit value, signed or unsigned, usually 2's complement but other formats could 
 be used. Different A/D's can read different voltage ranges. Depending
-on the circuitry there is not particular limit on the voltage range. When an A/D reads a voltage, it goes through a 
+on the circuitry there is no particular limit on the voltage range. When an A/D reads a voltage, it goes through a 
 conversion process that takes some amount of time. The time required will determine how fast the CPU can read the digital value. 
 This is the sample rate. Some exotic A/D's are very fast, and others on low-end devices run into the many microseconds.
 At the low level the embedded software will read the output of the A/D by reading it from a dedicated address in the
 memory map, as if it were a memory location that happens to be volatile. Depending on the CPU and OS, 
 the embedded application might access it through a driver API or some other memory mapping setup. 
  
-That said, for the purposes of this exercise just assume there is an embeddeed computer that has one or more A/D's and 
+That said, for the purposes of this exercise just assume there is an embedded computer that has one or more A/D's and 
 network access but no display. That computer can read the digital values and send them out as UDP datagrams in a binary
 format (see the spec below). Then the task is get that data
 into a web browser and display it. Since a web browser cannot natively receive UDP datagrams from an arbitrary source, 
@@ -31,7 +31,7 @@ there needs to be some infrastructure to take the datagrams and do something wit
 are the parts I use to put this together:
 
 * an embedded computer with a custom program to read data and send formatted UDP datagrams to a specified IP address
-* a C running a node.js web server
+* a computer running a node.js web server
 * a node application that:
     * acts as sort of a reverse proxy between the client browsers and the embedded system
     * generates a real time feed of data to the client browser using websockets
@@ -41,7 +41,7 @@ Let's build up this application in steps.
 
 Step 1 : embedded system simulator
 ----------------------------------
-For now instead of a real embedded computer we will use a simple C program that sends simulated data. This will make
+For now instead of a real embedded computer we will use a simple C or javascript/node program that sends simulated data. This will make
 it easier to test. We can make versions of the program with different data formats, rates etc. There is code in the
 repository under 'sim' that has a bare bones Visual Studio version and a Linux compatible version. (not much different
 between the two other than some data types and initialization). I won't go into the implementation. You can inspect the
@@ -59,7 +59,7 @@ the javascript environment.values
     * run the oscope.c simulator 
     * >mocha test/receiver-test.js
 
-simplified code excerpt:
+simplified code excerpt from lib/receiver.js:
 
     // parse UDP datagram into a trace object
     var trace = {
@@ -102,7 +102,7 @@ Step 3 : A node.js module that can stream data to the web app
     * npm start 
     * open socket-test.html in browser
 
-simplified code excerpt:
+simplified code excerpt from lib/socket.js:
 
     function init(sio) {
       io = sio;
@@ -144,6 +144,9 @@ Terminology:
 * volts      : A/D's measure volts, although with the proper circuitry other signal types can be measured. but they always
 translate to volts on the display.
  
+### RUN/STOP
+Starts or stops the display of traces. When stopped, it displays the last traces received.
+
 ### VERTICAL PARAMETERS
 
 * Bits per Sample    : this determines the range a sample can be in counts 
@@ -152,6 +155,7 @@ translate to volts on the display.
 * Volts Per Division : there are 10 vertical divisions, 5 for + values and 5 for - values. This parameter sets the number 
 of volts that can be displayed. for example if volts/division is 1 then the display can show +- 5 volts. if the sampled
 voltage is outside that range signals outside it will be off the screen.
+* Vertical Position : moves the x axis of each channel up or down to position them as desired
 
 ### HORIZONAL PARAMETERS
 
@@ -159,6 +163,8 @@ voltage is outside that range signals outside it will be off the screen.
 * Seconds per Division : there are 10 horizontal divisions. This parameter sets the size in seconds or fractions of
 seconds for a single division. 
 
+### CURSORS
+Cursors are used to measure in the x or y axis. Select a cursor then position it on the display with the mouse left button.
 
 ### SCALING
 
@@ -207,7 +213,7 @@ When interfacing between applications using network messages, it is important to
     4        2*N     int16_t     samples         array of N signed 16 bit samples with a range of -32768 .. 32767.
 </pre>
 
-When designing this format, there are some tradeoffs to make. Should the format specify more about the data? Or should
+When designing this format, there are some tradeoffs to make. Should the message format specify more about the data? Or should
 the web UI let the user specify what they are looking at? In a real oscilloscope, the data is just voltages at the end
 of a probe. The operator
 dials in the scaling and such using the oscope UI. For this app we will take that approach. The data will be very barebones
