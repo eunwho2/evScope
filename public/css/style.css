@@ -45,3 +45,8 @@ a {
   border-width: 1px;
 }
 
+#footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
