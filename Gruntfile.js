@@ -22,7 +22,7 @@ module.exports = function(grunt) {
     },
     jshint: {
       // define the files to lint
-      files: ['test/*.js','public/js/*.js','!public/js/bundle.js'],
+      files: ['node-oscope.js','test/**/*.js','public/js/*.js','!public/js/bundle.js'],
       // configure JSHint (documented at http://www.js.jshint.com/docs/)
       options: {
         // more options here if you want to override JSHint defaults
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     watch : {
       files: ['!.git/**','!node_modules/**'],
       js : {
-        files: ['Gruntfile.js', './public/js/*.js','./lib/*.js'],
+        files: ['node-oscope.js','test/**/*.js','public/js/*.js','!public/js/bundle.js'],
         tasks: ['jshint']
       }
      },

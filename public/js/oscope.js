@@ -23,6 +23,7 @@ var oscope = (function() {
   var m_run                = true;
   var m_size_index         = 0;
   var m_text_size          = 12;
+  var m_updates            = 0;
 
   m_trace[0]           = null;
   m_trace[1]           = null;
@@ -354,7 +355,7 @@ var oscope = (function() {
     y += dy + 1;
     ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
 
-    t = (m_run) ? "RUN" : "STOP";
+    t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
     ctx.fillText(t,2,height-4);
 
@@ -444,6 +445,9 @@ var oscope = (function() {
 
     // update trace if running and there is a new trace
     if (m_run & (trace !== null)) {
+      // count updates
+      m_updates++;
+      // store the trace by channel
       m_trace[trace.channel - 1] = trace;
     }
 
