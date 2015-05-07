@@ -13,42 +13,42 @@
       <div class="control-margin">
         <div class="outline">
         <!-- VERTICAL CONTROLS -->
-          <h4><span class="label label-default">Vertical</span></h4>
+          <h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
           <!-- Bits Per Sample -->
-          <div class="label label-default">Bits/Sample</div>
+          <div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
           <div class="btn-group btn-group-md" data-toggle="buttons">
             <label class="btn btn-primary ">
-              <input type="radio" name="bits8" id="bits8" autocomplete="off">8
+              <input type="radio" name="bits8" id="bits8">8
             </label>
             <label class="btn btn-primary ">
-              <input type="radio" name="bits12" id="bits12" autocomplete="off">12
+              <input type="radio" name="bits12" id="bits12">12
             </label>
             <label class="btn btn-primary  active">
-              <input type="radio" name="bits16" id="bits16" autocomplete="off" checked>16
+              <input type="radio" name="bits16" id="bits16" checked>16
             </label>
           </div>
           <div class="w100"></div>
           <!-- Sample Rate -->
-          <div class="label label-default">Voltage Range</div>
+          <div class="label label-default" title="enter total range of the source voltage from - to +">Voltage Range</div>
           <div>
             <input id='vrange' type="number" class="form-control" value="5" min="1" step="1"/>
           </div>
 
           <div class="w100"></div>
           <!-- Volts Per Division -->
-          <div class="label label-default ">Volts/Div</div>
+          <div class="label label-default " title="select how many volts one vertical division represents">Volts/Div</div>
           <div class="btn-group btn-group-md" data-toggle="buttons">
             <label class="btn btn-primary ">
-              <input type="radio" name="volts1" id="volts1" autocomplete="off" checked>1
+              <input type="radio" name="volts1" id="volts1" checked>1
             </label>
             <label class="btn btn-primary  active">
-              <input type="radio" name="volts25" id="volts25" autocomplete="off">2
+              <input type="radio" name="volts25" id="volts25" >2
             </label>
             <label class="btn btn-primary ">
-              <input type="radio" name="volts5" id="volts5" autocomplete="off">5
+              <input type="radio" name="volts5" id="volts5">5
             </label>
             <label class="btn btn-primary ">
-              <input type="radio" name="volts10" id="volts10" autocomplete="off">10
+              <input type="radio" name="volts10" id="volts10">10
             </label>
           </div>
         </div>
@@ -58,27 +58,27 @@
         <!-- HORIZONTAL CONTROLS -->
         <div class="outline">
 
-          <h4><span class="label label-default">Horizontal</span></h4>
+          <h4><span class="label label-default" title="options controlling the horizontal axis">Horizontal</span></h4>
           <!-- Sample Rate -->
-          <activediv class="label label-default">Samples Per Second</activediv>
+          <div class="label label-default" title="enter the number of samples in one data message as determined by your data source">Samples Per Second</div>
           <div>
             <input id='samplerate' type="number" class="form-control" value="600" min="1"/>
           </div>
           <div class="w100"></div>
           <!-- Seconds Per Division -->
-          <div class="label label-default w100">Seconds/Div</div>
+          <div class="label label-default w100" title="enter seconds or fractions of second that one horizontal division represents">Seconds/Div</div>
           <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
             <label class="btn btn-primary ">
-              <input type="radio" name="s001" id="s001" autocomplete="off" >.001
+              <input type="radio" name="s001" id="s001" >.001
             </label>
             <label class="btn btn-primary ">
-              <input type="radio" name="s010" id="s010" autocomplete="off">.010
+              <input type="radio" name="s010" id="s010" >.010
             </label>
             <label class="btn btn-primary  active">
-              <input type="radio" name="s100" id="s100" autocomplete="off" checked">.100
+              <input type="radio" name="s100" id="s100"  checked>.100
             </label>
             <label class="btn btn-primary ">
-              <input type="radio" name="s1000" id="s1000" autocomplete="off">1.00
+              <input type="radio" name="s1000" id="s1000">1.00
             </label>
           </div>
         </div>
@@ -88,36 +88,36 @@
     <div class="col-md-2">
       <div class="control-margin">
         <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-          <label class="btn btn-primary active">
-            <input type="radio" name="btn-run" id="btn-run" autocomplete="off" checked>Run
+          <label class="btn btn-primary active" title="display incoming data">
+            <input type="radio" name="btn-run" id="btn-run"  checked>Run
           </label>
-          <label class="btn btn-primary">
-            <input type="radio" name="btn-stop" id="btn-stop" autocomplete="off" >Stop
+          <label class="btn btn-primary" title="stop updates of display">
+            <input type="radio" name="btn-stop" id="btn-stop" >Stop
           </label>
         </div>
       </div>
       <div class="control-margin">
-        <h4><div class="label label-default">Channel 1</div></h4>
-        <div class="label label-default">vertical position</div>
+        <h4><span class="label label-default">Channel 1</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 1">vertical position</div>
         <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><div class="label label-default">Channel 2</div></h4>
-        <div class="label label-default">vertical position</div>
+        <h4><span class="label label-default">Channel 2</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 2">vertical position</div>
         <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
       </div>
       <!-- cursor select -->
-      <h4><div class="label label-default ">Cursor Select</div></h4>
+      <h4><span class="label label-default " title="select a cursor to place on the display">Cursor Select</span></h4>
       <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-        <label class="btn btn-primary active ">
-          <input type="radio" name="vcursor1" id="vcursor1" autocomplete="off" checked>V1
+        <label class="btn btn-primary active " title="vertical cursor 1">
+          <input type="radio" name="vcursor1" id="vcursor1" checked>V1
         </label>
-        <label class="btn btn-primary ">
-          <input type="radio" name="vcursor2" id="vcursor2" autocomplete="off" >V2
+        <label class="btn btn-primary " title="vertical cursor 2">
+          <input type="radio" name="vcursor2" id="vcursor2">V2
         </label>
-        <label class="btn btn-primary ">
-          <input type="radio" name="hcursor1" id="hcursor1" autocomplete="off" >H1
+        <label class="btn btn-primary " title="horizontal cursor 1">
+          <input type="radio" name="hcursor1" id="hcursor1">H1
         </label>
-        <label class="btn btn-primary ">
-          <input type="radio" name="hcursor2" id="hcursor2" autocomplete="off" >H2
+        <label class="btn btn-primary " title="horizontal cursor 2">
+          <input type="radio" name="hcursor2" id="hcursor2"  >H2
         </label>
       </div>
     </div>
