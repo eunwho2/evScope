@@ -232,6 +232,8 @@ will fit in the typical Maximum Transmission Unit (MTU) of an ethernet network, 
 won't be fragmentation at least on the local network. Second, and probably more important, is that the Canvas element on the web page will be scaled in
 multiples/fractions of 600 pixels in the X axis. A display isn't enhanced that much if you have more points than there are pixels in the
 physical screen (fancy pixel shading aside). And I picked 600 because it fits a layout on a full size screen and can be divided down by 2's for
-responsive display on smaller devices. Again, its kind of arbitrary and depends on the application.
+responsive display on smaller devices. Again, its kind of arbitrary and depends on the application. On the con side, if you zoom in to a trace
+by setting the seconds/division field to smaller values, if you don't have many samples per division you can see the quantization of 
+the trace line. 
     
 

@@ -3,29 +3,31 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-6 tcenter"><h2>Node-Oscope</h2></div>
+    <div class="col-md-6 tcenter"><h1><span class="label label-default" >Node-Oscope</span></h1></div>
   </div>
   <div class="row">
     <div id="oscope-parent" class="col-md-7">
     <canvas id="oscope" class="oscope-canvas" width="600" height="450"></canvas>
     </div>
     <div class="col-md-3">
-      <div class="control-margin">
+      <div>
         <div class="outline">
         <!-- VERTICAL CONTROLS -->
           <h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
           <!-- Bits Per Sample -->
           <div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
           <div class="btn-group btn-group-md" data-toggle="buttons">
-            <label class="btn btn-primary ">
+            <span>
+            <label class="btn btn-primary btn-margin">
               <input type="radio" name="bits8" id="bits8">8
             </label>
-            <label class="btn btn-primary ">
+            <label class="btn btn-primary btn-margin ">
               <input type="radio" name="bits12" id="bits12">12
             </label>
-            <label class="btn btn-primary  active">
+            <label class="btn btn-primary  btn-margin active">
               <input type="radio" name="bits16" id="bits16" checked>16
             </label>
+              </span>
           </div>
           <div class="w100"></div>
           <!-- Sample Rate -->
@@ -35,21 +37,26 @@
           </div>
 
           <div class="w100"></div>
+
+
           <!-- Volts Per Division -->
           <div class="label label-default " title="select how many volts one vertical division represents">Volts/Div</div>
+
           <div class="btn-group btn-group-md" data-toggle="buttons">
-            <label class="btn btn-primary ">
-              <input type="radio" name="volts1" id="volts1" checked>1
-            </label>
-            <label class="btn btn-primary  active">
-              <input type="radio" name="volts25" id="volts25" >2
-            </label>
-            <label class="btn btn-primary ">
-              <input type="radio" name="volts5" id="volts5">5
-            </label>
-            <label class="btn btn-primary ">
-              <input type="radio" name="volts10" id="volts10">10
-            </label>
+            <div>
+              <label class="btn btn-primary btn-margin">
+                <input class="vdiv" type="radio" name="vdiv" id="volts1" checked>1
+              </label>
+              <label class="btn btn-primary btn-margin active">
+                <input class="vdiv" type="radio" name="vdiv" id="volts25" >2.5
+              </label>
+              <label class="btn btn-primary btn-margin ">
+                <input class="vdiv" type="radio" name="vdiv" id="volts5">5
+              </label>
+              <label class="btn btn-primary btn-margin">
+                <input class="vdiv" type="radio" name="vdiv" id="volts10">10
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -66,27 +73,42 @@
           </div>
           <div class="w100"></div>
           <!-- Seconds Per Division -->
-          <div class="label label-default w100" title="enter seconds or fractions of second that one horizontal division represents">Seconds/Div</div>
-          <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-            <label class="btn btn-primary ">
-              <input type="radio" name="s001" id="s001" >.001
-            </label>
-            <label class="btn btn-primary ">
-              <input type="radio" name="s010" id="s010" >.010
-            </label>
-            <label class="btn btn-primary  active">
-              <input type="radio" name="s100" id="s100"  checked>.100
-            </label>
-            <label class="btn btn-primary ">
-              <input type="radio" name="s1000" id="s1000">1.00
-            </label>
+          <div class="label label-default w100" title="select fractions of second that one horizontal division represents">Seconds/Div</div>
+          <div class="btn-group btr-group-md" data-toggle="buttons">
+            <div>
+              <label class="btn btn-primary btn-margin">
+                <input class="sdiv" type="radio" name="sdiv" id="s001" >.001
+              </label>
+              <label class="btn btn-primary btn-margin">
+                <input  class="sdiv" type="radio" name="sdiv" id="s005" >.005
+              </label>
+              <label class="btn btn-primary btn-margin">
+                <input  class="sdiv" type="radio" name="sdiv" id="s010" >.010
+              </label>
+            </div>
+            <div>
+              <label class="btn btn-primary btn-margin">
+                <input  class="sdiv" type="radio" name="sdiv" id="s050" >.050
+              </label>
+              <label class="btn btn-primary btn-margin active" >
+                <input  class="sdiv" type="radio" name="sdiv" id="s100" checked>.100
+              </label>
+              <label class="btn btn-primary btn-margin">
+                <input  class="sdiv" type="radio" name="sdiv" id="s500" >.500
+              </label>
+            </div>
+            <div>
+              <label class="btn btn-primary btn-margin">
+                <input  class="sdiv" type="radio" name="sdiv" id="s1000">1.00
+              </label>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-2">
-      <div class="control-margin">
+      <div >
         <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
           <label class="btn btn-primary active" title="display incoming data">
             <input type="radio" name="btn-run" id="btn-run"  checked>Run
@@ -105,20 +127,22 @@
         <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
       </div>
       <!-- cursor select -->
-      <h4><span class="label label-default " title="select a cursor to place on the display">Cursor Select</span></h4>
-      <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-        <label class="btn btn-primary active " title="vertical cursor 1">
+      <span class="label label-default " title="select a cursor to place on the display">Cursor Select</span>
+      <div class="btn-group btn-group-md " data-toggle="buttons">
+        <div>
+        <label class="btn btn-primary btn-margin active " title="vertical cursor 1">
           <input type="radio" name="vcursor1" id="vcursor1" checked>V1
         </label>
-        <label class="btn btn-primary " title="vertical cursor 2">
+        <label class="btn btn-primary  btn-margin " title="vertical cursor 2">
           <input type="radio" name="vcursor2" id="vcursor2">V2
         </label>
-        <label class="btn btn-primary " title="horizontal cursor 1">
-          <input type="radio" name="hcursor1" id="hcursor1">H1
+        <label class="btn btn-primary  btn-margin " title="horizontal cursor 1">
+          <input type="radio" name="hcursor1"  class="sdiv" id="hcursor1">H1
         </label>
-        <label class="btn btn-primary " title="horizontal cursor 2">
+        <label class="btn btn-primary  btn-margin " title="horizontal cursor 2">
           <input type="radio" name="hcursor2" id="hcursor2"  >H2
         </label>
+      </div>
       </div>
     </div>
   </div>
@@ -138,10 +162,16 @@
   // =============================================
   // volts per division
   // =============================================
+  /*
   $('#volts1' ).on('change',null,function() {oscope.onVoltsPerDiv(1);});
   $('#volts25').on('change',null,function() {oscope.onVoltsPerDiv(2.5);});
   $('#volts5' ).on('change',null,function() {oscope.onVoltsPerDiv(5);});
   $('#volts10').on('change',null,function() {oscope.onVoltsPerDiv(10);});
+  */
+  $('.vdiv' ).on('change',null,function(event) {
+        oscope.onVoltsPerDiv(parseFloat(event.target.parentElement.innerText));
+      }
+  );
 
   // =============================================
   // voltage range
@@ -166,11 +196,10 @@
   // =============================================
   // seconds per division
   // =============================================
-  $('#s001' ).on('change',null,function() {oscope.onSecondsPerDiv(0.001);});
-  $('#s010' ).on('change',null,function() {oscope.onSecondsPerDiv(0.010);});
-  $('#s100' ).on('change',null,function() {oscope.onSecondsPerDiv(0.100);});
-  $('#s1000').on('change',null,function() {oscope.onSecondsPerDiv(1.000);});
-
+  $('.sdiv' ).on('change',null,function(event) {
+      oscope.onSecondsPerDiv(parseFloat(event.target.parentElement.innerText));
+      }
+  );
 
   // =============================================
   // canvas mouse event for cursor drag
@@ -229,14 +258,14 @@
     oscope.onVerticalOffset(channel,offset);
   }
 
-  $('#channel1v').bind('change',null,
+  $('#channel1v').on('change',null,
       function() {
         var element = $('#channel1v')[0];
         setChannelOffset(1,element);
       }
   );
 
-  $('#channel2v').bind('change',null,
+  $('#channel2v').on('change',null,
       function() {
         var element = $('#channel2v')[0];
         setChannelOffset(2,element);
@@ -244,35 +273,5 @@
   );
 
 </script>
-<!-- =================== -->
-<!-- socket.io support   -->
-<!-- =================== -->
-<script src="/socket.io/socket.io.js"></script>
 
-<!-- =================== -->
-<!-- socket.io connetion -->
-<!-- =================== -->
-<script>
-  var socket = io.connect();
-  var messages = 0;
-  socket.on('trace', function (msg) {
-    var trace = JSON.parse(msg);
-    messages ++;
-    oscope.onPaint(trace);
-  });
-  socket.on('disconnect',function() {
-    console.log('disconnected');
-  })
-</script>
-
-<!-- ======================================== -->
-<!-- initialize oscope when document is ready -->
-<!-- ======================================== -->
-<script>
-  $("document").ready(function() {
-    if (oscope) {
-      oscope.init();
-    }
-  });
-</script>
 {% endblock %}

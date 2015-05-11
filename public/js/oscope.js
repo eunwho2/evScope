@@ -15,7 +15,7 @@ var oscope = (function() {
   var m_divisions          = 10;
   var m_yscale             = 32768;
   var m_sample_bits        = 16;
-  var m_volts_per_div      = 2;
+  var m_volts_per_div      = 2.5;
   var m_vrange             = 5;
   var m_cursor_index       = 2;
   var m_cursor_seconds     = 0.0;
@@ -638,3 +638,22 @@ var oscope = (function() {
     onRunStop          : onRunStop
   };
 })();
+
+// start the client application
+var socket = io.connect();
+var messages = 0;
+socket.on('trace', function (msg) {
+  var trace = JSON.parse(msg);
+  messages ++;
+  oscope.onPaint(trace);
+});
+
+socket.on('disconnect',function() {
+  console.log('disconnected');
+});
+
+$("document").ready(function() {
+  if (oscope) {
+    oscope.init();
+  }
+});

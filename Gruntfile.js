@@ -33,7 +33,8 @@ module.exports = function(grunt) {
           console: true,
           window: true,
           alert: true,
-          $ : true
+          $ : true,
+          io : true
         }
       }
     },

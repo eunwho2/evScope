@@ -42,7 +42,7 @@ function oscope_sim(socket,ipaddr,port,count) {
     // create a value between -32767 .. +32767
     r = Math.random();
     for(i=0;i<count;++i) {
-        v = Math.floor(Math.sin(r/Math.PI) * 16384);
+        v = Math.floor((Math.sin(r + Math.random())/Math.PI) * 58000);
         buffer.writeInt16BE(v,offset);
         offset += 2;
         r += 1.0;
