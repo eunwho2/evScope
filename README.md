@@ -242,5 +242,7 @@ Run It
 * npm install
 * bower install
 * start one of the simulator versions (the node.js/javascript is easiest to start up)
+    * cd test/oscope-js
+    * node oscope-sim.js
 * npm start
 * open a browser to to ip-addr:3000
