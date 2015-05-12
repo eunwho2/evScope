@@ -34,7 +34,7 @@ are the parts I use to put this together:
 * a computer running a node.js web server
 * a node application that:
     * acts as sort of a reverse proxy between the client browsers and the embedded system
-    * generates a real time feed of data to the client browser using websockets
+    * generates a real time feed of data to the client browser using websockets (socket.io)
 * a web application served by the node server that implements the oscilloscope display
 
 Let's build up this application in steps. 
@@ -43,11 +43,11 @@ Step 1 : embedded system simulator
 ----------------------------------
 For now instead of a real embedded computer we will use a simple C or javascript/node program that sends simulated data. This will make
 it easier to test. We can make versions of the program with different data formats, rates etc. There is code in the
-repository under 'sim' that has a bare bones Visual Studio version and a Linux compatible version. (not much different
-between the two other than some data types and initialization). I won't go into the implementation. You can inspect the
+repository under 'sim' that has a bare bones Visual Studio C version , a Linux compatible C version and a node.js/javascript version. (not much different
+between the two C versions other than some data types and initialization). I won't go into the implementation. You can inspect the
 code to see what it is doing.
 
-Code is in test/oscope-linux/oscope.c and/or test/oscope-win32/oscope.c
+Code is in test/oscope-linux/oscope.c, test/oscope-win32/oscope.c or test/oscope-js/oscope-sim.js
 
 Step 2 : node.js UDP receiver backend
 -------------------------------------
@@ -202,7 +202,7 @@ Data Format
 -----------
 When interfacing between applications using network messages, it is important to document the exact structure
   and content of the messages. 
-  
+  
 * Each datagram will have a minimal header and then a variable size array of data elements. 
 * The data will be binary in network byte order (bit-endian). 
 * Sizes are in bytes
@@ -236,4 +236,11 @@ responsive display on smaller devices. Again, its kind of arbitrary and depends 
 by setting the seconds/division field to smaller values, if you don't have many samples per division you can see the quantization of 
 the trace line. 
     
-
+Run It
+-----------
+* clone the repository
+* npm install
+* bower install
+* start one of the simulator versions (the node.js/javascript is easiest to start up)
+* npm start
+* open a browser to to ip-addr:3000
