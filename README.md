@@ -238,6 +238,7 @@ the trace line.
     
 Run It
 -----------
+* the UI is responsive, so feel free to run it on a tablet or phone
 * clone the repository
 * npm install
 * bower install
