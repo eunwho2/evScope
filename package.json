@@ -5,6 +5,10 @@
     "start": "node node-oscope.js",
     "clean": "node clean.js"
   },
+  "repository" :  { 
+    "type" : "git",
+    "url"  : "https://github.com/dmh2000/node-oscope.git"
+  },
   "dependencies": {
     "body-parser": "~1.12.0",
     "consolidate": "^0.12.1",
