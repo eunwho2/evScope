@@ -2,6 +2,7 @@ node-oscope
 ===========
 canvas + socket.io demo oscilloscope
 
+![](/oscope.png)
 
 A simple digital oscilloscope that takes data from a remote source and plots it like an oscope.
 
