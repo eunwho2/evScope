@@ -2,6 +2,7 @@ node-oscope
 ===========
 canvas + socket.io demo oscilloscope
 
+
 A simple digital oscilloscope that takes data from a remote source and plots it like an oscope.
 
 The project I am working at my day job is an embedded system that interfaces to some analog electronics. One of the
