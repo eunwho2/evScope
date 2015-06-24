@@ -76,6 +76,7 @@ app.use(function(err, req, res, next) {
 // ================================================================
 // start server
 // ================================================================
+console.log('http on : ' + port.toString());
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
