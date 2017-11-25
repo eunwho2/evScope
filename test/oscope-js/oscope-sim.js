@@ -47,7 +47,8 @@ function oscope_sim(socket,ipaddr,port,count) {
         offset += 2;
         r += 1.0;
     }
-    socket.send(buffer,0,offset,port,ipaddr);
+	// socket.send(buffer,0,offset,port,ipaddr);
+	io.emit('trace',JSON.stringify(trace));
 }
 
 var m_sock = udp.createSocket('udp4');

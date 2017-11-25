@@ -644,6 +644,9 @@ var socket = io.connect();
 var messages = 0;
 socket.on('trace', function (msg) {
   var trace = JSON.parse(msg);
+
+	console.log(trace); // debug
+
   messages ++;
   oscope.onPaint(trace);
 });

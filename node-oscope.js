@@ -129,3 +129,85 @@ function onListening() {
   var bind = (typeof addr === 'string') ? 'pipe ' + addr  : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+// new for debug
+var count = 600;
+
+function socketEmitSim() {
+    var offset;
+    var i;
+    var r;
+    var v;
+    var buffer;
+    var samples = new Int16Array(count);        // array of int16_t's to us$
+
+  // there is a single instance of variable 'trace'.
+  var trace = {
+    channel         : 0,     // display channel : 1,2
+    length          : 0,     // unsigned 16 bit integer, number of samples, max$
+    sample          : samples
+  };
+
+    // channel 1
+    offset = 0;
+    buffer = new Buffer(4 + count * 2);
+    buffer.writeUInt16BE(1,offset);
+    offset += 2;
+    buffer.writeUInt16BE(count,offset);
+    offset += 2;
+
+    // create a value between -32767 .. +32767
+    r = Math.random();
+    for(i=0;i<count;++i) {
+        v = Math.floor(Math.sin(r/Math.PI) * 32767);
+        buffer.writeInt16BE(v,offset);
+        offset += 2;
+        r += 1.0;
+    }
+
+	offset = 0;
+	for(i=0; i < count;i++) {
+        trace.sample[i] = buffer.readInt16BE(offset);
+        offset += 2;
+      }
+
+	trace.channel = 0;
+	trace.length  = count;
+
+    io.emit('trace',JSON.stringify(trace));
+
+    // channel 2
+    offset = 0;
+    buffer = new Buffer(4 + count * 2);
+    buffer.writeUInt16BE(1,offset);
+    offset += 2;
+    buffer.writeUInt16BE(count,offset);
+    offset += 2;
+
+    // create a value between -32767 .. +32767
+    r = Math.random();
+    for(i=0;i<count;++i) {
+        v = Math.floor(Math.cos(r/Math.PI) * 32767);
+        buffer.writeInt16BE(v,offset);
+        offset += 2;
+        r += 1.0;
+    }
+	
+	offset = 0;
+	for(i=0;i<count;i++) {
+        trace.sample[i] = buffer.readInt16BE(offset);
+        offset += 2;
+      }
+
+	trace.channel = 1;
+	trace.length  = count;
+
+    io.emit('trace',JSON.stringify(trace));
+}
+
+setInterval(function() {
+    socketEmitSim( );
+},250);
+
+
+
