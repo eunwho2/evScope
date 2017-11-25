@@ -10,7 +10,7 @@ var oscope = (function() {
   var m_voffset = [];
   // these must match the initial values of the controls
   // doh! no two way data bindind
-  var m_seconds_per_div    = 0.100;
+  var mSecPerDiv		   = 0.100;
   var m_samples_per_second = 600;
   var m_divisions          = 10;
   var m_yscale             = 32768;
@@ -27,8 +27,13 @@ var oscope = (function() {
 
   m_trace[0]           = null;
   m_trace[1]           = null;
+  m_trace[2]           = null;
+  m_trace[3]           = null;
+
   m_voffset[0]         = 0;
   m_voffset[1]         = 0;
+  m_voffset[2]         = 0;
+  m_voffset[3]         = 0;
 
   // ==============================================================
   // background display scaffolding
@@ -351,7 +356,9 @@ var oscope = (function() {
     ctx.font = dy.toFixed(0) + "px monospace";
     ctx.fillStyle = "lime";
     y = dy + 1;
-    ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),2,y);
+
+    ctx.fillText('sec/div     = ' + (mSecPerDiv*1.0).toFixed(3) + '     dS = ' + m_cursor_seconds.toFixed(4),2,y);
+
     y += dy + 1;
     ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
 
@@ -402,7 +409,7 @@ var oscope = (function() {
 
     // compute scale factors
     ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div*10);
-    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
+    hs = computeHorizontalScale(mSecPerDiv*m_divisions,m_samples_per_second,m_width);
 
     // compute horizonal scale
 
@@ -414,11 +421,19 @@ var oscope = (function() {
     switch(trace.channel) {
     case 1:
       ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
-      ctx.strokeStyle = "red";
+      ctx.strokeStyle = "yellow";
       break;
     case 2:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "lime";
+      ctx.strokeStyle = "blue";
+      break;
+    case 3:
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
+      ctx.strokeStyle = "magenta";
+      break;
+    case 4:
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
+      ctx.strokeStyle = "green";
       break;
     }
     
@@ -457,6 +472,12 @@ var oscope = (function() {
     }
     if (m_trace[1] !== null) {
       drawTrace(m_context, m_trace[1], m_width, m_height, m_voffset[1]);
+    }
+    if (m_trace[2] !== null) {
+      drawTrace(m_context, m_trace[2], m_width, m_height, m_voffset[2]);
+    }
+    if (m_trace[3] !== null) {
+      drawTrace(m_context, m_trace[3], m_width, m_height, m_voffset[3]);
     }
 
     // draw text annotations
@@ -518,7 +539,7 @@ var oscope = (function() {
    * @param seconds
    */
   function onSecondsPerDiv(seconds) {
-    m_seconds_per_div = seconds;
+    mSecPerDiv = seconds;
 
     updateCursorDiff();
     onPaint(null);
@@ -554,7 +575,7 @@ var oscope = (function() {
    */
   function updateCursorDiff() {
     // compute current cursor diff in seconds
-    m_cursor_seconds = Math.abs(m_cursor[0][0] - m_cursor[1][0]) * (m_seconds_per_div * 10.0 / m_width);
+    m_cursor_seconds = Math.abs(m_cursor[0][0] - m_cursor[1][0]) * (mSecPerDiv * 10.0 / m_width);
     m_cursor_volts   = Math.abs(m_cursor[2][1] - m_cursor[3][1]) * (m_volts_per_div   * 10.0 / m_height);
   }
 
@@ -644,9 +665,6 @@ var socket = io.connect();
 var messages = 0;
 socket.on('trace', function (msg) {
   var trace = JSON.parse(msg);
-
-	console.log(trace); // debug
-
   messages ++;
   oscope.onPaint(trace);
 });

@@ -171,7 +171,7 @@ function socketEmitSim() {
         offset += 2;
       }
 
-	trace.channel = 0;
+	trace.channel = 1;
 	trace.length  = count;
 
     io.emit('trace',JSON.stringify(trace));
@@ -199,10 +199,67 @@ function socketEmitSim() {
         offset += 2;
       }
 
-	trace.channel = 1;
+	trace.channel = 2;
 	trace.length  = count;
 
     io.emit('trace',JSON.stringify(trace));
+
+    // channel 3
+    offset = 0;
+    buffer = new Buffer(4 + count * 2);
+    buffer.writeUInt16BE(1,offset);
+    offset += 2;
+    buffer.writeUInt16BE(count,offset);
+    offset += 2;
+
+    // create a value between -32767 .. +32767
+    r = Math.random();
+    for(i=0;i<count;++i) {
+        v = Math.floor(Math.cos(r/Math.PI+Math.PI) * 32767);
+        buffer.writeInt16BE(v,offset);
+        offset += 2;
+        r += 1.0;
+    }
+	
+	offset = 0;
+	for(i=0;i<count;i++) {
+        trace.sample[i] = buffer.readInt16BE(offset);
+        offset += 2;
+      }
+
+	trace.channel = 3;
+	trace.length  = count;
+
+    io.emit('trace',JSON.stringify(trace));
+
+    // channel 4
+    offset = 0;
+    buffer = new Buffer(4 + count * 2);
+    buffer.writeUInt16BE(1,offset);
+    offset += 2;
+    buffer.writeUInt16BE(count,offset);
+    offset += 2;
+
+    // create a value between -32767 .. +32767
+    r = Math.random();
+    for(i=0;i<count;++i) {
+        v = Math.floor(Math.sin(r/Math.PI+Math.PI) * 32767);
+        buffer.writeInt16BE(v,offset);
+        offset += 2;
+        r += 1.0;
+    }
+	
+	offset = 0;
+	for(i=0;i<count;i++) {
+        trace.sample[i] = buffer.readInt16BE(offset);
+        offset += 2;
+      }
+
+	trace.channel = 4;
+	trace.length  = count;
+
+    io.emit('trace',JSON.stringify(trace));
+
 }
 
 setInterval(function() {

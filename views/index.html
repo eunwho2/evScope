@@ -15,19 +15,15 @@
           <h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
           <!-- Bits Per Sample -->
           <div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
+
           <div class="btn-group btn-group-md" data-toggle="buttons">
-            <span>
-            <label class="btn btn-primary btn-margin">
-              <input type="radio" name="bits8" id="bits8">8
-            </label>
-            <label class="btn btn-primary btn-margin ">
-              <input type="radio" name="bits12" id="bits12">12
-            </label>
-            <label class="btn btn-primary  btn-margin active">
-              <input type="radio" name="bits16" id="bits16" checked>16
-            </label>
-              </span>
+		  	<form name ='radioBits'>
+              <input type="radio" name="adcBits" value="bits8">8
+              <input type="radio" name="adcBits" value="bits12" checked>12
+              <input type="radio" name="adcBits" value="bits16" >16
+			</form>
           </div>
+
           <div class="w100"></div>
           <!-- Sample Rate -->
           <div class="label label-default" title="enter total range of the source voltage from - to +">Voltage Range</div>
@@ -43,18 +39,12 @@
 
           <div class="btn-group btn-group-md" data-toggle="buttons">
             <div>
-              <label class="btn btn-primary btn-margin">
-                <input class="vdiv" type="radio" name="vdiv" id="volts1" checked>1
-              </label>
-              <label class="btn btn-primary btn-margin active">
-                <input class="vdiv" type="radio" name="vdiv" id="volts25" >2.5
-              </label>
-              <label class="btn btn-primary btn-margin ">
-                <input class="vdiv" type="radio" name="vdiv" id="volts5">5
-              </label>
-              <label class="btn btn-primary btn-margin">
-                <input class="vdiv" type="radio" name="vdiv" id="volts10">10
-              </label>
+				<form name = 'radioVoltDiv'>
+	              <input type="radio" name="perVolt" value="1.0" checked>1
+    	          <input type="radio" name="perVolt" value="2.5" >2.5
+        	      <input type="radio" name="perVolt" value="5.0" >5
+	              <input type="radio" name="perVolt" value="10." >10
+            	</form>
             </div>
           </div>
         </div>
@@ -75,37 +65,22 @@
           <div class="label label-default w100" title="select fractions of second that one horizontal division represents">Seconds/Div</div>
           <div class="btn-group btr-group-md" data-toggle="buttons">
             <div>
-              <label class="btn btn-primary btn-margin">
-                <input class="sdiv" type="radio" name="sdiv" id="s001" >.001
-              </label>
-              <label class="btn btn-primary btn-margin">
-                <input  class="sdiv" type="radio" name="sdiv" id="s005" >.005
-              </label>
-              <label class="btn btn-primary btn-margin">
-                <input  class="sdiv" type="radio" name="sdiv" id="s010" >.010
-              </label>
-            </div>
-            <div>
-              <label class="btn btn-primary btn-margin">
-                <input  class="sdiv" type="radio" name="sdiv" id="s050" >.050
-              </label>
-              <label class="btn btn-primary btn-margin active" >
-                <input  class="sdiv" type="radio" name="sdiv" id="s100" checked>.100
-              </label>
-              <label class="btn btn-primary btn-margin">
-                <input  class="sdiv" type="radio" name="sdiv" id="s500" >.500
-              </label>
-            </div>
-            <div>
-              <label class="btn btn-primary btn-margin">
-                <input  class="sdiv" type="radio" name="sdiv" id="s1000">1.00
-              </label>
+				<select id = 'selectSecDiv'>
+				  <option value="0.001">0.001</option>
+				  <option value="0.002">0.002</option>
+				  <option value="0.005">0.005</option>
+				  <option value="0.010">0.010</option>
+				  <option value="0.020">0.020</option>
+				  <option value="0.050">0.050</option>
+				  <option value="0.10">0.10</option>
+				  <option value="0.20">0.20</option>
+				  <option value="0.50">0.50</option>
+            	</select>
             </div>
           </div>
         </div>
       </div>
     </div>
-
     <div class="col-md-2">
       <div >
         <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
@@ -124,6 +99,12 @@
         <h4><span class="label label-default">Channel 2</span></h4>
         <div class="label label-default" title="position of 0 baseline for channel 2">vertical position</div>
         <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 3</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 3">vertical position</div>
+        <input id='channel3v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 4</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 4">vertical position</div>
+        <input id='channel4v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
       </div>
       <!-- cursor select -->
       <span class="label label-default " title="select a cursor to place on the display">Cursor Select</span>
@@ -151,27 +132,44 @@
 <!-- control handlers -->
 <!-- ================ -->
 <script>
-  // =============================================
-  // sample size
-  // =============================================
-  $('#bits8' ).on('change',null,function() {oscope.onSampleBits(8);});
-  $('#bits12').on('change',null,function() {oscope.onSampleBits(12);});
-  $('#bits16').on('change',null,function() {oscope.onSampleBits(16);});
+  //--- sampling bits
+	var radioBit = document.radioBits.adcBits;
+	var prev = null;
+	for(var i = 0; i < radioBit.length; i++){
+		radioBit[i].onclick = function(){
+			(prev) ? console.log(prev.value):null;
+			if(this !== prev){
+				prev = this;
+			}
+			console.log(this.value);
+			if(this.value === 'bits8') { oscope.onSampleBits(8);
+			} else if ( this.value === 'bits12'){ oscope.onSampleBits(12);
+			} else if (this.value === 'bits16') { oscope.onSampleBits(16);
+			}
+		};
+	}
 
-  // =============================================
-  // volts per division
-  // =============================================
-  /*
-  $('#volts1' ).on('change',null,function() {oscope.onVoltsPerDiv(1);});
-  $('#volts25').on('change',null,function() {oscope.onVoltsPerDiv(2.5);});
-  $('#volts5' ).on('change',null,function() {oscope.onVoltsPerDiv(5);});
-  $('#volts10').on('change',null,function() {oscope.onVoltsPerDiv(10);});
-  */
+  //--- volts per division
+	var radioVolt = document.radioVoltDiv.perVolt;
+	var prev = null;
+	for(var i = 0; i < radioVolt.length; i++){
+		radioVolt[i].onclick = function(){
+			(prev) ? console.log(prev.value):null;
+			if(this !== prev){
+				prev = this;
+			}
+			if(this.value === '1.0') { oscope.onVoltsPerDiv(1);
+			} else if ( this.value === '2.5'){ oscope.onVoltsPerDiv(2.5);
+			} else if (this.value === '5.0') { oscope.onVoltsPerDiv(5.0);
+			} else if (this.value === '10.') { oscope.onVoltsPerDiv(10);
+			}
+		};
+	}
+
   $('.vdiv' ).on('change',null,function(event) {
         oscope.onVoltsPerDiv(parseFloat(event.target.parentElement.innerText));
       }
   );
-
   // =============================================
   // voltage range
   // =============================================
@@ -185,18 +183,21 @@
   // =============================================
   // sample rate
   // =============================================
-  $('#samplerate' ).on('change',null,
-      function() {
+  $('#samplerate' ).on('change',null,function() {
         var rate = parseInt($('#samplerate')[0].value);
         oscope.onSamplesPerSecond(rate);
       }
   );
 
   // =============================================
-  // seconds per division
+  // select seconds per division
   // =============================================
-  $('.sdiv' ).on('change',null,function(event) {
-      oscope.onSecondsPerDiv(parseFloat(event.target.parentElement.innerText));
+
+
+  $('#selectSecDiv' ).on('change',null,function(event) {
+	  // console.log(parseFloat(event.target.parentElement.innerText));
+	  console.log(parseFloat(this.value));
+      oscope.onSecondsPerDiv(this.value);
       }
   );
 
@@ -268,6 +269,20 @@
       function() {
         var element = $('#channel2v')[0];
         setChannelOffset(2,element);
+      }
+  );
+
+  $('#channel3v').on('change',null,
+      function() {
+        var element = $('#channel3v')[0];
+        setChannelOffset(3,element);
+      }
+  );
+
+  $('#channel4v').on('change',null,
+      function() {
+        var element = $('#channel4v')[0];
+        setChannelOffset(4,element);
       }
   );
 
