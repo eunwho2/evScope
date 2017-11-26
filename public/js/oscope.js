@@ -1,5 +1,4 @@
 "use strict";
-
 var oscope = (function() {
   var m_canvas;
   var m_context;
@@ -647,11 +646,12 @@ var oscope = (function() {
   function createCodeTable(arg1) {
   
   	var inputs = arg1.split(';');
+
     inputs.forEach( function (value){
 	    var codeData = value.split(',');
-    	var codeName  = document.createTextNode( '[' + codeData[0]+']' + codeData[2] + 'Min' + codeData[3]*1.0);
+    	var codeName  = document.createTextNode( '[' + codeData[0]+']' + codeData[2] + ' MIN=' + codeData[3]*1.0);
     	var codeValue = document.createElement('input');
-    	var codeMax  = document.createTextNode( 'Max:' + codeData[4]*1);
+    	var codeMax  = document.createTextNode( ' MAX=' + codeData[4]*1);
   
     	var codeRead  = document.createElement('button');
     	var codeWrite = document.createElement('button');
@@ -667,17 +667,21 @@ var oscope = (function() {
     	codeValue.maxlength = '6';
 
     	codeRead.innerHTML  = 'R';
+			codeRead.setAttribute("id",'btnCodeRead'+codeData[0]);
+			codeRead.className = 'btnCodeRead';
+
     	codeWrite.innerHTML = 'W';
+			codeWrite.setAttribute("id",'btnCodeWrite'+codeData[0]);
 
     	codeRead.type = 'button';
     	codeWrite.type ='button';
 
-    	$('#rightCode').appendChild(codeName);
-    	$('#rightCode').appendChild(codeValue);
-    	$('#rightCode').appendChild(codeMax);
-    	$('#rightCode').appendChild(codeRead);
-    	$('#rightCode').appendChild(codeWrite);
-    	$('#rightCode').appendChild(BR);
+    	$('#rightCode')[0].appendChild(codeName);
+    	$('#rightCode')[0].appendChild(codeValue);
+    	$('#rightCode')[0].appendChild(codeMax);
+			$('#rightCode')[0].appendChild(codeRead);
+    	$('#rightCode')[0].appendChild(codeWrite);
+    	$('#rightCode')[0].appendChild(BR);
 		});
 	}
 
@@ -710,8 +714,7 @@ socket.on('trace', function (msg) {
 });
 
 socket.on('codeTable', function (msg) {
-  //oscope.onPaint(trace);
-	console.log(msg);
+  oscope.createCodeTable(msg);
 });
 
 socket.on('disconnect',function() {

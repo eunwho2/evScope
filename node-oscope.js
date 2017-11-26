@@ -9,7 +9,7 @@ var cons         = require('consolidate');
 
 var routes    = require('./routes/index');
 var users     = require('./routes/users');
-var socket    = require('./lib/socket');
+// var socket    = require('./lib/socket');
 var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var port      = process.env.PORT || '3000';
@@ -93,42 +93,27 @@ app.use(function(err, req, res, next) {
 //--- start server
 console.log('http on : ' + port.toString());
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 //--- socket.io support
-socket.init(io,sciPort);
 
-//--- datagram receiver
-receiver.init(process.env.OSCOPE_PORT || '55003',socket.send);
+io.on('connection', function (socket) {
+	var host  = socket.client.request.headers.host;
+	console.log('connected to : ' + host);
+	socket.on('disconnect', function () {
+  	console.log('disconnected from : ' + host);
+  });
 
-//--- support functions for express
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-  var bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
-  switch (error.code) {
-  case 'EACCES':
-    console.error(bind + ' requires elevated privileges');
-    process.exit(1);
-    break;
-  case 'EADDRINUSE':
-    console.error(bind + ' is already in use');
-    process.exit(1);
-    break;
-  default:
-    throw error;
-  }
-}
+	socket.on('codeTable',function(from,msg){
+  	console.log('received codeTable request');
+    sciPort.write('9:4:900:0.000e+0',function(err){
+    	if(err) return console.error(err);
+      parser.on('data',function (data){
+      	socket.emit('codeTable',data);
+      });
+		});
+  });
+});
 
-function onListening() {
-  var addr = server.address();
-  var bind = (typeof addr === 'string') ? 'pipe ' + addr  : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
-
-//--- new for debug
 
 
 
