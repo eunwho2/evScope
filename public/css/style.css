@@ -55,3 +55,11 @@ a {
   bottom: 0;
   width: 100%;
 }
+
+.btnCodeRead {
+  background-color: green;
+}
+
+.btnCodeWrite {
+	background-color: red; /* Green */
+}

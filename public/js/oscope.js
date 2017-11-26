@@ -672,6 +672,7 @@ var oscope = (function() {
 
     	codeWrite.innerHTML = 'W';
 			codeWrite.setAttribute("id",'btnCodeWrite'+codeData[0]);
+			codeWrite.className = 'btnCodeWrite';
 
     	codeRead.type = 'button';
     	codeWrite.type ='button';
