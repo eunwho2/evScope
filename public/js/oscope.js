@@ -643,6 +643,43 @@ var oscope = (function() {
     onPaint(null);
   }
 
+	//--- invert code table create
+  function createCodeTable(arg1) {
+  
+  	var inputs = arg1.split(';');
+    inputs.forEach( function (value){
+	    var codeData = value.split(',');
+    	var codeName  = document.createTextNode( '[' + codeData[0]+']' + codeData[2] + 'Min' + codeData[3]*1.0);
+    	var codeValue = document.createElement('input');
+    	var codeMax  = document.createTextNode( 'Max:' + codeData[4]*1);
+  
+    	var codeRead  = document.createElement('button');
+    	var codeWrite = document.createElement('button');
+    	var BR        = document.createElement('br');
+
+    	codeValue.type = 'number';
+    	codeValue.name = 'codeInput'+codeData[0];
+    	codeValue.size = '6';
+    	codeValue.value = (codeData[1]*1.0).toFixed(0);
+    	codeValue.width = '6';
+    	codeValue.min = codeData[3];
+    	codeValue.max = codeData[4];
+    	codeValue.maxlength = '6';
+
+    	codeRead.innerHTML  = 'R';
+    	codeWrite.innerHTML = 'W';
+
+    	codeRead.type = 'button';
+    	codeWrite.type ='button';
+
+    	$('#rightCode').appendChild(codeName);
+    	$('#rightCode').appendChild(codeValue);
+    	$('#rightCode').appendChild(codeMax);
+    	$('#rightCode').appendChild(codeRead);
+    	$('#rightCode').appendChild(codeWrite);
+    	$('#rightCode').appendChild(BR);
+		});
+	}
 
   return {
     init               : onInit,
@@ -656,17 +693,25 @@ var oscope = (function() {
     onVerticalOffset   : onVerticalOffset,
     onCursorMove       : onCursorMove,
     onCursorSelect     : onCursorSelect,
-    onRunStop          : onRunStop
+    onRunStop          : onRunStop,
+		createCodeTable		 : createCodeTable
   };
+
 })();
 
-// start the client application
+//--- start the client application
 var socket = io.connect();
 var messages = 0;
+
 socket.on('trace', function (msg) {
   var trace = JSON.parse(msg);
   messages ++;
   oscope.onPaint(trace);
+});
+
+socket.on('codeTable', function (msg) {
+  //oscope.onPaint(trace);
+	console.log(msg);
 });
 
 socket.on('disconnect',function() {
@@ -677,4 +722,6 @@ $("document").ready(function() {
   if (oscope) {
     oscope.init();
   }
+	var dummy = {0:0};
+	socket.emit('codeTable',dummy);
 });

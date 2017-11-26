@@ -14,24 +14,42 @@ var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var port      = process.env.PORT || '3000';
 
+//--- serial to inverter
+const SerialPort = require('serialport');
+const Readline = SerialPort.parsers.Readline;
+const sciPort = new SerialPort('/dev/ttyAMA0',{
+    baudRate: 115200
+});
+const parser = new Readline();
+sciPort.pipe(parser);
+sciPort.on('open',function(err){
+    if(err) return console.log('Error on write : '+ err.message);
+    console.log('serial open');
+});
 
-// create express application
+sciPort.on('error', function(err) {
+    console.log('Error: ', err.message);
+    console.log('Error Occured');
+});
+
+
+//--- create express application
 var app = express();
 app.set('port', port);
 
-// create server
+//--- create server
 var server = require('http').Server(app);
 
-// connect socket.io to server
+//--- connect socket.io to server
 var io = require('socket.io')(server);
 
-// view engine setup
+//--- view engine setup
 app.engine('html',cons.swig);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
+//--- uncomment after placing your favicon in /public
+//--- app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -62,7 +80,7 @@ if (app.get('env') === 'development') {
   });
 }
 
-// production error handler
+//--- production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
@@ -72,40 +90,24 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
-// ================================================================
-// start server
-// ================================================================
+//--- start server
 console.log('http on : ' + port.toString());
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-// ================================================================
-// socket.io support
-// ================================================================
-socket.init(io);
+//--- socket.io support
+socket.init(io,sciPort);
 
-// ================================================================
-// datagram receiver
-// ================================================================
+//--- datagram receiver
 receiver.init(process.env.OSCOPE_PORT || '55003',socket.send);
 
-// =================================================================
-// support functions for express
-// =================================================================
-/**
- * Event listener for HTTP server "error" event.
- */
-
+//--- support functions for express
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
-
   var bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
   switch (error.code) {
   case 'EACCES':
     console.error(bind + ' requires elevated privileges');
@@ -120,17 +122,19 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
 function onListening() {
   var addr = server.address();
   var bind = (typeof addr === 'string') ? 'pipe ' + addr  : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
 
-// new for debug
+//--- new for debug
+
+
+
+
+
+/*
 var count = 600;
 
 function socketEmitSim() {
@@ -265,6 +269,6 @@ function socketEmitSim() {
 setInterval(function() {
     socketEmitSim( );
 },250);
-
+*/
 
 
