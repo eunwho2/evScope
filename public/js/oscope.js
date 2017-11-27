@@ -665,6 +665,7 @@ var oscope = (function() {
     	codeValue.min = codeData[3];
     	codeValue.max = codeData[4];
     	codeValue.maxlength = '6';
+			codeValue.className = 'inputCode';
 
     	codeRead.innerHTML  = 'R';
 			codeRead.setAttribute("id",'btnCodeRead'+codeData[0]);
