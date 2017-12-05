@@ -655,7 +655,7 @@ var oscope = (function() {
   
     	var codeRead  = document.createElement('button');
     	var codeWrite = document.createElement('button');
-    	var BR        = document.createElement('br');
+    	// var BR        = document.createElement('br');
 
     	codeValue.type = 'number';
     	codeValue.name = 'codeInput'+codeData[0];
@@ -683,7 +683,7 @@ var oscope = (function() {
     	$('#rightCode')[0].appendChild(codeMax);
 			$('#rightCode')[0].appendChild(codeRead);
     	$('#rightCode')[0].appendChild(codeWrite);
-    	$('#rightCode')[0].appendChild(BR);
+    	// $('#rightCode')[0].appendChild(BR);
 		});
 	}
 
