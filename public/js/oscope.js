@@ -649,13 +649,15 @@ var oscope = (function() {
 
     inputs.forEach( function (value){
 	    var codeData = value.split(',');
-    	var codeName  = document.createTextNode( '[' + codeData[0]+']' + codeData[2] + ' MIN=' + codeData[3]*1.0);
+    	var codeName  = document.createTextNode( '[' + codeData[0]+']' + codeData[2]);
+    	var codeMin  = document.createTextNode( codeData[3]*1.0);
     	var codeValue = document.createElement('input');
-    	var codeMax  = document.createTextNode( ' MAX=' + codeData[4]*1);
-  
+    	var codeMax  = document.createTextNode( codeData[4]*1);
     	var codeRead  = document.createElement('button');
     	var codeWrite = document.createElement('button');
-    	// var BR        = document.createElement('br');
+    	var BR        = document.createElement('br');
+    	var BR2        = document.createElement('br');
+    	var BR3        = document.createElement('br');
 
     	codeValue.type = 'number';
     	codeValue.name = 'codeInput'+codeData[0];
@@ -678,12 +680,15 @@ var oscope = (function() {
     	codeRead.type = 'button';
     	codeWrite.type ='button';
 
-    	$('#rightCode')[0].appendChild(codeName);
-    	$('#rightCode')[0].appendChild(codeValue);
-    	$('#rightCode')[0].appendChild(codeMax);
+    	$('#leftCode')[0].appendChild(codeName);
+    	$('#leftCode')[0].appendChild(BR);
+    	$('#minCode')[0].appendChild(codeMin);
+    	$('#minCode')[0].appendChild(BR2);
+    	$('#midCode')[0].appendChild(codeValue);
+ 			$('#maxCode')[0].appendChild(codeMax);
+    	$('#maxCode')[0].appendChild(BR3);
 			$('#rightCode')[0].appendChild(codeRead);
     	$('#rightCode')[0].appendChild(codeWrite);
-    	// $('#rightCode')[0].appendChild(BR);
 		});
 	}
 

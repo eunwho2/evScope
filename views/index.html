@@ -1,22 +1,71 @@
 {%extends 'templates/layout.html' %}
 {% block content %}
 <div class="container">
-  <div class="row">
-    <div class="col-md-6 tcenter"><h1><span class="label label-default" >Inverter Monitoring Oscilloscope by Eunwho P.E.</span></h1></div>
+  <div class="row1">
+    <div class="col-md-6 tcenter">Inverter Monitoring Oscilloscope by Eunwho P.E.</div>
   </div>
   <div class="row">
     <div id="oscope-parent" class="col-md-7">
-    <canvas id="oscope" class="oscope-canvas" width="600" height="450"></canvas>
+    <canvas id="oscope" class="oscope-canvas"></canvas>
     </div>
-    <div class="col-md-3">
-      <div>
-        <div class="outline">
-        <!-- VERTICAL CONTROLS -->
-          <h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
-          <!-- Bits Per Sample -->
-          <div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
+    
+		<div class="col-md-2">
+      <div >
+        <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
+          <label class="btn btn-primary active" title="display incoming data">
+            <input type="radio" name="btn-run" id="btn-run"  checked>Run
+          </label>
+          <label class="btn btn-primary" title="stop updates of display">
+            <input type="radio" name="btn-stop" id="btn-stop" >Stop
+          </label>
+        </div>
+      </div>
+      <div class="control-margin" >
+        <h4><span class="label label-default" id="channel1">  Channel 111</span></h4>
+        <div class="label label-default" id="ver1"  title="position of 0 baseline for channel 1" >verti position</div>
+        <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 222</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 2">verti position</div>
+        <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 333</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 3">verti position</div>
+        <input id='channel3v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 444</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 4">verti position</div>
+        <input id='channel4v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+      </div>
+      <!-- cursor select --> 
 
-          <div class="btn-group btn-group-md" data-toggle="buttons">
+		 <span class="label label-default" id="cursorSelect" title="select a cursor to place on the display">Cursor Select1</span>
+      <div class="btn-group btn-group-md" id="cursor" data-toggle="buttons">
+        <div>
+        <label class="btn btn-primary btn-margin active " title="vertical cursor 1">
+          <input type="radio" name="cursor" id="vcursor1" checked>V1
+        </label>
+        <label class="btn btn-primary  btn-margin " title="vertical cursor 2">
+          <input type="radio" name="cursor" id="vcursor2">V2
+        </label>
+        <label class="btn btn-primary  btn-margin " title="horizontal cursor 1">
+          <input type="radio" name="cursor" id="hcursor1">H1
+        </label>
+        <label class="btn btn-primary  btn-margin " title="horizontal cursor 2">
+          <input type="radio" name="cursor" id="hcursor2"  >H2
+        </label>
+      </div>
+      </div>
+    </div> 
+ </div>
+
+	<div  class="col-md-3">
+      <div> 
+        <div class="outline">	
+        <!-- VERTICAL CONTROLS -->
+					<div id='test1'>
+          	<h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
+          	<!-- Bits Per Sample -->
+          	<div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
+
+          	<div class="btn-group btn-group-md" data-toggle="buttons">
 		  	<form name ='radioBits'>
               <input type="radio" name="adcBits" value="bits8">8
               <input type="radio" name="adcBits" value="bits12" checked>12
@@ -49,7 +98,8 @@
           </div>
         </div>
       </div>
-
+			</div>
+			<div id='test2'>
       <div class="control-margin">
         <!-- HORIZONTAL CONTROLS -->
         <div class="outline">
@@ -63,7 +113,7 @@
           <div class="w100"></div>
           <!-- Seconds Per Division -->
           <div class="label label-default w100" title="select fractions of second that one horizontal division represents">Seconds/Div</div>
-          <div class="btn-group btr-group-md" data-toggle="buttons">
+          <div class="btn-group btr-group-md" id="  data-toggle="buttons">
             <div>
 				<select id = 'selectSecDiv'>
 				  <option value="0.001">0.001</option>
@@ -80,57 +130,26 @@
           </div>
         </div>
       </div>
+		</div>
     </div>
-    <div class="col-md-2">
-      <div >
-        <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-          <label class="btn btn-primary active" title="display incoming data">
-            <input type="radio" name="btn-run" id="btn-run"  checked>Run
-          </label>
-          <label class="btn btn-primary" title="stop updates of display">
-            <input type="radio" name="btn-stop" id="btn-stop" >Stop
-          </label>
-        </div>
-      </div>
-      <div class="control-margin">
-        <h4><span class="label label-default">Channel 1</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 1">vertical position</div>
-        <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 2</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 2">vertical position</div>
-        <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 3</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 3">vertical position</div>
-        <input id='channel3v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 4</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 4">vertical position</div>
-        <input id='channel4v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-      </div>
-      <!-- cursor select -->
-      <span class="label label-default " title="select a cursor to place on the display">Cursor Select</span>
-      <div class="btn-group btn-group-md " data-toggle="buttons">
-        <div>
-        <label class="btn btn-primary btn-margin active " title="vertical cursor 1">
-          <input type="radio" name="cursor" id="vcursor1" checked>V1
-        </label>
-        <label class="btn btn-primary  btn-margin " title="vertical cursor 2">
-          <input type="radio" name="cursor" id="vcursor2">V2
-        </label>
-        <label class="btn btn-primary  btn-margin " title="horizontal cursor 1">
-          <input type="radio" name="cursor" id="hcursor1">H1
-        </label>
-        <label class="btn btn-primary  btn-margin " title="horizontal cursor 2">
-          <input type="radio" name="cursor" id="hcursor2"  >H2
-        </label>
-      </div>
-      </div>
-    </div>
-  </div>
-<div id ="codeTable" class = "codeTable">
-	<div id="leftCode" clase = "codeLeftColumn"></div>
-	<div id="rightCode" clase = "codeRightColumn"></div>
+
+	<div id ="expTable"  style="width:1000px; height: 10px;" >
+		<div id="leftExp"  style="width: 150px; height: 10px;" >CODE DESCRIPTION</div>
+		<div id="midExp"   style="width: 100px; height: 10px;" >MIN</div>
+		<div id="rightExp" style="width: 100px; height: 10px;" >MAX</div>
+	</div>
+
+
+	<div id ="codeTable" class = "codeTable" style="width:800px; height: 500px; " >
+		<div id="leftCode" clase = "codeLeftColumn"style="width: 200px; height: 470px;" ></div>
+		<div id="minCode" clase = "codeMinColumn" style="width: 50px; height: 470px;" ></div>
+		<div id="midCode" clase = "codeMidColumn" style="width: 50px; height: 470px;" ></div>
+		<div id="maxCode" clase = "codeMaxColumn" style="width: 100px; height: 470px;"></div>
+		<div id="rightCode" clase = "codeRightColumn" style="width: 150px; height: 470px;"></div>
+	</div>
 </div>
-</div>
+
+<div 
 
 <!-- ================ -->
 <!-- control handlers -->
@@ -293,3 +312,5 @@
 </script>
 
 {% endblock %}
+
+

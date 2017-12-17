@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 0px;
   font: 14px "Courier New", Courier,monospace;
   background-color: #D2E0E6;
 }
@@ -7,21 +7,142 @@ body {
 a {
   color: #00B7FF;
 }
+.container{
+	width: 1024px;
+}
 
-.oscope-canvas {
+.col-md-6 {
+	font-size: 25px;
+	margin-top: 20px;
+	margin-left:-15px;	
+	width: 750px;
+	height: 50px;
+	line-height: 50px;
+	font-weight: bolder;
+	box-shadow: 10px 10px 20px 5px; gray;
+
 }
 
 .row {
   background-color: #D2E0E6;
   padding-top:10px;
   padding-bottom:10px;
+
 }
 
-.w100 {
-  position:relative;
-  margin-top:6px;
-  margin-bottom:6px;
+.oscope-canvas {
+	position: absolute;
+	top: 30px;
+	left: 0px;
+	width: 750px;
+	float: left;
+	border: 8px solid gray;
+}
+
+
+.col-md-2 {
+	top: 30px;
+	width: 140px;
+	margin-left: 780px;
+	box-shadow: 10px 10px 20px 5px;; gray;
+
+}
+.control-margin {
+	
+}
+#channel1{
+
+}
+#ver1{
+}
+#channel1v {
+}
+
+.tcenter {
+  text-align: center;
+
+}
+
+.btn-margin {
+	width:50px;
+	height: 43px;
+  margin-top:4px;
+  margin-bottom: 2px;
+	border-width: 3px;
+
+}
+.control-margin {
+	margin-bottom:15px;
+  margin-top:15px;
+
+}
+#cursorSelect{
+}
+#cursor {
+	margin-top: 5px;
+	width: 110px; 
+}
+
+#footer {
+  position: fixed;
+  bottom:0;
   width: 100%;
+}
+
+
+.inputCode{
+	background-color: white; /* Green */
+	border-width: 3px;
+}
+
+.btnCodeRead {
+	width: 40pt;
+  background-color: indianred;
+	border-width: 3px;
+
+}
+
+.btnCodeWrite {
+	width: 40pt;
+	background-color: forestgreen; /* Green */
+	border-width: 3px;
+}
+
+
+.col-md-3{
+	margin-top: 50px;
+	height: 160px;	
+}
+#test1 {
+  position: absolute;
+	width: 250px;
+  top: 0px;
+}
+#test2 {
+  position: relative;
+	width: 250px;
+  top: -145px;
+	left: 280px;
+}	
+.outline {
+	overflow: hidden;
+	position: relative;
+	left: 80px;
+	width: 250px;
+	height: 130px;
+  padding:3px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+	box-shadow: 3px 3px 30px 5px; gray;
+}
+
+
+.w100 {
+	position: relative;
+  margin-top: 6px;
+  margin-bottom:6px;
+  width: 100px;
 }
 
 .w50 {
@@ -30,40 +151,82 @@ a {
   margin-bottom:1px;
 }
 
-.tcenter {
-  text-align: center;
+#vrange {
+	width: 60px;
+	height: 20px;
+	margin-left: 110px;
+	margin-top: -17px;
+  border-width: 3px;
+
 }
 
-.btn-margin {
-  margin-top:4px;
-  margin-bottom: 2px;
+#samplerate {
+	width: 75px;
+	height: 20px;
+	margin-left: 140px;
+	margin-top: -17px;
+  border-width: 3px;
 }
-.control-margin {
-  margin-bottom:20px;
-  margin-top:20px;
-}
-
-.outline {
-  padding:2px;
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
+#selectSecDiv {
+  border-width: 2px;
 }
 
-#footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+#expTable{
+	float: left;
+	margin-top: 0px;
+	font-weight: bolder;
+	margin-left: 80px;
+
+}	
+#leftExp{
+	margin-left: 20px;
+	float: left;
+
+}
+#midExp{
+	margin-left: 50px;
+	float: left;
+
+}
+#rightExp{
+	margin-left: 50px;
+	float: left;
 }
 
-.btnCodeRead {
-  background-color: green;
+#codeTable{
+	float: left;
+	margin-top: 20px;
+	margin-left: 80px;
+	
+}
+#leftCode{
+	line-height: 178%;
+	float: left;
+
+}
+#minCode{
+	float: left;
+	margin-left: 20px;
+	line-height: 178%;
+}
+#midCode{
+	float: left;
+	margin-left: -80px;
+}
+#maxCode{
+	float: left;
+	margin-left: 100px;
+	line-height: 178%;
+}
+#rightCode{
+	float: left;	
+	margin-left: -30px;
+
 }
 
-.btnCodeWrite {
-	background-color: red; /* Green */
+.inputCode {
+	width: 60px;
+	margin-left:80px;
+
 }
 
-.inputCode{
-	background-color: red; /* Green */
-}
