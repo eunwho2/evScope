@@ -644,53 +644,7 @@ var oscope = (function() {
 
 	//--- invert code table create
   function createCodeTable(arg1) {
-  
-  	var inputs = arg1.split(';');
-
-    inputs.forEach( function (value){
-	    var codeData = value.split(',');
-    	var codeName  = document.createTextNode( '[' + codeData[0]+']' + codeData[2]);
-    	var codeMin  = document.createTextNode( codeData[3]*1.0);
-    	var codeValue = document.createElement('input');
-    	var codeMax  = document.createTextNode( codeData[4]*1);
-    	var codeRead  = document.createElement('button');
-    	var codeWrite = document.createElement('button');
-    	var BR        = document.createElement('br');
-    	var BR2        = document.createElement('br');
-    	var BR3        = document.createElement('br');
-
-    	codeValue.type = 'number';
-    	codeValue.name = 'codeInput'+codeData[0];
-    	codeValue.size = '6';
-    	codeValue.value = (codeData[1]*1.0).toFixed(0);
-    	codeValue.width = '6';
-    	codeValue.min = codeData[3];
-    	codeValue.max = codeData[4];
-    	codeValue.maxlength = '6';
-			codeValue.className = 'inputCode';
-
-    	codeRead.innerHTML  = 'R';
-			codeRead.setAttribute("id",'btnCodeRead'+codeData[0]);
-			codeRead.className = 'btnCodeRead';
-
-    	codeWrite.innerHTML = 'W';
-			codeWrite.setAttribute("id",'btnCodeWrite'+codeData[0]);
-			codeWrite.className = 'btnCodeWrite';
-
-    	codeRead.type = 'button';
-    	codeWrite.type ='button';
-
-    	$('#leftCode')[0].appendChild(codeName);
-    	$('#leftCode')[0].appendChild(BR);
-    	$('#minCode')[0].appendChild(codeMin);
-    	$('#minCode')[0].appendChild(BR2);
-    	$('#midCode')[0].appendChild(codeValue);
- 			$('#maxCode')[0].appendChild(codeMax);
-    	$('#maxCode')[0].appendChild(BR3);
-			$('#rightCode')[0].appendChild(codeRead);
-    	$('#rightCode')[0].appendChild(codeWrite);
-		});
-	}
+  }
 
   return {
     init               : onInit,
