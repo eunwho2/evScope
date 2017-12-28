@@ -1,218 +1,272 @@
+<head>
+	<meta charset="utf-8">
+		<title>Test</title>
+
+			<link href="http://jamesrossini.com/fonts/pictos/import.css" media="screen" rel="stylesheet" type="Text/css" />
+</head>
+
+<body>
 {%extends 'templates/layout.html' %}
 {% block content %}
 <div class="container">
   <div class="row1">
-    <div class="col-md-6 tcenter">일성화이바 오토크레이브</div>
+    <div class="col-md-6 tcenter"> ILSUNG FIBER  AUTOCRAVE</div>
   </div>
 
-  <div class="row">
+  <div class="box1">
     <div id="oscope-parent" class="col-md-7">
     <canvas id="oscope" class="oscope-canvas"></canvas>
     </div>
-    
-		<div class="col-md-2">
-      <div >
-        <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-          <label class="btn btn-primary active" title="display incoming data">
-            <input type="radio" name="btn-run" id="btn-run"  checked>Run
-          </label>
-          <label class="btn btn-primary" title="stop updates of display">
-            <input type="radio" name="btn-stop" id="btn-stop" >Stop
-          </label>
-        </div>
-      </div>
-
-      <div class="control-margin" >
-        <h4><span class="label label-default" id="channel1">  Channel 111</span></h4>
-        <div class="label label-default" id="ver1"  title="position of 0 baseline for channel 1" >verti position</div>
-        <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 222</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 2">verti position</div>
-        <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 333</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 3">verti position</div>
-        <input id='channel3v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 444</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 4">verti position</div>
-        <input id='channel4v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-      </div>
-      <!-- cursor select --> 
-
-		 <span class="label label-default" id="cursorSelect" title="select a cursor to place on the display">Cursor Select1</span>
-      <div class="btn-group btn-group-md" id="cursor" data-toggle="buttons">
-        <div>
-        <label class="btn btn-primary btn-margin active " title="vertical cursor 1">
-          <input type="radio" name="cursor" id="vcursor1" checked>V1
-        </label>
-        <label class="btn btn-primary  btn-margin " title="vertical cursor 2">
-          <input type="radio" name="cursor" id="vcursor2">V2
-        </label>
-        <label class="btn btn-primary  btn-margin " title="horizontal cursor 1">
-          <input type="radio" name="cursor" id="hcursor1">H1
-        </label>
-        <label class="btn btn-primary  btn-margin " title="horizontal cursor 2">
-          <input type="radio" name="cursor" id="hcursor2"  >H2
-        </label>
-      </div>
-      </div>
-    </div> 
-
-
-	<div  class="col-md-3">
-      <div> 
-        <div class="outline">	
-        <!-- VERTICAL CONTROLS -->
-					<div id='test1'>
-          	<h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
-          	<!-- Bits Per Sample -->
-          	<div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
-
-          	<div class="btn-group btn-group-md" data-toggle="buttons">
-		  	<form name ='radioBits'>
-              <input type="radio" name="adcBits" value="bits8">8
-              <input type="radio" name="adcBits" value="bits12" checked>12
-              <input type="radio" name="adcBits" value="bits16" >16
-			</form>
-          </div>
-
-          <div class="w100"></div>
-          <!-- Sample Rate -->
-          <div class="label label-default" title="enter total range of the source voltage from - to +">Voltage Range</div>
-          <div>
-            <input id='vrange' type="number" class="form-control" value="5" min="1" step="1"/>
-          </div>
-
-          <div class="w100"></div>
-
-
-          <!-- Volts Per Division -->
-          <div class="label label-default " title="select how many volts one vertical division represents">Volts/Div</div>
-
-          <div class="btn-group btn-group-md" data-toggle="buttons">
-            <div>
-				<form name = 'radioVoltDiv'>
-	              <input type="radio" name="perVolt" value="1.0" checked>1
-    	          <input type="radio" name="perVolt" value="2.5" >2.5
-        	      <input type="radio" name="perVolt" value="5.0" >5
-	              <input type="radio" name="perVolt" value="10." >10
-            	</form>
-            </div>
-          </div>
-        </div>
-      </div>
-			</div>
-			<div id='test2'>
-      <div class="control-margin">
-        <!-- HORIZONTAL CONTROLS -->
-        <div class="outline">
-
-          <h4><span class="label label-default" title="options controlling the horizontal axis">Horizontal</span></h4>
-          <!-- Sample Rate -->
-          <div class="label label-default" title="enter the number of samples in one data message as determined by your data source">Samples Per Second</div>
-          <div>
-            <input id='samplerate' type="number" class="form-control" value="600" min="1"/>
-          </div>
-          <div class="w100"></div>
-          <!-- Seconds Per Division -->
-          <div class="label label-default w100" title="select fractions of second that one horizontal division represents">Seconds/Div</div>
-          <div class="btn-group btr-group-md" id="  data-toggle="buttons">
-            <div>
-				<select id = 'selectSecDiv'>
-				  <option value="0.001">0.001</option>
-				  <option value="0.002">0.002</option>
-				  <option value="0.005">0.005</option>
-				  <option value="0.010">0.010</option>
-				  <option value="0.020">0.020</option>
-				  <option value="0.050">0.050</option>
-				  <option value="0.10">0.10</option>
-				  <option value="0.20">0.20</option>
-				  <option value="0.50">0.50</option>
-            	</select>
-            </div>
-          </div>
-        </div>
-      </div>
-		</div>
-    </div>
-
-
-
- </div>
-			<div id="chart_div">
-				<div id="divbox1"> 
-	    		<div id="chart_div1" style="width: 300px; height: 300px;"></div>
-	    		<div id="chart_div2" style="width: 150px; height: 150px;"></div>
-	    	</div>
-				<div id-"divbox2"> 
-					<div id="chart_div3" style="width: 800px; height: 800px;"></div>
-				</div>
-			</div>
-
-	<div class="btnbox">
-		<div id="pumpbox">
-			<li>
-				<button id="pump1" class="punch">자동동작시작</button>
-			</li>
-			<li>
-				<button id="pump2" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump3" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump4" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump5" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump6" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump7" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump8" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump9" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump10" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump11" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump12" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump13" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump14" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump15" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump16" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump17" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump18" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump19" class="punch">자동동작중지</button>
-			</li>
-			<li>
-				<button id="pump20" class="punch">자동동작중지</button>
-			</li>
-		</div> 
 	</div>
+	<div id="box2">
+			<div id="chart_div1" style="width: 300px; height: 300px;"></div>
+	    <div id="chart_div2" style="width: 150px; height: 150px;"></div>
+	</div>
+	<div id="box3">
+	</div>
+	<div id="box4">
+	</div>
+
+		<div id-"divbox2"> 
+			<div id="chart_div3"></div>
+			<div id="chart_div4"></div>
+			<div id="chart_div5"></div>
+			<div id="chart_div6"></div>
+			<div id="chart_div7"></div>
+			<div id="chart_div8"></div>
+		</div>
+	
+	<div id="box_r1">
+	</div>		
+	<div id="box_r2">
+	</div>		
+	<div id="box_r3">
+	</div>		
+	<div id="box_r4">
+	</div>		
+	<div id="box_r5">
+	</div>		
+	<div id="box_r6">
+	</div>		
+</div>
+</div>
+
+
+
+
+
+<div class="btn_box">
+	<div id="btnbox_div1">
+	<div class="container_btn" id="btn1">
+		<div class="hole">
+			<div class="button">
+				<div class="traiangle"></div>
+				<div class="lighter_triangle"></div>
+				<div class="darker_triangle"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container_btn" id="btn2" >
+		<div class="hole">
+			<div class="button">
+				<div class="traiangle"></div>
+				<div class="lighter_triangle"></div>
+				<div class="darker_triangle"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn" id="btn3" >
+		<div class="hole">
+			<div class="button">
+				<div class="traiangle"></div>
+				<div class="lighter_triangle"></div>
+				<div class="darker_triangle"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn" id="btn4" >
+		<div class="hole">
+			<div class="button">
+				<div class="traiangle"></div>
+				<div class="lighter_triangle"></div>
+				<div class="darker_triangle"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn" id="btn5" >
+		<div class="hole">
+			<div class="button">
+				<div class="traiangle"></div>
+				<div class="lighter_triangle"></div>
+				<div class="darker_triangle"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn" id="btn6" >
+		<div class="hole">
+			<div class="button">
+				<div class="traiangle"></div>
+				<div class="lighter_triangle"></div>
+				<div class="darker_triangle"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<div id="btnbox_div2">
+	<div class="container_btn2" id="btn9">
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container_btn2" id="btn10" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn11" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn12" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn13" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn14" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn15" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn16" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+</div>
+	<div class="container_btn2" id="btn17">
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container_btn2" id="btn18" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn19" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+	<div class="container_btn2" id="btn20" >
+		<div class="hole2">
+			<div class="button2">
+				<div class="traiangle2"></div>
+				<div class="lighter_triangle2"></div>
+				<div class="darker_triangle2"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<div class="namebox1">
+		<div id="name1">버튼1</div>
+		<div id="name2">버튼2</div>
+		<div id="name3">버튼3</div>
+		<div id="name4">버튼4</div>
+		<div id="name5">버튼5</div>
+		<div id="name6">버튼6</div>
+	</div>
+	<div class="namebox2">
+		<div id="name9">버튼1</div>
+		<div id="name10">버튼2</div>
+		<div id="name11">버튼3</div>
+		<div id="name12">버튼4</div>
+		<div id="name13">버튼5</div>
+		<div id="name14">버튼6</div>
+		<div id="name15">버튼7</div>
+		<div id="name16">버튼8</div>
+		<div id="name17">버튼9</div>
+		<div id="name18">버튼10</div>
+		<div id="name19">버튼11</div>
+		<div id="name20">버튼12</div>
+	</div>
+	<div class="namebox3">
+		<div id="chart_name1">온도계[1]</div>
+		<div id="chart_name2">온도계[2]</div>
+		<div id="chart_name3">압력[1]</div>
+		<div id="chart_name4">압력[2]</div>
+		<div id="chart_name5">압력[3]</div>
+		<div id="chart_name6">압력[4]</div>
+		<div id="chart_name7">압력[5]</div>
+		<div id="chart_name8">압력[6]</div>
+	</div>
+
+	<div class="button_box">e</div>
+
+
 </div>	
+
 
 
    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -225,11 +279,11 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          ['온도계[1]', 60]
+          ['', 60]
         ]);
 
         var options = {
-          width: 800, height: 300,
+          width: 800, height: 350,
           redFrom: 90, redTo: 100,
           yellowFrom:75, yellowTo: 90,
           minorTicks: 5
@@ -260,11 +314,11 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          ['온도계[2]', 60]
+          ['', 60]
         ]);
 
         var options = {
-          width: 800, height: 150,
+          width: 800, height: 200,
           redFrom: 90, redTo: 100,
           yellowFrom:75, yellowTo: 90,
           minorTicks: 5
@@ -296,22 +350,202 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          ['압력[1]', 55],
-          ['압력[2]', 56],
-          ['압력[3]', 57],
-          ['압력[4]', 58],
-          ['압력[5]', 59],
-          ['압력[6]', 60]
+          ['', 55],
         ]);
 
         var options = {
-          width: 800, height: 450,
+          width: 600, height: 230,
           redFrom: 90, redTo: 100,
           yellowFrom:75, yellowTo: 90,
           minorTicks: 5
         };
 
         var chart = new google.visualization.Gauge(document.getElementById('chart_div3'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+
+
+
+      google.charts.setOnLoadCallback(drawChart4);
+
+      function drawChart4() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['', 55],
+        ]);
+
+        var options = {
+          width: 600, height: 230,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div4'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+
+
+
+      google.charts.setOnLoadCallback(drawChart5);
+
+      function drawChart5() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['', 55],
+        ]);
+
+        var options = {
+          width: 600, height: 230,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div5'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+
+
+
+      google.charts.setOnLoadCallback(drawChart6);
+
+      function drawChart6() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['', 55],
+        ]);
+
+        var options = {
+          width: 600, height: 230,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div6'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+
+
+
+      google.charts.setOnLoadCallback(drawChart7);
+
+      function drawChart7() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['', 55],
+        ]);
+
+        var options = {
+          width: 600, height: 230,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div7'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+
+
+
+      google.charts.setOnLoadCallback(drawChart8);
+
+      function drawChart8() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['', 55],
+        ]);
+
+        var options = {
+          width: 600, height: 230,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div8'));
 
         chart.draw(data, options);
 
@@ -496,3 +730,132 @@
 {% endblock %}
 
 
+
+
+
+
+
+<!--    
+		<div class="col-md-2">
+      <div >
+        <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
+          <label class="btn btn-primary active" title="display incoming data">
+            <input type="radio" name="btn-run" id="btn-run"  checked>Run
+          </label>
+          <label class="btn btn-primary" title="stop updates of display">
+            <input type="radio" name="btn-stop" id="btn-stop" >Stop
+          </label>
+        </div>
+      </div>
+
+      <div class="control-margin" >
+        <h4><span class="label label-default" id="channel1">  Channel 111</span></h4>
+        <div class="label label-default" id="ver1"  title="position of 0 baseline for channel 1" >verti position</div>
+        <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 222</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 2">verti position</div>
+        <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 333</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 3">verti position</div>
+        <input id='channel3v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+        <h4><span class="label label-default">Channel 444</span></h4>
+        <div class="label label-default" title="position of 0 baseline for channel 4">verti position</div>
+        <input id='channel4v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
+      </div>
+
+		 <span class="label label-default" id="cursorSelect" title="select a cursor to place on the display">Cursor Select1</span>
+      <div class="btn-group btn-group-md" id="cursor" data-toggle="buttons">
+        <div>
+        <label class="btn btn-primary btn-margin active " title="vertical cursor 1">
+          <input type="radio" name="cursor" id="vcursor1" checked>V1
+        </label>
+        <label class="btn btn-primary  btn-margin " title="vertical cursor 2">
+          <input type="radio" name="cursor" id="vcursor2">V2
+        </label>
+        <label class="btn btn-primary  btn-margin " title="horizontal cursor 1">
+          <input type="radio" name="cursor" id="hcursor1">H1
+        </label>
+        <label class="btn btn-primary  btn-margin " title="horizontal cursor 2">
+          <input type="radio" name="cursor" id="hcursor2"  >H2
+        </label>
+      </div>
+      </div>
+    </div> 
+
+
+	<div  class="col-md-3">
+      <div> 
+        <div class="outline1">	
+					<div id='test1'>
+          	<h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
+          	<div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
+
+          	<div class="btn-group btn-group-md" data-toggle="buttons">
+		  	<form name ='radioBits'>
+              <input type="radio" name="adcBits" value="bits8">8
+              <input type="radio" name="adcBits" value="bits12" checked>12
+              <input type="radio" name="adcBits" value="bits16" >16
+			</form>
+          </div>
+
+          <div class="w100"></div>
+
+          <div class="label label-default" title="enter total range of the source voltage from - to +">Voltage Range</div>
+          <div>
+            <input id='vrange' type="number" class="form-control" value="5" min="1" step="1"/>
+          </div>
+
+          <div class="w100"></div>
+
+
+          <div class="label label-default " title="select how many volts one vertical division represents">Volts/Div</div>
+
+          <div class="btn-group btn-group-md" data-toggle="buttons">
+            <div>
+				<form name = 'radioVoltDiv'>
+	              <input type="radio" name="perVolt" value="1.0" checked>1
+    	          <input type="radio" name="perVolt" value="2.5" >2.5
+        	      <input type="radio" name="perVolt" value="5.0" >5
+	              <input type="radio" name="perVolt" value="10." >10
+            	</form>
+            </div>
+          </div>
+        </div>
+      </div>
+			</div>
+			<div id='test2'>
+      <div class="control-margin">
+
+        <div class="outline2">
+
+          <h4><span class="label label-default" title="options controlling the horizontal axis">Horizontal</span></h4>
+
+          <div class="label label-default" title="enter the number of samples in one data message as determined by your data source">Samples Per Second</div>
+          <div>
+            <input id='samplerate' type="number" class="form-control" value="600" min="1"/>
+          </div>
+          <div class="w100"></div>
+
+          <div class="label label-default w100" title="select fractions of second that one horizontal division represents">Seconds/Div</div>
+          <div class="btn-group btr-group-md" id="  data-toggle="buttons">
+            <div>
+				<select id = 'selectSecDiv'>
+				  <option value="0.001">0.001</option>
+				  <option value="0.002">0.002</option>
+				  <option value="0.005">0.005</option>
+				  <option value="0.010">0.010</option>
+				  <option value="0.020">0.020</option>
+				  <option value="0.050">0.050</option>
+				  <option value="0.10">0.10</option>
+				  <option value="0.20">0.20</option>
+				  <option value="0.50">0.50</option>
+            	</select>
+            </div>
+          </div>
+        </div>
+      </div>
+		</div>
+    </div>
+ </div>
+	-->
+</body>
