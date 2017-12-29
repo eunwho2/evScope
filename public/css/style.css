@@ -14,9 +14,10 @@ a {
 
 .col-md-6 {
 	position: absolute;
+	width: 500px;
 	font-size: 30px;
 	margin-top: 10px;
-	margin-left:550px;	
+	margin-left:700px;
 	line-height: 70px;
 	font-weight: 900;
 	font-family: FF DIN;
@@ -365,6 +366,10 @@ button.punch1 {
     -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
     box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
     margin-top: 58px; } 
+
+
+/*
+
 
 
 /*
