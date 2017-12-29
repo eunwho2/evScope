@@ -64,10 +64,6 @@ a {
 	margin-left: 1610px;
 	margin-top: -285px;
 }
-#divbox2 {
-	width: 600px;
-	height: 400px;
-}
 
 li {
 	margin: 0 0 0 0;
@@ -340,10 +336,11 @@ li {
 }
 
 
-button::-moz-focus-inner {
+
+button1::-moz-focus-inner {
   border: 0; }
 
-button.punch {
+button.punch1 {
   background: #4162a8;
   border-top: 1px solid #38538c;
   border-right: 1px solid #1f2d4d;
@@ -352,7 +349,7 @@ button.punch {
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 6px 0 #1f3053, 0 8px 4px 1px #111111;
   box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 6px 0 #1f3053, 0 8px 4px 1px #111111;
-  color: #fff;
+  color: #fff; 
   font: bold 20px/1 "helvetica neue", helvetica, arial, sans-serif;
   margin-bottom: 10px;
   padding: 10px 0 12px 0;
@@ -360,17 +357,17 @@ button.punch {
   text-shadow: 0 -1px 1px #1e2d4d;
   width: 150px;
   -webkit-background-clip: padding-box; }
-  button.punch:hover {
+  button.punch1:hover {
     -webkit-box-shadow: inset 0 0 20px 1px #87adff, 0 1px 0 #1d2c4d, 0 6px 0 #1f3053, 0 8px 4px 1px #111111;
     box-shadow: inset 0 0 20px 1px #87adff, 0 1px 0 #1d2c4d, 0 6px 0 #1f3053, 0 8px 4px 1px #111111;
     cursor: pointer; }
-  button.punch:active {
+  button.punch1:active {
     -webkit-box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
     box-shadow: inset 0 1px 10px 1px #5c8bee, 0 1px 0 #1d2c4d, 0 2px 0 #1f3053, 0 4px 3px 0 #111111;
-    margin-top: 58px; }
+    margin-top: 58px; } 
 
 
-
+/*
 .container_btn{
 	  background-color: #252525;
     width: 0px;
@@ -383,6 +380,9 @@ button.punch {
     border-radius: 200p;
     -moz-box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
     box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
+    -webkit-box-shadow: 1px 1px 0px #5d5d5d;
+    -moz-box-shadow: 1px 1px 0px #5d5d5d;
+    box-shadow: 1px 1px 0px #5d5d5d;
 
 }
 .hole {
@@ -396,9 +396,6 @@ button.punch {
     -webkit-border-radius: 155px;
     -moz-border-radius: 155px;
     border-radius: 155px;
-    -webkit-box-shadow: 1px 1px 0px #5d5d5d;
-    -moz-box-shadow: 1px 1px 0px #5d5d5d;
-    box-shadow: 1px 1px 0px #5d5d5d;
 }
 
 .button {
@@ -567,17 +564,18 @@ button.punch {
 
 .button2:hover #triangle { border-left: 80px solid #45bde9 }
 .button2:active #triangle { border-left: 80px solid #e94545 }
+
 .lighter_triangle2 {
     width: 0px;
     height: 0px;
     margin-left: 50%;
     margin-top: 50%;
-    left: -10px;
-    top: -20px;
+    left: -20px;
+    top: -33px;
     position: absolute;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-left: 30px solid #43c0ee;
+    border-top: 30px solid transparent;
+    border-bottom: 30px solid transparent;
+    border-left: 50px solid #43c0ee;
     z-index: 1;
     -webkit-transition: all .3s;
     -moz-transition: all .3s;
@@ -590,12 +588,12 @@ button.punch {
     height: 0px;
     margin-left: 50%;
     margin-top: 50%;
-    left: -10px;
-    top: -20px;
+    left: -20px;
+    top: -33px;
     position: absolute;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-left: 30px solid #0a7da7;
+    border-top: 30px solid transparent;
+    border-bottom: 30px solid transparent;
+    border-left: 50px solid #0a7da7;
     z-index: 1;
     -webkit-transition: all .3s;
     -moz-transition: all .3s;
@@ -603,6 +601,10 @@ button.punch {
 }
 .button2:hover #darker_triangle { border-left: 50px solid #1d98c5 }
 .button2:active #darker_triangle { border-left: 50px solid #c51d1d }
+
+*/
+
+
 
 .btn_box{
 	position: absolute;
@@ -733,147 +735,335 @@ button.punch {
 
 .namebox1{
 	font-family: FF DIN;
-	position: absolute;
 	font-size: 25px;
-	margin-top: -250px;
-	margin-left: 95px;	
-	line-height: 70px;
 	font-weight: 600;
 	color: #040F17;	
 	text-shadow: 0.1em 0.1em 0.15em #79919E;
-	width: 720px;
 }
 #name1{
-	margin-top: -70px;
-	margin-left: 0px;
-}
+	margin-top: -290px;
+	margin-left: 70px;
+	}
 #name2{
-	margin-top: -70px;
-	margin-left: 200px;
+	margin-top: -33px;
+	margin-left: 270px;
 }
 #name3{
-	margin-top: -70px;
-	margin-left: 400px;
+	margin-top: -33px;
+	margin-left: 470px;
 }
 #name4{
-	margin-top: 130px;
-	margin-left: 0px;
+	margin-top: 170px;
+	margin-left: 70px;
 }
 #name5{
-	margin-top: -70px;
-	margin-left: 200px;
+	margin-top: -33px;
+	margin-left: 270px;
 }
 #name6{
-	margin-top: -70px;
-	margin-left: 400px;
+	margin-top: -33px;
+	margin-left: 470px;
 }
 
 
 .namebox2{
-	position: absolute;
-	margin-top: -340px;
-	margin-left: 710px;	
-	line-height: 70px;
 	font-weight: 600;
 	color: #040F17;	
 	font-family: FF DIN;
 	font-size: 25px;
 	text-shadow: 0.1em 0.1em 0.15em #79919E;
-	width: 700px;
 }
 #name9{
-	margin-top: -70px;
-	margin-left: 0px;
+	margin-top: -350px;
+	margin-left: 70px;
 }
 #name10{
-	margin-top: -70px;
-	margin-left: 140px;
+	margin-top: -35px;
+	margin-left: 200px;
 }
 #name11{
-	margin-top: -70px;
-	margin-left: 280px;
+	margin-top: -35px;
+	margin-left: 330px;
 }
 #name12{
-	margin-top: -70px;
-	margin-left: 420px;
+	margin-top: -35px;
+	margin-left: 460px;
 }
 #name13{
-	margin-top: 90px;
-	margin-left: 0px;
+	margin-top: 110px;
+	margin-left: 70px;
 }
 #name14{
-	margin-top: -70px;
-	margin-left: 140px;
+	margin-top: -35px;
+	margin-left: 200px;
 }
 #name15{
-	margin-top: -70px;
-	margin-left: 280px;
+	margin-top: -35px;
+	margin-left: 330px;
 }
 #name16{
-	margin-top: -70px;
-	margin-left: 420px;
+	margin-top: -35px;
+	margin-left: 460px;
 }
 #name17{
-	margin-top: 85px;
-	margin-left: 0px;
+	margin-top: 110px;
+	margin-left: 70px;
 }
 #name18{
-	margin-top: -70px;
-	margin-left: 140px;
+	margin-top: -35px;
+	margin-left: 200px;
 }
 #name19{
-	margin-top: -70px;
-	margin-left: 280px;
+	margin-top: -35px;
+	margin-left: 330px;
 }
 #name20{
-	margin-top: -70px;
-	margin-left: 420px;
+	margin-top: -35px;
+	margin-left: 460px;
 }
 
 .namebox3{
-	position: absolute;
-	margin-top: -340px;
-	margin-left: 710px;	
-	line-height: 70px;
 	font-weight: 600;
 	color: #040F17;	
 	font-family: FF DIN;
 	font-size: 25px;
 	text-shadow: 0.1em 0.1em 0.15em #79919E;
-	width: 1100px;
 }
 #chart_name1{
-	margin-top: -250px;
-	margin-left: 70px;
+	margin-top: 55px;
+	margin-left: 160px;
 }
 #chart_name2{
-	margin-top: -70px;
-	margin-left: 330px;
+	margin-top: -34px;
+	margin-left: 410px;
 }
 #chart_name3{
-	margin-top: -230px;
-	margin-left: 670px;
+	width: 100px;
+	margin-top: -185px;
+	margin-left: 740px;
 }
 #chart_name4{
-	margin-top: -70px;
-	margin-left: 995px;
+	width: 100px;
+	margin-top: -34px;
+	margin-left: 1060px;
 }
 #chart_name5{
-	margin-top: 260px;
-	margin-left: 670px;
+	width: 100px;
+	margin-top: 290px;
+	margin-left: 740px;
 }
 #chart_name6{
-	margin-top: -70px;
-	margin-left: 995px;
+	width: 100px;
+	margin-top: -34px;
+	margin-left: 1060px;
 }
 #chart_name7{
-	margin-top: 250px;
-	margin-left: 670px;
+	width: 100px;
+	margin-top: 290px;
+	margin-left: 740px;
 }
 #chart_name8{
-	margin-top: -70px;
-	margin-left: 995px;
+	width: 100px;
+	margin-top: -34px;
+	margin-left: 1060px;
 }
 
 
 
+.button, .button:before, .button:after {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    border-radius: 35px;
+}
+
+.button {
+    font-family: 'pictos';
+    font-size: 45px;
+    line-height: 40px;
+    text-align: center;
+    color: rgba(0,0,0,0.5);
+    text-shadow: rgba(0,0,0,0.1) 0px -2px 1px, rgb(255,255,255) 0px 1px 2px;
+    
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    margin: 50px auto;
+    position: static;
+    z-index: 50;
+    cursor: pointer;
+    margin-top: 50px;
+    
+    background-color: transparent;
+    border: rgba(0,0,0,0.3) 1px solid;
+    border-top-color: rgba(0,0,0,0.1);
+    border-left-color: rgba(0,0,0,0.2);
+    border-right-color: rgba(0,0,0,0.2);
+    border-bottom-color: rgba(0,0,0,0.3);
+    box-shadow: inset rgba(255,255,255,0.3) -5px -30px 10px,
+                inset rgba(255,255,255,0.3) 0px 30px 10px,
+                inset rgba(255,255,255,1) 0px 2px 1px,
+                rgba(0,0,0,0.4) 0px 10px 15px;
+    -webkit-transition: -webkit-box-shadow 0s ease-in-out;
+     -khtml-transition:  -khtml-box-shadow 0s ease-in-out;
+       -moz-transition:    -moz-box-shadow 0s ease-in-out;
+         -o-transition:      -o-box-shadow 0s ease-in-out;
+            transition:         box-shadow 0s ease-in-out;
+    
+    background-image:   -webkit-radial-gradient(  50%   0%,  8% 50%, hsla(0,0%,100%,.2) 0%, hsla(0,0%,100%,0) 100%),
+                        -webkit-radial-gradient(  50% 100%, 12% 50%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 100%),
+                        -webkit-radial-gradient(   0%  50%, 50%  7%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 100%),
+                        -webkit-radial-gradient( 100%  50%, 50%  5%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 100%),
+                        
+                        -webkit-repeating-radial-gradient(  50% 50%, 100% 100%, hsla(0,0%,  0%,0) 0%, hsla(0,0%,  0%,0)   3%, hsla(0,0%,  0%,.1) 3.5%),
+                        -webkit-repeating-radial-gradient(  50% 50%, 100% 100%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0)   6%, hsla(0,0%,100%,.1) 7.5%),
+                        -webkit-repeating-radial-gradient(  50% 50%, 100% 100%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,0) 2.2%);
+                        
+}
+
+.button:before, .button:after {
+    content: "";
+    display: block;
+    position: absolute;
+}
+
+.button:before {
+    z-index: -50;
+    width: 60px;
+    height: 64px;
+    
+    margin-top: -15px;
+    margin-left: -11px;
+    
+    background: #666666;
+    background: -moz-linear-gradient(left, #666666 0%, #bbbbbb 50%, #666666 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#666666), color-stop(50%,#bbbbbb), color-stop(100%,#666666));
+    background: -webkit-linear-gradient(left, #666666 0%,#bbbbbb 50%,#666666 100%);
+    background: -o-linear-gradient(left, #666666 0%,#bbbbbb 50%,#666666 100%);
+    background: -ms-linear-gradient(left, #666666 0%,#bbbbbb 50%,#666666 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#666666',GradientType=1 );
+    background: linear-gradient(left, #666666 0%,#bbbbbb 50%,#666666 100%);
+    
+    box-shadow: #000 0px 0px 2px;
+}
+.button:after {
+    z-index: -100;
+    width: 70px;
+    height: 70px;
+    margin-top: -60px;
+    margin-left: -16px;
+    background: rgba(0,0,0,0.1);
+    
+    box-shadow: inset rgba(255,255,255,0.1) 0px -5px 5px,
+                rgba(0,0,0,0.1) 0px 3px 3px,
+                rgba(255,255,255,0.05) 0px -3px 3px;
+}
+.button:hover {
+    color: rgba(0,0,0,0.6);
+    text-shadow: rgb(255,255,255) 0px 0px 3px;
+    box-shadow: inset rgba(255,255,255,0.4) 0px -30px 15px,
+                inset rgba(255,255,255,0.2) -25px 25px 10px,
+                inset rgba(255,255,255,1) 0px 2px 1px,
+                rgba(0,0,0,0.4) 0px 10px 15px;
+}
+.button:active {
+    margin-top: 46px;
+    color: #fff;
+    box-shadow: inset rgba(255,255,255,0.4) 0px -30px 15px,
+                inset rgba(255,255,255,0.2) -25px 25px 10px,
+                inset rgba(255,255,255,1) 0px 2px 1px,
+                rgba(0,0,0,0.4) 0px 2px 3px;
+}
+.button:active:before {
+    height: 60px;
+    margin-top: -11px;
+}
+.button:active:after {
+    margin-top: -56px;
+}
+
+
+
+
+.button_box1{
+	width: 600px;
+	height: 380px;
+}
+#button_1{
+	margin-top: 60px;
+	margin-left: 70px;
+}
+#button_2{
+	margin-top: -110px;
+	margin-left: 270px;
+}
+#button_3{
+	margin-top: -110px;
+	margin-left: 470px;
+}
+#button_4{
+	margin-top: 150px;
+	margin-left: 70px;
+}
+#button_5{
+	margin-top: -110px;
+	margin-left: 270px;
+}
+#button_6{
+	margin-top: -110px;
+	margin-left: 470px;
+}
+
+
+.button_box2{
+	width: 600px;
+	height: 430px;
+}
+#button_7{
+	margin-top: 40px;
+	margin-left: 70px;
+}
+#button_8{
+	margin-top: -110px;
+	margin-left: 200px;
+}
+#button_9{
+	margin-top: -110px;
+	margin-left: 330px;
+}
+#button_10{
+	margin-top: -110px;
+	margin-left: 460px;
+}
+#button_11{
+	margin-top: 80px;
+	margin-left: 70px;
+}
+#button_12{
+	margin-top: -110px;
+	margin-left: 200px;
+}
+#button_13{
+	margin-top: -110px;
+	margin-left: 330px;
+}
+#button_14{
+	margin-top: -110px;
+	margin-left: 460px;
+}
+#button_15{
+	margin-top: 80px;
+	margin-left: 70px;
+}
+#button_16{
+	margin-top: -110px;
+	margin-left: 200px;
+}
+#button_17{
+	margin-top: -110px;
+	margin-left: 330px;
+}
+#button_18{
+	margin-top: -110px;
+	margin-left: 460px;
+}
