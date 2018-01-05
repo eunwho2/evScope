@@ -22,7 +22,6 @@ a {
 	font-weight: 900;
 	font-family: FF DIN;
 	color: white;
-	text-shadow: 0.1em 0.1em 0.15em #79919E;
 }
 
 
@@ -74,7 +73,7 @@ li {
 .box1 {
 	margin-top: 80px;
 	margin-left: 0px;
-	width: 495px;
+	width: 472px;
 	height: 305px;
   background-color: #D2E0E6;
   padding-top:30px;
@@ -85,10 +84,10 @@ li {
 	float: left;
 
 }
-.box1_2 {
+.box2 {
 	margin-top: 400px;
-	margin-left: -495px;
-	width: 495px;
+	margin-left: -472px;
+	width: 472px;
 	height: 162px;
   background-color: #D2E0E6;
   padding-top:30px;
@@ -98,38 +97,85 @@ li {
 	display: inline-block;
 
 }
-#box2 {
+#box3 {
 	margin-top: -485px;
-	margin-left: 510px;
-	width: 700px;
+	margin-left: 487px;
+	width: 723px;
 	height: 481px;
-  background-color: #D2E0E6;
   padding-top:30px;
   padding-bottom:10px;
 	border-radius: 7px;
-	background: #2E2E2E;
+	background: #1C1C1C;
 
 }
-#box3 {
+#box4 {
 	margin-top: 15px;
 	margin-left: 0px;
-	width: 495px;
-	height: 479px;
-  background-color: #D2E0E6;
+	width: 472px;
+	height: 478px;
   padding-top:30px;
   padding-bottom:10px;
 	background: #2E2E2E;
 	border-radius: 7px;
 }
-#box4 {
+#box5 {
 	margin-top: -478px;
-	margin-left: 510px;
-	width: 700px;
-	height: 477px;
-  background-color: #D2E0E6;
+	margin-left: 487px;
+	width: 231px;
+	height: 231px;
   padding-top:30px;
   padding-bottom:10px;
 	background: #2E2E2E;
+	border-radius: 7px;
+}
+#box6 {
+	margin-top: -231px;
+	margin-left: 733px;
+	width: 231px;
+	height: 231px;
+  padding-top:30px;
+  padding-bottom:10px;
+	background: #2E2E2E;
+	border-radius: 7px;
+}
+#box7 {
+	margin-top: -231px;
+	margin-left: 979px;
+	width: 231px;
+	height: 231px;
+  padding-top:30px;
+  padding-bottom:10px;
+	background: #2E2E2E;
+	border-radius: 7px;
+}
+#box8 {
+	margin-top: 15px;
+	margin-left: 487px;
+	width: 231px;
+	height: 231px;
+  padding-top:30px;
+  padding-bottom:10px;
+	background: #1C1C1C;
+	border-radius: 7px;
+}
+#box9 {
+	margin-top: -231px;
+	margin-left: 733px;
+	width: 231px;
+	height: 231px;
+  padding-top:30px;
+  padding-bottom:10px;
+	background: #1C1C1C;
+	border-radius: 7px;
+}
+#box10 {
+	margin-top: -231px;
+	margin-left: 979px;
+	width: 231px;
+	height: 231px;
+  padding-top:30px;
+  padding-bottom:10px;
+	background: #1C1C1C;
 	border-radius: 7px;
 }
 
