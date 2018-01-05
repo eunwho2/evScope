@@ -736,9 +736,9 @@ $("document").ready(function() {
 	});
 		$("#chart_div8").gauge(70, {
 		min: 0,
-		max: 100,
-		unit: "%",
+		max: 100,		
 		color: "#0080ff",
+		unit: "%",
 		colorAlpha: 1,
 		bgcolor: "#242f43",
 		type: "default"
@@ -799,5 +799,11 @@ function randomValue() {
 }
 
 
+
+
+
  });
+
+
+
 

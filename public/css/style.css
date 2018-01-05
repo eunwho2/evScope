@@ -72,57 +72,70 @@ li {
 	float: left;
 }
 .box1 {
-	margin-top: 86px;
-	margin-left: 10px;
-	width: 610px;
-	height: 477px;
+	margin-top: 80px;
+	margin-left: 0px;
+	width: 495px;
+	height: 305px;
   background-color: #D2E0E6;
   padding-top:30px;
   padding-bottom:10px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
+	background: #2E2E2E;
 	border-radius: 7px;
 	display: inline-block;
 	float: left;
 
 }
+.box1_2 {
+	margin-top: 400px;
+	margin-left: -495px;
+	width: 495px;
+	height: 162px;
+  background-color: #D2E0E6;
+  padding-top:30px;
+  padding-bottom:10px;
+	background: #2E2E2E;
+	border-radius: 7px;
+	display: inline-block;
+
+}
 #box2 {
-	margin-top: 86px;
-	margin-left: 627px;
-	width: 610px;
-	height: 477px;
+	margin-top: -485px;
+	margin-left: 510px;
+	width: 700px;
+	height: 481px;
   background-color: #D2E0E6;
   padding-top:30px;
   padding-bottom:10px;
 	border-radius: 7px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
+	background: #2E2E2E;
 
 }
 #box3 {
-	margin-top: 8px;
-	margin-left: 10px;
-	width: 610px;
-	height: 477px;
+	margin-top: 15px;
+	margin-left: 0px;
+	width: 495px;
+	height: 479px;
   background-color: #D2E0E6;
   padding-top:30px;
   padding-bottom:10px;
+	background: #2E2E2E;
 	border-radius: 7px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
 }
 #box4 {
 	margin-top: -478px;
-	margin-left: 627px;
-	width: 610px;
+	margin-left: 510px;
+	width: 700px;
 	height: 477px;
   background-color: #D2E0E6;
   padding-top:30px;
   padding-bottom:10px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
+	background: #2E2E2E;
 	border-radius: 7px;
 }
 
 .oscope-canvas {
 	position: absolute;
-	top: 5px;
+	top: 1000px;
 	left: 30px;
 	width: 550px;
 	height: 400px;
@@ -140,70 +153,64 @@ li {
 	}
 
 #box_r1 {
-	margin-top: -960px;
-	margin-left: 1244px;
+	margin-top: -974px;
+	margin-left: 1225px;
 	width: 315px;
 	height: 315px;
-  background-color: #D2E0E6;
   padding-top:30px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
+	background: #2E2E2E;
   padding-bottom:10px;
 	border-radius: 7px;
 }
 #box_r2 {
 	margin-top: -315px;
-	margin-left: 1565px;
+	margin-left: 1555px;
 	width: 315px;
 	height: 315px;
-  background-color: #D2E0E6;
   padding-top:30px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
+	background: #2E2E2E;
   padding-bottom:10px;
 	border-radius: 7px;
 }
 #box_r3 {
-	margin-top: 8px;
-	margin-left: 1244px;
+	margin-top: 15px;
+	margin-left: 1225px;
 	width: 315px;
 	height: 315px;
-  background-color: #D2E0E6;
+	background: #2E2E2E;
   padding-top:30px;
   padding-bottom:10px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
 	border-radius: 7px;
 }
 #box_r4 {
 	margin-top: -315px;
-	margin-left: 1565px;
+	margin-left: 1555px;
 	width: 315px;
 	height: 315px;
-  background-color: #D2E0E6;
+	background: #2E2E2E;
   padding-top:30px;
   padding-bottom:10px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
 	border-radius: 7px;
 }
 #box_r5 {
-	margin-top: 8px;
-	margin-left: 1244px;
+	margin-top: 15px;
+	margin-left: 1225px;
 	width: 315px;
 	height: 315px;
-  background-color: #D2E0E6;
+	background: #2E2E2E;
   padding-top:30px;
   padding-bottom:10px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
 	border-radius: 7px;
 }
 #box_r6 {
 	margin-top: -315px;
-	margin-left: 1565px;
+	margin-left: 1555px;
 	width: 315px;
 	height: 315px;
-  background-color: #D2E0E6;
+	background: #2E2E2E;
   padding-top:30px;
   padding-bottom:10px;
 	border-radius: 7px;
-	background: linear-gradient(#050E19,#6586AB)fixed;
 }
 
 .tcenter {
@@ -263,73 +270,6 @@ li {
 	width: 250px;
   top: 0px;
 }
-#test2 {
-  position: relative;
-	width: 250px;
-  top: -145px;
-	left: 280px;
-}	
-.outline1 {
-	overflow: hidden;
-	position: relative;
-	top: -68px;
-	left: -15px;
-	width: 340px;
-	height: 100px;
-  padding:3px;
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
-	box-shadow: 3px 3px 30px 5px; gray;
-}
-.outline2 {
-	overflow: hidden;
-	position: relative;
-	margin-left: 55px;
-	top: -38px;
-	width: 340px;
-	height: 100px;
-  padding:3px;
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
-	box-shadow: 3px 3px 30px 5px; gray;
-}
-
-
-.w100 {
-	position: relative;
-  margin-top: 6px;
-  margin-bottom:6px;
-  width: 100px;
-}
-
-.w50 {
-  width: 50%;
-  margin-top:1px;
-  margin-bottom:1px;
-}
-
-#vrange {
-	width: 60px;
-	height: 20px;
-	margin-left: 110px;
-	margin-top: -17px;
-  border-width: 3px;
-
-}
-
-#samplerate {
-	width: 75px;
-	height: 20px;
-	margin-left: 140px;
-	margin-top: -17px;
-  border-width: 3px;
-}
-#selectSecDiv {
-  border-width: 2px;
-}
-
 
 .inputCode {
 	width: 60px;
@@ -739,6 +679,7 @@ button.punch1 {
 
 
 .namebox1{
+	margin-top: 1000px;
 	font-family: FF DIN;
 	font-size: 25px;
 	font-weight: 600;
@@ -772,6 +713,7 @@ button.punch1 {
 
 
 .namebox2{
+	margin-top: 1000px;
 	font-weight: 600;
 	color: #040F17;	
 	font-family: FF DIN;
@@ -828,6 +770,7 @@ button.punch1 {
 }
 
 .namebox3{
+	margin-top: 110px;
 	font-weight: 600;
 	color: #040F17;	
 	font-family: FF DIN;
@@ -991,6 +934,7 @@ button.punch1 {
 
 
 .button_box1{
+	margin-top: 1000px;
 	width: 600px;
 	height: 380px;
 }
@@ -1021,6 +965,7 @@ button.punch1 {
 
 
 .button_box2{
+	margin-top: 1000px;
 	width: 600px;
 	height: 430px;
 }
@@ -1098,5 +1043,11 @@ button.punch1 {
 
 #amchart{
 	width: 100#;
-	height: 500px;
+	height: 350px;
+	margin-top: 1100px;
+	margin-left: -200px;
+}
+
+#divbox2{
+	margin-left: 710px;
 }
