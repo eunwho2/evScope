@@ -693,54 +693,53 @@ $("document").ready(function() {
 		min: 0,
 		max: 100,
 		unit: "%",
-		color: "#0080ff",
+		color: "#FF4000",
 		colorAlpha: 1,
-		bgcolor: "#242f43",
+		bgcolor: "#000000",
 		type: "default"
 	});
 		$("#chart_div4").gauge(70, {
 		min: 0,
 		max: 100,
 		unit: "%",
-		color: "#0080ff",
+		color: "#FF4000",
 		colorAlpha: 1,
-		bgcolor: "#242f43",
+		bgcolor: "#000000",
 		type: "default"
 	});
 		$("#chart_div5").gauge(70, {
 		min: 0,
 		max: 100,
 		unit: "%",
-		color: "#0080ff",
+		color: "#FF4000",
 		colorAlpha: 1,
-		bgcolor: "#242f43",
+		bgcolor: "#000000",
 		type: "default"
 	});
 		$("#chart_div6").gauge(70, {
 		min: 0,
 		max: 100,
 		unit: "%",
-		color: "#0080ff",
+		color: "#FF4000",
 		colorAlpha: 1,
-		bgcolor: "#242f43",
+		bgcolor: "#000000",
 		type: "default"
 	});
 		$("#chart_div7").gauge(70, {
 		min: 0,
 		max: 100,
 		unit: "%",
-		color: "#0080ff",
+		color: "#FF4000",
 		colorAlpha: 1,
-		bgcolor: "#242f43",
+		bgcolor: "#000000",
 		type: "default"
 	});
 		$("#chart_div8").gauge(70, {
 		min: 0,
 		max: 100,		
-		color: "#0080ff",
-		unit: "%",
+		color: "#FF4000",
 		colorAlpha: 1,
-		bgcolor: "#242f43",
+		bgcolor: "#000000",
 		type: "default"
 	});
 

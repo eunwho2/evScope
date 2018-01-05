@@ -7,7 +7,7 @@
 		<body>
 {%extends 'templates/layout.html' %}
 {% block content %}
-
+<!--
 
 <div class="container">
   <div class="row1">
@@ -15,88 +15,47 @@
   </div>
 
   <div class="box1">
-    <div id="oscope-parent" class="col-md-7">
-    <canvas id="oscope" class="oscope-canvas"></canvas>
-    </div>
-	</div>
+		<div id="amchart"></div> 
+		</div>
+
 	<div class="box2">
 	</div>
-	<div id="box3">
-		<!--
-		<div id="chart_div1" style="width: 300px; height: 300px;"></div>
-  	<div id="chart_div2" style="width: 150px; height: 150px;"></div>
-		-->
-			<div id="amchart"></div> 
 
-			<div class="namebox3">
-				<div id="chart_name1">온도계[1]</div>
-				<div id="chart_name2">온도계[2]</div>
-				<div id="chart_name3">압력[1]</div>
-				<div id="chart_name4">압력[2]</div>
-				<div id="chart_name5">압력[3]</div>
-				<div id="chart_name6">압력[4]</div>
-				<div id="chart_name7">압력[5]</div>
-				<div id="chart_name8">압력[6]</div>
-			</div>
-	</div>
+	<div id="box3">
+    <div id="oscope-parent" class="col-md-7">
+    	<canvas id="oscope" class="oscope-canvas"></canvas>
+			<div id="oscope_name">Oscopedfk</div>
+    </div>
+
 	<div id="box4">
 		<div class="button_box1">
-			<div class="button" id="button_1">e</div>
-			<div class="button" id="button_2">e</div>
-			<div class="button" id="button_3">e</div>
-			<div class="button" id="button_4">e</div>
-			<div class="button" id="button_5">e</div>
-			<div class="button" id="button_6">e</div>
-		</div>
-	<div class="namebox1">
-		<div id="name1">버튼1</div>
-		<div id="name2">버튼2</div>
-		<div id="name3">버튼3</div>
-		<div id="name4">버튼4</div>
-		<div id="name5">버튼5</div>
-		<div id="name6">버튼6</div>
 		</div>
 	</div>
+
 	<div id="box5">
-		<div class="button_box2">
-			<div class="button" id="button_7">e</div>
-			<div class="button" id="button_8">e</div>
-			<div class="button" id="button_9">e</div>
-			<div class="button" id="button_10">e</div>
-			<div class="button" id="button_11">e</div>
-			<div class="button" id="button_12">e</div>
-			<div class="button" id="button_13">e</div>
-			<div class="button" id="button_14">e</div>
-			<div class="button" id="button_15">e</div>
-			<div class="button" id="button_16">e</div>
-			<div class="button" id="button_17">e</div>
-			<div class="button" id="button_18">e</div>
-		</div>
-		<div class="namebox2">
-			<div id="name9">버튼1</div>
-			<div id="name10">버튼2</div>
-			<div id="name11">버튼3</div>
-			<div id="name12">버튼4</div>
-			<div id="name13">버튼5</div>
-			<div id="name14">버튼6</div>
-			<div id="name15">버튼7</div>
-			<div id="name16">버튼8</div>
-			<div id="name17">버튼9</div>
-			<div id="name18">버튼10</div>
-			<div id="name19">버튼11</div>
-			<div id="name20">버튼12</div>
-		</div>
+		<button id="btn13"></button>
 	</div>
+
 	<div id="box6">
+		<button id="btn14"></button>
 	</div>
+
 	<div id="box7">
+		<button id="btn15"></button>
 	</div>
+
 	<div id="box8">
+		<button id="btn16"></button>
 	</div>
+
 	<div id="box9">
+		<button id="btn17"></button>
 	</div>
+
 	<div id="box10">
+		<button id="btn18"></button>
 	</div>
+
 		<div id="divbox2"> 
 			<canvas class="demochart" id="chart_div3" width="250" height="250"></canvas>
 			<canvas class="demochart" id="chart_div4" width="250" height="250"></canvas>
@@ -105,221 +64,110 @@
 			<canvas class="demochart" id="chart_div7" width="250" height="250"></canvas>
 			<canvas class="demochart" id="chart_div8" width="250" height="250"></canvas>
 		</div>
-
-	<!--	
-			<div id="divbox2"> 
-			<div id="chart_div3"></div>
-			<div id="chart_div4"></div>
-			<div id="chart_div5"></div>
-			<div id="chart_div6"></div>
-			<div id="chart_div7"></div>
-			<div id="chart_div8"></div>
+		<div id="box_r1">
+		</div>		
+		<div id="box_r2">
+		</div>		
+		<div id="box_r3">
+		</div>		
+		<div id="box_r4">
+		</div>		
+		<div id="box_r5">
+		</div>		
+		<div id="box_r6">
 		</div>
-	-->	
-
-	<div id="box_r1">
-	</div>		
-	<div id="box_r2">
-	</div>		
-	<div id="box_r3">
-	</div>		
-	<div id="box_r4">
-	</div>		
-	<div id="box_r5">
-	</div>		
-	<div id="box_r6">
-	</div>		
-</div>
-</div>
-
-
-
-
-<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script src="https://www.amcharts.com/lib/3/gauge.js"></script>
-<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-
-
-<!--
-<div class="btn_box">
-	<div id="btnbox_div1">
-	<div class="container_btn" id="btn1">
-		<div class="hole">
-			<div class="button">
-				<div class="traiangle"></div>
-				<div class="lighter_triangle"></div>
-				<div class="darker_triangle"></div>
+			<div class="namebox3">
+				<div id="chart_name1">Pressure[1]</div>
+				<div id="chart_name2">Pressure[2]</div>
+				<div id="chart_name3">Pressure[3]</div>
+				<div id="chart_name4">Pressure[4]</div>
+				<div id="chart_name5">Pressure[5]</div>
+				<div id="chart_name6">Pressure[6]</div>
 			</div>
-		</div>
 	</div>
 
-	<div class="container_btn" id="btn2" >
-		<div class="hole">
-			<div class="button">
-				<div class="traiangle"></div>
-				<div class="lighter_triangle"></div>
-				<div class="darker_triangle"></div>
-			</div>
+	<div class="namebox1">
+		<div id="name1">Btn1</div>
+		<div id="name2">Btn2</div>
+		<div id="name3">Btn3</div>
+		<div id="name4">Btn4</div>
+		<div id="name5">Btn5</div>
+		<div id="name6">Btn6</div>
+		<div id="name7">Btn7</div>
+		<div id="name8">Btn8</div>
+		<div id="name9">Btn9</div>
+		<div id="name10">Btn10</div>
+		<div id="name11">Btn11</div>
+		<div id="name12">Btn12</div>
 		</div>
-	</div>
-	<div class="container_btn" id="btn3" >
-		<div class="hole">
-			<div class="button">
-				<div class="traiangle"></div>
-				<div class="lighter_triangle"></div>
-				<div class="darker_triangle"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn" id="btn4" >
-		<div class="hole">
-			<div class="button">
-				<div class="traiangle"></div>
-				<div class="lighter_triangle"></div>
-				<div class="darker_triangle"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn" id="btn5" >
-		<div class="hole">
-			<div class="button">
-				<div class="traiangle"></div>
-				<div class="lighter_triangle"></div>
-				<div class="darker_triangle"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn" id="btn6" >
-		<div class="hole">
-			<div class="button">
-				<div class="traiangle"></div>
-				<div class="lighter_triangle"></div>
-				<div class="darker_triangle"></div>
-			</div>
-		</div>
-	</div>
-</div>
 
-
-	<div id="btnbox_div2">
-	<div class="container_btn2" id="btn9">
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
+		<div class="namebox2">
+			<div id="name13">Btn13</div>
+			<div id="name14">Btn14</div>
+			<div id="name15">Btn15</div>
+			<div id="name16">Btn16</div>
+			<div id="name17">Btn17</div>
+			<div id="name18">Btn18</div>
 		</div>
-	</div>
-
-	<div class="container_btn2" id="btn10" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn11" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn12" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn13" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn14" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn15" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn16" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-</div>
-	<div class="container_btn2" id="btn17">
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-
-	<div class="container_btn2" id="btn18" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn19" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
-	<div class="container_btn2" id="btn20" >
-		<div class="hole2">
-			<div class="button2">
-				<div class="traiangle2"></div>
-				<div class="lighter_triangle2"></div>
-				<div class="darker_triangle2"></div>
-			</div>
-		</div>
-	</div>
 </div>
 -->
 
-</div>	
+<div class="container">
+	<div class="row1">
+		<div class="col-md-6 tcenter"> ILSUNG FIBER  AUTOCRAVE</div>
+  </div>
+	
+	<div id="left_box">
+		<div class="box1"></div>
+		<div class="box2"></div>
+		<div id="box3">
+  		<div id="oscope-parent" class="col-md-7">
+    		<canvas id="oscope" class="oscope-canvas"></canvas>
+					<div id="oscope_name">Oscopedfk</div>
+    	</div>
+		</div>
+		<div id="box4"></div>
+		<div id="box5"></div>
+		<div id="box6"></div>
+		<div id="box7"></div>
+		<div id="box8"></div>
+		<div id="box9"></div>
+		<div id="box10"></div>
+		</div>	
+	
 
+		<div id="right_box">
+			<div id="box_r1"></div>		
+			<div id="box_r2"></div>		
+			<div id="box_r3"></div>		
+			<div id="box_r4"></div>		
+			<div id="box_r5"></div>		
+			<div id="box_r6"></div> 
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+	<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+	<script src="https://www.amcharts.com/lib/3/gauge.js"></script>
+	<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+	<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+	<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
    <script type="text/javascript">
