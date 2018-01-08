@@ -26,49 +26,52 @@ a {
 	background: black;
 }
 
-#divbox2{
-	margin-top: 1110px;
-	margin-left: 0px;
-}
 #chart_div1 {
 	position: absolute;
-	margin-top: 30px;
-	margin-left: 30px;	
+	margin-top: 0px;
+	margin-left: 100px;	
 }
 #chart_div2 {
 	position: absolute;
 	margin-left: 360px;
 	margin-top: -160px;
 }
+
+
+#divbox2{
+	position: absolute;
+	margin-top: 20px;
+	margin-left: -1240px;
+}
 #chart_div3 {
 	position: absolute;
 	margin-left: 1290px;
-	margin-top: -935px;
+	margin-top: -930px;
 }
 #chart_div4 {
 	position: absolute;
-	margin-left: 1610px;
-	margin-top: -935px;
+	margin-left: 1620px;
+	margin-top: -930px;
 }
 #chart_div5 {
 	position: absolute;
 	margin-left: 1290px;
-	margin-top: -610px;
+	margin-top: -600px;
 }
 #chart_div6 {
 	position: absolute;
-	margin-left: 1610px;
-	margin-top: -610px;
+	margin-left: 1620px;
+	margin-top: -600px;
 }
 #chart_div7 {
 	position: absolute;
 	margin-left: 1290px;
-	margin-top: -285px;
+	margin-top: -265px;
 }
 #chart_div8 {
 	position: absolute;
-	margin-left: 1610px;
-	margin-top: -285px;
+	margin-left: 1620px;
+	margin-top: -265px;
 }
 
 li {
@@ -86,9 +89,9 @@ li {
 }
 #right_box{
 	position: absolute;
-	margin-top:90px;
+	margin-top: 90px;
 	margin-left: 1225px;
-	width: 680px;
+	width: 670px;
 	height: 975px;
 	background: black;
 }
@@ -145,7 +148,7 @@ li {
 }
 #box5 {
 	position: absolute;
-	margin-top: 495px;
+	margin-top: 497px;
 	margin-left: 487px;
 	width: 231px;
 	height: 231px;
@@ -156,7 +159,7 @@ li {
 }
 #box6 {
 	position: absolute;
-	margin-top: 495px;
+	margin-top: 497px;
 	margin-left: 733px;
 	width: 231px;
 	height: 231px;
@@ -167,7 +170,7 @@ li {
 }
 #box7 {
 	position: absolute;
-	margin-top: 495px;
+	margin-top: 497px;
 	margin-left: 979px;
 	width: 231px;
 	height: 231px;
@@ -212,17 +215,17 @@ li {
 
 .oscope-canvas {
 	position: absolute;
-	top: 55px;
-	left: 70px;
-	width: 580px;
-	height: 360px;
+	top: 70px;
+	left: 100px;
+	width: 530px;
+	height: 330px;
 	float: left;
 	border-radius: 10px;
 	border: 8px solid #585858;
 }
 #oscope_name{
 	width: 100px;
-	margin-top: -10px;
+	margin-top: 0px;
 	margin-left: 280px;
 	color: #FFFFFF;
 	font-family: FF DIN;
@@ -394,29 +397,6 @@ button.punch1 {
 
 
 
-.btn_box{
-	position: absolute;
-	display: inline-block;
-	width: 1600px;
-	height: 520px;
-	margin-top: -550px;	
-	margin-left: 20px;
-
-}
-#btnbox_div1 {
-	position: absolute;
-	width: 700px;
-	height: 400px;	
-	margin-top:  100px;
-	margin-left: -100px;
-}
-#btnbox_div2 {
-	position: absolute;
-	width: 900px;
-	height: 500px;	
-	margin-left: 600px;
-	margin-top: -25px;
-}
 #title_1{
 	position: absolute;
 	width: 350px;
@@ -448,116 +428,120 @@ button.punch1 {
 
 
 .namebox1{
-	margin-top: 1400px;
+	margin-top: 530px;
+	margin-left: 35px;
+	position:absolute;
 	font-family: FF DIN;
-	font-size: 30px;
+	font-size: 25px;
 	font-weight: 300;
 	color: #FFFFFF;	
 }
 #name1{
 	width: 100px;
-	margin-top: -290px;
-	margin-left: 70px;
+	margin-top: 0px;
+	margin-left: 0px;
 	}
 #name2{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 270px;
+	margin-left: 120px;
 }
 #name3{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 240px;
 }
 #name4{
 	width: 100px;
-	margin-top: 170px;
-	margin-left: 70px;
+	margin-top: -33px;
+	margin-left: 360px;
 }
 #name5{
 	width: 100px;
-	margin-top: -33px;
-	margin-left: 270px;
+	margin-top: 120px;
+	margin-left: 0px;
 }
 #name6{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 120px;
 }
 #name7{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 240px;
 }
 #name8{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 360px;
 }
 #name9{
 	width: 100px;
-	margin-top: -33px;
-	margin-left: 470px;
+	margin-top: 120px;
+	margin-left: 0px;
 }
 #name10{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 120px;
 }
 #name11{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 240px;
 }
 #name12{
 	width: 100px;
 	margin-top: -33px;
-	margin-left: 470px;
+	margin-left: 360px;
 }
 
 
 .namebox2{
-	margin-top: -910px;
-	margin-left: 520px;
+	position: absolute;
+	margin-top: 540px;
+	margin-left: 570px;
 	font-weight: 300;
 	color: #FFFFFF;	
 	font-family: FF DIN;
-	font-size: 30px;
+	font-size: 25px;
 }
 #name13{
 	width: 100px;
 	margin-top: 0px;
-	margin-left: 70px;
+	margin-left: 0px;
 }
 #name14{
 	width: 100px;
-	margin-top: -50px;
-	margin-left: 300px;
+	margin-top: -33px;
+	margin-left: 250px;
 }
 #name15{
 	width: 100px;
-	margin-top: -35px;
-	margin-left: 330px;
+	margin-top: -33px;
+	margin-left: 500px;
 }
 #name16{
 	width: 100px;
-	margin-top: -35px;
-	margin-left: 460px;
+	margin-top: 210px;
+	margin-left: 0px;
 }
 #name17{
 	width: 100px;
-	margin-top: 110px;
-	margin-left: 70px;
+	margin-top: -33px;
+	margin-left: 250px;
 }
 #name18{
 	width: 100px;
-	margin-top: -35px;
-	margin-left: 200px;
+	margin-top: -33px;
+	margin-left: 500px;
 }
 
 .namebox3{
-	margin-top: 720px;
-	margin-left: 825px;
+	position: absolute;
+	margin-top: -940px;
+	margin-left: 90px;
 	font-weight: 300;
 	color: #FFFFFF;	
 	font-family: FF DIN;
@@ -575,7 +559,7 @@ button.punch1 {
 }
 #chart_name3{
 	width: 100px;
-	margin-top: 290px;
+	margin-top: 300px;
 	margin-left: 0px;
 }
 #chart_name4{
@@ -585,7 +569,7 @@ button.punch1 {
 }
 #chart_name5{
 	width: 100px;
-	margin-top: 290px;
+	margin-top: 300px;
 	margin-left: 0px;
 }
 #chart_name6{
@@ -595,58 +579,96 @@ button.punch1 {
 }
 
 
-.button_box1{
-	margin-top: 1000px;
-	width: 600px;
-	height: 380px;
+.button_box{
+	position: absolute;
+	margin-top: 110px;
+	width: 60px;
+	height: 60px;
 }
-#button_1{
-	margin-top: 60px;
-	margin-left: 70px;
+#btn1{
+	position: absolute;
+	margin-top: 50px;
+	margin-left: 30px;
 }
-#button_2{
-	margin-top: -110px;
+#btn2{
+	margin-top: 50px;
+	margin-left: 150px;
+}
+#btn3{
+	margin-top: 50px;
 	margin-left: 270px;
 }
-#button_3{
-	margin-top: -110px;
-	margin-left: 470px;
+#btn4{
+	margin-top: 50px;
+	margin-left: 390px;
 }
-#button_4{
-	margin-top: 150px;
-	margin-left: 70px;
+#btn5{
+	margin-top: 200px;
+	margin-left: 30px;
 }
-#button_5{
-	margin-top: -110px;
+#btn6{
+	margin-top: 200px;
+	margin-left: 150px;
+}
+#btn7{
+	margin-top: 200px;
 	margin-left: 270px;
 }
-#button_6{
-	margin-top: -110px;
-	margin-left: 470px;
+#btn8{
+	margin-top: 200px;
+	margin-left: 390px;
+}
+#btn9{
+	margin-top: 350px;
+	margin-left: 30px;
+}
+#btn10{
+	margin-top: 350px;
+	margin-left: 150px;
+}
+#btn11{
+	margin-top: 350px;
+	margin-left: 270px;
+}
+#btn12{
+	margin-top: 350px;
+	margin-left: 390px;
 }
 
 #btn13{
-	margin-top: 50px;
+	width: 90px;
+	height: 90px;
+	margin-top: 60px;
 	margin-left: 70px;
 }
 #btn14{
-	margin-top: 50px;
+	width: 90px;
+	height: 90px;
+	margin-top: 60px;
 	margin-left: 70px;
 }
 #btn15{
-	margin-top: 50px;
+	width: 90px;
+	height: 90px;
+	margin-top: 60px;
 	margin-left: 70px;
 }
 #btn16{
-	margin-top: 50px;
+	width: 90px;
+	height: 90px;
+	margin-top: 60px;
 	margin-left: 70px;
 }
 #btn17{
-	margin-top: 50px;
+	width: 90px;
+	height: 90px;
+	margin-top: 60px;
 	margin-left: 70px;
 }
 #btn18{
-	margin-top: 50px;
+	width: 90px;
+	height: 90px;
+	margin-top: 60px;
 	margin-left: 70px;
 }
 
@@ -668,39 +690,6 @@ button.punch1 {
 }
 
 
-
-
-
-#amchart{
-	width: 100#;
-	height: 440px;
-	margin-top: 1300px;
-	margin-left: 0px;
-}
-#chart_div3{
-	margin-top: -970px;
-	margin-left: 770px;
-}
-#chart_div4{
-	margin-top: -970px;
-	margin-left: 1100px;
-}
-#chart_div5{
-	margin-top: -640px;
-	margin-left: 770px;
-}
-#chart_div6{
-	margin-top: -640px;
-	margin-left: 1100px;
-}
-#chart_div7{
-	margin-top: -310px;
-	margin-left: 770px;
-}
-#chart_div8{
-	margin-top: -310px;
-	margin-left: 1100px;
-}
 
 button 
  {
@@ -724,21 +713,3 @@ button
       -moz-border-radius: 100%;
       -webkit-border-radius: 100%;
 }
-#con_box2{
-	position: absolute;
-	width: 1210px;
-	height: 975px;
-	margin-left: 0px;
-	margin-top: 0px;
-}
-
-#con_box2{
-	position: absolute;
-	width: 646px;
-	height: 975px;
-	margin-left: 486px;
-	margin-top: -481px;
-}
-
-
-

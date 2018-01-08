@@ -689,6 +689,15 @@ $("document").ready(function() {
 	var dummy = {0:0};
 	socket.emit('codeTable',dummy);
 
+	$("#chart_div1").gauge(70, {
+		min: 0,
+		max: 100,
+		unit: "%",
+		color: "#6A0888",
+		colorAlpha: 1,
+		bgcolor: "#000000",
+		type: "default"
+	});
 	$("#chart_div3").gauge(70, {
 		min: 0,
 		max: 100,
