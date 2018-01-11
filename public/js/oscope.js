@@ -809,9 +809,294 @@ function randomValue() {
 
 
 
+var gaugeChart = AmCharts.makeChart( "chart1", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#4B088A",
+      "endValue": 250,
+      "innerRadius": "85%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 220
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart2", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#4B088A",
+      "endValue": 250,
+      "innerRadius": "85%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 220
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart3", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#4B088A",
+      "endValue": 250,
+      "innerRadius": "85%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 220
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart4", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#4B088A",
+      "endValue": 250,
+      "innerRadius": "85%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 220
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart5", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#4B088A",
+      "endValue": 250,
+      "innerRadius": "85%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 220
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart6", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#4B088A",
+      "innerRadius": "85%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#4B088A",
+      "endValue": 250,
+      "innerRadius": "85%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 220
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart0", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#ffffff",
+      "innerRadius": "87%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#ffffff",
+      "innerRadius": "87%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#ffffff",
+      "endValue": 200,
+      "innerRadius": "87%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 200
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
+var gaugeChart = AmCharts.makeChart( "chart7", {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [ {
+    "axisThickness": 1,
+    "axisAlpha": 0.2,
+    "tickAlpha": 0.2,
+    "valueInterval": 50,
+    "bands": [ {
+      "color": "#ffffff",
+      "innerRadius": "87%",
+      "endValue": 90,
+      "startValue": 0
+    }, {
+      "color": "#ffffff",
+      "innerRadius": "87%",
+      "endValue": 130,
+      "startValue": 90
+    }, {
+      "color": "#ffffff",
+      "endValue": 200,
+      "innerRadius": "87%",
+      "startValue": 130
+    } ],
+    "bottomText": "0 km/h",
+    "bottomTextYOffset": -20,
+		"color": "white",
+    "endValue": 200
+  } ],
+  "arrows": [ {} ],
+  "export": {
+    "enabled": true
+  }
+} );
 
- });
+setInterval( randomValue, 2000 );
 
-
-
+// set random value
+function randomValue() {
+  var value = Math.round( Math.random() * 200 );
+  if ( gaugeChart ) {
+    if ( gaugeChart.arrows ) {
+      if ( gaugeChart.arrows[ 0 ] ) {
+        if ( gaugeChart.arrows[ 0 ].setValue ) {
+          gaugeChart.arrows[ 0 ].setValue( value );
+          gaugeChart.axes[ 0 ].setBottomText( value + " km/h" );
+        }
+      }
+    }
+  }
+}
+});
 

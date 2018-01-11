@@ -8,6 +8,12 @@
 {%extends 'templates/layout.html' %}
 {% block content %}
 
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/gauge.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+
 <div class="container">
 	<div class="row1">
 		<div class="col-md-6 tcenter"> ILSUNG FIBER  AUTOCRAVE</div>
@@ -15,9 +21,11 @@
 	
 	<div id="left_box">
 		<div class="box1">
-			<canvas class="demochart" id="chart_div1" width="270" height="270"></canvas>
+			<div id="chart0"></div>
 		</div>
-		<div class="box2"></div>
+		<div class="box2">
+			<div id="chart7"></div>
+		</div>
 		<div id="box3">
   		<div id="oscope-parent" class="col-md-7">
     		<canvas id="oscope" class="oscope-canvas"></canvas>
@@ -96,15 +104,22 @@
 			<div id="chart_name6">Pressure[6]</div>
 		</div>
 		<div id="divbox2"> 
-			<canvas class="demochart" id="chart_div3" width="220" height="220"></canvas>
+			<div id="chart1"></div>
+			<div id="chart2"></div>
+			<div id="chart3"></div>
+			<div id="chart4"></div>
+			<div id="chart5"></div>
+			<div id="chart6"></div>
+
+
+<!--			<canvas class="demochart" id="chart_div3" width="220" height="220"></canvas>
 			<canvas class="demochart" id="chart_div4" width="220" height="220"></canvas>
 			<canvas class="demochart" id="chart_div5" width="220" height="220"></canvas>
 			<canvas class="demochart" id="chart_div6" width="220" height="220"></canvas>
 			<canvas class="demochart" id="chart_div7" width="220" height="220"></canvas>
-			<canvas class="demochart" id="chart_div8" width="220" height="220"></canvas>
+			<canvas class="demochart" id="chart_div8" width="220" height="220"></canvas> -->
 		</div> 
 	</div>
-
 
 </div>
 
