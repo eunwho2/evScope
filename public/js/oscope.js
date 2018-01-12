@@ -840,7 +840,7 @@ var gaugeChart = AmCharts.makeChart( "chart1", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart2", {
@@ -874,7 +874,7 @@ var gaugeChart = AmCharts.makeChart( "chart2", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart3", {
@@ -908,7 +908,7 @@ var gaugeChart = AmCharts.makeChart( "chart3", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart4", {
@@ -942,7 +942,7 @@ var gaugeChart = AmCharts.makeChart( "chart4", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart5", {
@@ -976,7 +976,7 @@ var gaugeChart = AmCharts.makeChart( "chart5", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart6", {
@@ -1010,7 +1010,7 @@ var gaugeChart = AmCharts.makeChart( "chart6", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart0", {
@@ -1044,7 +1044,7 @@ var gaugeChart = AmCharts.makeChart( "chart0", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 var gaugeChart = AmCharts.makeChart( "chart7", {
@@ -1078,7 +1078,7 @@ var gaugeChart = AmCharts.makeChart( "chart7", {
   } ],
   "arrows": [ {} ],
   "export": {
-    "enabled": true
+    "enabled": false
   }
 } );
 
