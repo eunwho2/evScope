@@ -14,25 +14,6 @@ var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var port      = process.env.PORT || '3000';
 
-//--- serial to inverter
-const SerialPort = require('serialport');
-const Readline = SerialPort.parsers.Readline;
-const sciPort = new SerialPort('/dev/ttyAMA0',{
-    baudRate: 115200
-});
-const parser = new Readline();
-sciPort.pipe(parser);
-sciPort.on('open',function(err){
-    if(err) return console.log('Error on write : '+ err.message);
-    console.log('serial open');
-});
-
-sciPort.on('error', function(err) {
-    console.log('Error: ', err.message);
-    console.log('Error Occured');
-});
-
-
 //--- create express application
 var app = express();
 app.set('port', port);
@@ -65,8 +46,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace
@@ -105,26 +84,9 @@ io.on('connection', function (socket) {
 
 	socket.on('codeTable',function(from,msg){
   	console.log('received codeTable request');
-    sciPort.write('9:4:900:0.000e+0',function(err){
-    	if(err) return console.error(err);
-      parser.on('data',function (data){
-      	socket.emit('codeTable',data);
-      });
-		});
   });
 });
 
-
-
-//var i2c =require('i2c');
-//var address = 0x20;
-//var wire = new i2c(address,{device:'/dev/i2c-1'});
-
-/*
-wire.scan(function (err,data){
-
-});
-*/
 
 var iopi =require('./ABElectronics_NodeJS_Libraries/lib/iopi/iopi');
 
@@ -145,27 +107,70 @@ dOut10.setPortDirection(1,0x00);
 dOut11.setPortDirection(0,0x00);
 dOut11.setPortDirection(1,0x00);
 
-var pin = 0;
+var count = 0 
 setInterval(function() {
 
-//  var portVal = ~portVal1;
-//	dOut10.writePort(0,portVal);
-
 	var portVal= dIn10.readPort(0);
+
+	count = 0;	
+	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
 	dOut10.writePort(0,~portVal);
 
 	portVal = dIn10.readPort(1);
+	count++;	
+	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
 	dOut10.writePort(1,~portVal);
 
 	portVal = dIn11.readPort(0);
+	count++;	
+	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
 	dOut11.writePort(0,~portVal);
 
 	portVal = dIn11.readPort(1);
+	count++;	
+	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
 	dOut11.writePort(1,~portVal);
 
 
-},300);
+},1000);
 
 
+// NodeJS SPI Dump for MCP3008 - Created by Mikael Levén
+
+/*
+var Mcp3008 = require('mcp3008.js');
+var adc = new Mcp3008();
+
+/*
+setInterval(function() {
+	for (var channel = 0; channel <= 7; channel++) {
+		adc.read(channel,function(value){
+			console.log('ch%d = %d',channel,value);
+		});	
+  };
+}, 1000);
+*/
 
 
+/*
+var channel = 7;
+setInterval(function() {
+	adc.read(channel,function(value){
+		console.log('ch%d = %d',channel,value);
+	});	
+}, 1000);
+
+process.on('SIGTERM', function () {
+    process.exit(0);
+});
+
+process.on('SIGINT', function () {
+    process.exit(0);
+});
+
+process.on('exit', function () {
+    console.log('\nShutting down, performing GPIO cleanup');
+    rpio.spiEnd();
+    process.exit(0);
+});
+*/
