@@ -1,17 +1,9 @@
-<head>
-		<meta charset="utf-8">
-		<title>Test</title>
-
-			<link href="http://jamesrossini.com/fonts/pictos/import.css" media="screen" rel="stylesheet" type="Text/css" />
-	</head>
-		<body>
 {%extends 'templates/layout.html' %}
 {% block content %}
-
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
 <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script src="https://www.amcharts.com/lib/3/gauge.js"></script>
 <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
 <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
 <div class="container">
@@ -111,313 +103,12 @@
 			<div id="chart5"></div>
 			<div id="chart6"></div>
 
-
-<!--			<canvas class="demochart" id="chart_div3" width="220" height="220"></canvas>
-			<canvas class="demochart" id="chart_div4" width="220" height="220"></canvas>
-			<canvas class="demochart" id="chart_div5" width="220" height="220"></canvas>
-			<canvas class="demochart" id="chart_div6" width="220" height="220"></canvas>
-			<canvas class="demochart" id="chart_div7" width="220" height="220"></canvas>
-			<canvas class="demochart" id="chart_div8" width="220" height="220"></canvas> -->
 		</div> 
 	</div>
 
 </div>
 
    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-   <script type="text/javascript">
-
-      google.charts.load('current', {'packages':['gauge']});
-      google.charts.setOnLoadCallback(drawChart1);
-
-      function drawChart1() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 60]
-        ]);
-
-        var options = {
-          width: 800, height: 350,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div1'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-      google.charts.setOnLoadCallback(drawChart2);
-
-      function drawChart2() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 60]
-        ]);
-
-        var options = {
-          width: 800, height: 200,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div2'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-
-      google.charts.setOnLoadCallback(drawChart3);
-
-      function drawChart3() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 55],
-        ]);
-
-        var options = {
-          width: 600, height: 230,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div3'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-
-
-      google.charts.setOnLoadCallback(drawChart4);
-
-      function drawChart4() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 55],
-        ]);
-
-        var options = {
-          width: 600, height: 230,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div4'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-
-
-      google.charts.setOnLoadCallback(drawChart5);
-
-      function drawChart5() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 55],
-        ]);
-
-        var options = {
-          width: 600, height: 230,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div5'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-
-
-      google.charts.setOnLoadCallback(drawChart6);
-
-      function drawChart6() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 55],
-        ]);
-
-        var options = {
-          width: 600, height: 230,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div6'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-
-
-      google.charts.setOnLoadCallback(drawChart7);
-
-      function drawChart7() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 55],
-        ]);
-
-        var options = {
-          width: 600, height: 230,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div7'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-
-
-
-      google.charts.setOnLoadCallback(drawChart8);
-
-      function drawChart8() {
-
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          ['', 55],
-        ]);
-
-        var options = {
-          width: 600, height: 230,
-          redFrom: 90, redTo: 100,
-          yellowFrom:75, yellowTo: 90,
-          minorTicks: 5
-        };
-
-        var chart = new google.visualization.Gauge(document.getElementById('chart_div8'));
-
-        chart.draw(data, options);
-
-        setInterval(function() {
-          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 13000);
-        setInterval(function() {
-          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
-          chart.draw(data, options);
-        }, 5000);
-
-        setInterval(function() {
-          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
-          chart.draw(data, options);
-        }, 26000);
-      }
-    </script>
 
 
 
@@ -426,73 +117,6 @@
 <!-- ================ -->
 <script>
   //--- sampling bits
-	var radioBit = document.radioBits.adcBits;
-	var prev = null;
-	for(var i = 0; i < radioBit.length; i++){
-		radioBit[i].onclick = function(){
-			(prev) ? console.log(prev.value):null;
-			if(this !== prev){
-				prev = this;
-			}
-			console.log(this.value);
-			if(this.value === 'bits8') { oscope.onSampleBits(8);
-			} else if ( this.value === 'bits12'){ oscope.onSampleBits(12);
-			} else if (this.value === 'bits16') { oscope.onSampleBits(16);
-			}
-		};
-	}
-
-  //--- volts per division
-	var radioVolt = document.radioVoltDiv.perVolt;
-	var prev = null;
-	for(var i = 0; i < radioVolt.length; i++){
-		radioVolt[i].onclick = function(){
-			(prev) ? console.log(prev.value):null;
-			if(this !== prev){
-				prev = this;
-			}
-			if(this.value === '1.0') { oscope.onVoltsPerDiv(1);
-			} else if ( this.value === '2.5'){ oscope.onVoltsPerDiv(2.5);
-			} else if (this.value === '5.0') { oscope.onVoltsPerDiv(5.0);
-			} else if (this.value === '10.') { oscope.onVoltsPerDiv(10);
-			}
-		};
-	}
-
-  $('.vdiv' ).on('change',null,function(event) {
-        oscope.onVoltsPerDiv(parseFloat(event.target.parentElement.innerText));
-      }
-  );
-  // =============================================
-  // voltage range
-  // =============================================
-  $('#vrange' ).on('change',null,
-      function() {
-        var vrange = parseInt($('#vrange')[0].value);
-        oscope.onVoltageRange(vrange)
-      }
-  );
-
-  // =============================================
-  // sample rate
-  // =============================================
-  $('#samplerate' ).on('change',null,function() {
-        var rate = parseInt($('#samplerate')[0].value);
-        oscope.onSamplesPerSecond(rate);
-      }
-  );
-
-  // =============================================
-  // select seconds per division
-  // =============================================
-
-
-  $('#selectSecDiv' ).on('change',null,function(event) {
-	  // console.log(parseFloat(event.target.parentElement.innerText));
-	  console.log(parseFloat(this.value));
-      oscope.onSecondsPerDiv(this.value);
-      }
-  );
 
   // =============================================
   // canvas mouse event for cursor drag
@@ -578,138 +202,65 @@
         setChannelOffset(4,element);
       }
   );
-
 </script>
 
+<script>
+
+var chartOption = {
+  "type": "gauge",
+  "theme": "light",
+  "axes": [{
+    "topTextFontSize": 20,
+    "topTextYOffset": 70,
+    "axisColor": "#31d6ea",
+    "axisThickness": 1,
+    "endValue": 100,
+    "gridInside": true,
+    "inside": true,
+    "radius": "50%",
+    "valueInterval": 10,
+    "tickColor": "#67b7dc",
+    "startAngle": -110,
+    "endAngle": 110,
+    "unit": "%",
+    "bandOutlineAlpha": 0,
+    "bands": [{
+      "color": "#0080ff",
+      "endValue": 100,
+      "innerRadius": "105%",
+      "radius": "170%",
+      "gradientRatio": [0.5, 0, -0.5],
+      "startValue": 0
+    }, {
+      "color": "#3cd3a3",
+      "endValue": 0,
+      "innerRadius": "105%",
+      "radius": "170%",
+      "gradientRatio": [0.5, 0, -0.5],
+      "startValue": 0
+    }]
+  }],
+  "arrows": [{
+    "alpha": 1,
+    "innerRadius": "35%",
+    "nailRadius": 0,
+    "radius": "170%"
+  }]
+};
 
 
-<!--    
-		<div class="col-md-2">
-      <div >
-        <div class="btn-group btn-group-md btn-group-justified" data-toggle="buttons">
-          <label class="btn btn-primary active" title="display incoming data">
-            <input type="radio" name="btn-run" id="btn-run"  checked>Run
-          </label>
-          <label class="btn btn-primary" title="stop updates of display">
-            <input type="radio" name="btn-stop" id="btn-stop" >Stop
-          </label>
-        </div>
-      </div>
-
-      <div class="control-margin" >
-        <h4><span class="label label-default" id="channel1">  Channel 111</span></h4>
-        <div class="label label-default" id="ver1"  title="position of 0 baseline for channel 1" >verti position</div>
-        <input id='channel1v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 222</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 2">verti position</div>
-        <input id='channel2v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 333</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 3">verti position</div>
-        <input id='channel3v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-        <h4><span class="label label-default">Channel 444</span></h4>
-        <div class="label label-default" title="position of 0 baseline for channel 4">verti position</div>
-        <input id='channel4v' class="form-control" type="number" min="-4" max="4" step="1" value="0"/>
-      </div>
-
-		 <span class="label label-default" id="cursorSelect" title="select a cursor to place on the display">Cursor Select1</span>
-      <div class="btn-group btn-group-md" id="cursor" data-toggle="buttons">
-        <div>
-        <label class="btn btn-primary btn-margin active " title="vertical cursor 1">
-          <input type="radio" name="cursor" id="vcursor1" checked>V1
-        </label>
-        <label class="btn btn-primary  btn-margin " title="vertical cursor 2">
-          <input type="radio" name="cursor" id="vcursor2">V2
-        </label>
-        <label class="btn btn-primary  btn-margin " title="horizontal cursor 1">
-          <input type="radio" name="cursor" id="hcursor1">H1
-        </label>
-        <label class="btn btn-primary  btn-margin " title="horizontal cursor 2">
-          <input type="radio" name="cursor" id="hcursor2"  >H2
-        </label>
-      </div>
-      </div>
-    </div> 
 
 
-	<div  class="col-md-3">
-      <div> 
-        <div class="outline1">	
-					<div id='test1'>
-          	<h4><span class="label label-default" title="options controlling the vertical axis">Vertical</span></h4>
-          	<div class="label label-default" title="enter the number of bits in a sample as determined by your data source">Bits/Sample</div>
+var chart1 = AmCharts.makeChart("chart1", chartOption);
+var chart2 = AmCharts.makeChart("chart2", chartOption);
+var chart3 = AmCharts.makeChart("chart3", chartOption);
+var chart4 = AmCharts.makeChart("chart4", chartOption);
+var chart5 = AmCharts.makeChart("chart5", chartOption);
+var chart6 = AmCharts.makeChart("chart6", chartOption);
+var chart7 = AmCharts.makeChart("chart7", chartOption);
 
-          	<div class="btn-group btn-group-md" data-toggle="buttons">
-		  	<form name ='radioBits'>
-              <input type="radio" name="adcBits" value="bits8">8
-              <input type="radio" name="adcBits" value="bits12" checked>12
-              <input type="radio" name="adcBits" value="bits16" >16
-			</form>
-          </div>
-
-          <div class="w100"></div>
-
-          <div class="label label-default" title="enter total range of the source voltage from - to +">Voltage Range</div>
-          <div>
-            <input id='vrange' type="number" class="form-control" value="5" min="1" step="1"/>
-          </div>
-
-          <div class="w100"></div>
-
-
-          <div class="label label-default " title="select how many volts one vertical division represents">Volts/Div</div>
-
-          <div class="btn-group btn-group-md" data-toggle="buttons">
-            <div>
-				<form name = 'radioVoltDiv'>
-	              <input type="radio" name="perVolt" value="1.0" checked>1
-    	          <input type="radio" name="perVolt" value="2.5" >2.5
-        	      <input type="radio" name="perVolt" value="5.0" >5
-	              <input type="radio" name="perVolt" value="10." >10
-            	</form>
-            </div>
-          </div>
-        </div>
-      </div>
-			</div>
-			<div id='test2'>
-      <div class="control-margin">
-
-        <div class="outline2">
-
-          <h4><span class="label label-default" title="options controlling the horizontal axis">Horizontal</span></h4>
-
-          <div class="label label-default" title="enter the number of samples in one data message as determined by your data source">Samples Per Second</div>
-          <div>
-            <input id='samplerate' type="number" class="form-control" value="600" min="1"/>
-          </div>
-          <div class="w100"></div>
-
-          <div class="label label-default w100" title="select fractions of second that one horizontal division represents">Seconds/Div</div>
-          <div class="btn-group btr-group-md" id="  data-toggle="buttons">
-            <div>
-				<select id = 'selectSecDiv'>
-				  <option value="0.001">0.001</option>
-				  <option value="0.002">0.002</option>
-				  <option value="0.005">0.005</option>
-				  <option value="0.010">0.010</option>
-				  <option value="0.020">0.020</option>
-				  <option value="0.050">0.050</option>
-				  <option value="0.10">0.10</option>
-				  <option value="0.20">0.20</option>
-				  <option value="0.50">0.50</option>
-            	</select>
-            </div>
-          </div>
-        </div>
-      </div>
-		</div>
-    </div>
- </div>
-	-->
-
-
-</body>
-
+</script>
+{% endblock %}
 
 
 

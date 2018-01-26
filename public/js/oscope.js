@@ -664,95 +664,8 @@ var oscope = (function() {
 
 })();
 
-//--- start the client application
-var socket = io.connect();
-var messages = 0;
 
-socket.on('trace', function (msg) {
-  var trace = JSON.parse(msg);
-  messages ++;
-  oscope.onPaint(trace);
-});
-
-socket.on('codeTable', function (msg) {
-  oscope.createCodeTable(msg);
-});
-
-socket.on('disconnect',function() {
-  console.log('disconnected');
-});
-
-$("document").ready(function() {
-  if (oscope) {
-    oscope.init();
-  }
-	var dummy = {0:0};
-	socket.emit('codeTable',dummy);
-
-	$("#chart_div1").gauge(70, {
-		min: 0,
-		max: 100,
-		unit: "%",
-		color: "#6A0888",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-	$("#chart_div3").gauge(70, {
-		min: 0,
-		max: 100,
-		unit: "%",
-		color: "#FF4000",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-		$("#chart_div4").gauge(70, {
-		min: 0,
-		max: 100,
-		unit: "%",
-		color: "#FF4000",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-		$("#chart_div5").gauge(70, {
-		min: 0,
-		max: 100,
-		unit: "%",
-		color: "#FF4000",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-		$("#chart_div6").gauge(70, {
-		min: 0,
-		max: 100,
-		unit: "%",
-		color: "#FF4000",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-		$("#chart_div7").gauge(70, {
-		min: 0,
-		max: 100,
-		unit: "%",
-		color: "#FF4000",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-		$("#chart_div8").gauge(70, {
-		min: 0,
-		max: 100,		
-		color: "#FF4000",
-		colorAlpha: 1,
-		bgcolor: "#000000",
-		type: "default"
-	});
-
-
+/*
 var chart = AmCharts.makeChart("amchart", {
   "theme": "light",
   "type": "gauge",
@@ -795,308 +708,47 @@ var chart = AmCharts.makeChart("amchart", {
   }]
 });
 
-setInterval(randomValue, 2000);
+*/
+
+//--- start the client application
+var socket = io.connect();
+var messages = 0;
+
+socket.on('trace', function (msg) {
+  var trace = JSON.parse(msg);
+  messages ++;
+  oscope.onPaint(trace);
+});
+
+socket.on('codeTable', function (msg) {
+  oscope.createCodeTable(msg);
+});
+
+socket.on('disconnect',function() {
+  console.log('disconnected');
+});
+
+$("document").ready(function() {
+  if (oscope) {
+    oscope.init();
+  }
+	var dummy = {0:0};
+
+	socket.emit('codeTable',dummy);
+
+});
 
 // set random value
 function randomValue() {
   var value = Math.round(Math.random() * 100);
-  chart.arrows[0].setValue(value);
-  chart.axes[0].setTopText(value + " %");
+  chart1.arrows[0].setValue(value);
+  chart1.axes[0].setTopText(value + " %");
   // adjust darker band to new value
-  chart.axes[0].bands[1].setEndValue(value);
+  chart1.axes[0].bands[1].setEndValue(value);
 }
 
+setInterval(randomValue, 2000);
 
 
 
-var gaugeChart = AmCharts.makeChart( "chart1", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#4B088A",
-      "endValue": 250,
-      "innerRadius": "85%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 220
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart2", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#4B088A",
-      "endValue": 250,
-      "innerRadius": "85%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 220
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart3", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#4B088A",
-      "endValue": 250,
-      "innerRadius": "85%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 220
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart4", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#4B088A",
-      "endValue": 250,
-      "innerRadius": "85%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 220
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart5", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#4B088A",
-      "endValue": 250,
-      "innerRadius": "85%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 220
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart6", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#4B088A",
-      "innerRadius": "85%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#4B088A",
-      "endValue": 250,
-      "innerRadius": "85%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 220
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart0", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#ffffff",
-      "innerRadius": "87%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#ffffff",
-      "innerRadius": "87%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#ffffff",
-      "endValue": 200,
-      "innerRadius": "87%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 200
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-var gaugeChart = AmCharts.makeChart( "chart7", {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [ {
-    "axisThickness": 1,
-    "axisAlpha": 0.2,
-    "tickAlpha": 0.2,
-    "valueInterval": 50,
-    "bands": [ {
-      "color": "#ffffff",
-      "innerRadius": "87%",
-      "endValue": 90,
-      "startValue": 0
-    }, {
-      "color": "#ffffff",
-      "innerRadius": "87%",
-      "endValue": 130,
-      "startValue": 90
-    }, {
-      "color": "#ffffff",
-      "endValue": 200,
-      "innerRadius": "87%",
-      "startValue": 130
-    } ],
-    "bottomText": "0 km/h",
-    "bottomTextYOffset": -20,
-		"color": "white",
-    "endValue": 200
-  } ],
-  "arrows": [ {} ],
-  "export": {
-    "enabled": false
-  }
-} );
-
-setInterval( randomValue, 2000 );
-
-// set random value
-function randomValue() {
-  var value = Math.round( Math.random() * 200 );
-  if ( gaugeChart ) {
-    if ( gaugeChart.arrows ) {
-      if ( gaugeChart.arrows[ 0 ] ) {
-        if ( gaugeChart.arrows[ 0 ].setValue ) {
-          gaugeChart.arrows[ 0 ].setValue( value );
-          gaugeChart.axes[ 0 ].setBottomText( value + " km/h" );
-        }
-      }
-    }
-  }
-}
-});
 
