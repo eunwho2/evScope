@@ -1,116 +1,63 @@
 {%extends 'templates/layout.html' %}
 {% block content %}
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script src="https://www.amcharts.com/lib/3/gauge.js"></script>
-<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<!--
+<script src="gauge.min.js"></script>
+-->
 
 <div class="container">
-	<div class="row1">
-		<div class="col-md-6 tcenter"> ILSUNG FIBER  AUTOCRAVE</div>
-  </div>
-	
-	<div id="left_box">
-		<div class="box1">
-			<div id="chart0"></div>
+<div class='outer'>
+<div class='inner'>
+<div class='centered'>
+	<div id='leftBox' class='csLeftBox'>
+		<div class='head title1'>
+			<span id='stater' class='csStateLamp'>대기중</span>
+			<span class="title1 titleName">일성화이바 오토크레브</span>
 		</div>
-		<div class="box2">
-			<div id="chart7"></div>
+		<div id="oscope-parent" class="csOscope">
+    	<canvas id="oscope" class="oscope-canvas" width='600' height='450'></canvas>
 		</div>
-		<div id="box3">
-  		<div id="oscope-parent" class="col-md-7">
-    		<canvas id="oscope" class="oscope-canvas"></canvas>
-					<div id="oscope_name">Oscopedfk</div>
-    	</div>
+		<div id='bottomBox' class='csBottomBox'> 
+				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-xlarge'>비상정지</button>
+				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-xlarge'>패턴시작</button>
+				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-xlarge'>패턴정지</button>
+				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-xlarge'>재시동</button>
+				<button id='btnReset' 	class='w3-button w3-round w3-aqua   w3-xlarge'>-리셋-</button>
 		</div>
-		<div id="box4">
-			<button class="button_box" id="btn1"></button>
-			<button class="button_box" id="btn2"></button>
-			<button class="button_box" id="btn3"></button>
-			<button class="button_box" id="btn4"></button>
-			<button class="button_box" id="btn5"></button>
-			<button class="button_box" id="btn6"></button>
-			<button class="button_box" id="btn7"></button>
-			<button class="button_box" id="btn8"></button>
-			<button class="button_box" id="btn9"></button>
-			<button class="button_box" id="btn10"></button>
-			<button class="button_box" id="btn11"></button>
-			<button class="button_box" id="btn12"></button> 
-		</div> 	
-		<div id="box5">
-			<button id="btn13"></button>
-		</div>		
-		<div id="box6">
-			<button id="btn14"></button>
+		<div id='timeStampBox' class = 'csTimeStampBox'>
+			<span class='titleName'>경과시간</span>
+			<span id='endTimeStamp' class='titleName'>00시간 00분 00초</span>
+			<span class='titleName'>현재시간</span>
+			<span id='endTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
+			<br>	
+			<span class='titleName'> 시작시간</span>
+			<span id='startTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
+			<span class='titleName'>정지시간</span>
+			<span id='endTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
 		</div>
-		<div id="box7">
-			<button id="btn15"></button>
+
+		<div id='stopRecordBox' class = 'csTripMsgBox'>
+			<div class='titleName'>패턴작업정지기록</div>
+			<textarea id='stopRecord' class='csStopRecord' rows="5" cols="80"> At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies.
+			</textarea>
 		</div>
-		<div id="box8">
-			<button id="btn16"></button>
+	</div> <!-- end of leftBox -->
+
+	<div class='csRightBox'>
+		<div id="gauge_box" class='gaugeBox'>
+			<canvas id='gauge0' class='gC gC0' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge1' class='gC gC1' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge2' class='gC gC2' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge3' class='gC gC3' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge4' class='gC gC4' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge5' class='gC gC5' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge6' class='gC gC6' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge7' class='gC gC7' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
 		</div>
-		<div id="box9">
-			<button id="btn17"></button>
-		</div>
-		<div id="box10">
-			<button id="btn18"></button>
-		</div>	
-		<div class="namebox2">
-			<div id="name13">Btn13</div>
-			<div id="name14">Btn14</div>
-			<div id="name15">Btn15</div>
-			<div id="name16">Btn16</div>
-			<div id="name17">Btn17</div>
-			<div id="name18">Btn18</div>
-		</div>
-		<div class="namebox1">
-			<div id="name1">펌퍼동작</div>
-			<div id="name2">Btn2</div>
-			<div id="name3">Btn3</div>
-			<div id="name4">Btn4</div>
-			<div id="name5">Btn5</div>
-			<div id="name6">Btn6</div>
-			<div id="name7">Btn7</div>
-			<div id="name8">Btn8</div>
-			<div id="name9">Btn9</div>
-			<div id="name10">Btn10</div>
-			<div id="name11">Btn11</div>
-			<div id="name12">Btn12</div>
-		</div>    
 	</div>
-
-		<div id="right_box">
-			<div id="box_r1"></div>		
-			<div id="box_r2"></div>		
-			<div id="box_r3"></div>		
-			<div id="box_r4"></div>		
-			<div id="box_r5"></div>		
-			<div id="box_r6"></div> 
-		<div class="namebox3">
-			<div id="chart_name1">Pressure[1]</div>
-			<div id="chart_name2">Pressure[2]</div>
-			<div id="chart_name3">Pressure[3]</div>
-			<div id="chart_name4">Pressure[4]</div>
-			<div id="chart_name5">Pressure[5]</div>
-			<div id="chart_name6">Pressure[6]</div>
-		</div>
-		<div id="divbox2"> 
-			<div id="chart1"></div>
-			<div id="chart2"></div>
-			<div id="chart3"></div>
-			<div id="chart4"></div>
-			<div id="chart5"></div>
-			<div id="chart6"></div>
-
-		</div> 
-	</div>
-
 </div>
-
-   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-
+</div>
+</div>
+</div>
 
 <!-- ================ -->
 <!-- control handlers -->
@@ -203,64 +150,5 @@
       }
   );
 </script>
-
-<script>
-
-var chartOption = {
-  "type": "gauge",
-  "theme": "light",
-  "axes": [{
-    "topTextFontSize": 20,
-    "topTextYOffset": 70,
-    "axisColor": "#31d6ea",
-    "axisThickness": 1,
-    "endValue": 100,
-    "gridInside": true,
-    "inside": true,
-    "radius": "50%",
-    "valueInterval": 10,
-    "tickColor": "#67b7dc",
-    "startAngle": -110,
-    "endAngle": 110,
-    "unit": "%",
-    "bandOutlineAlpha": 0,
-    "bands": [{
-      "color": "#0080ff",
-      "endValue": 100,
-      "innerRadius": "105%",
-      "radius": "170%",
-      "gradientRatio": [0.5, 0, -0.5],
-      "startValue": 0
-    }, {
-      "color": "#3cd3a3",
-      "endValue": 0,
-      "innerRadius": "105%",
-      "radius": "170%",
-      "gradientRatio": [0.5, 0, -0.5],
-      "startValue": 0
-    }]
-  }],
-  "arrows": [{
-    "alpha": 1,
-    "innerRadius": "35%",
-    "nailRadius": 0,
-    "radius": "170%"
-  }]
-};
-
-
-
-
-var chart1 = AmCharts.makeChart("chart1", chartOption);
-var chart2 = AmCharts.makeChart("chart2", chartOption);
-var chart3 = AmCharts.makeChart("chart3", chartOption);
-var chart4 = AmCharts.makeChart("chart4", chartOption);
-var chart5 = AmCharts.makeChart("chart5", chartOption);
-var chart6 = AmCharts.makeChart("chart6", chartOption);
-var chart7 = AmCharts.makeChart("chart7", chartOption);
-
-</script>
 {% endblock %}
-
-
 

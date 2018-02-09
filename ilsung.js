@@ -14,6 +14,7 @@ var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var port      = process.env.PORT || '3000';
 
+
 //--- create express application
 var app = express();
 app.set('port', port);
@@ -73,6 +74,27 @@ app.use(function(err, req, res, next) {
 console.log('http on : ' + port.toString());
 server.listen(port);
 
+var msgCount = 100;
+var trace = {channel:0,length:msgCount,sample:[msgCount]};
+
+function simTraceData( ){
+  var i;
+  var r;
+  var v;
+
+  // channel 1
+	// create a value between 1024
+  r = Math.random();
+  for(i=0 ; i<trace.length ; ++i) {
+  	v = Math.floor(Math.sin(r/Math.PI) * 511 + 511);
+
+    trace.sample[i] = v ;
+    r += 1.0;
+	}
+}
+
+
+
 //--- socket.io support
 
 io.on('connection', function (socket) {
@@ -87,78 +109,50 @@ io.on('connection', function (socket) {
   });
 });
 
+//--- serial to inverter
+const SerialPort = require('serialport');
+// const Readline = SerialPort.parsers.Readline;
+const sciPort = new SerialPort('/dev/ttyAMA0',{
+    baudRate: 38400
+});
 
-var iopi =require('./ABElectronics_NodeJS_Libraries/lib/iopi/iopi');
+//const parser = new Readline({delimiter: '03'});
+//sciPort.pipe(parser);
 
-var dIn10 = new iopi(0x20);
-var dIn11 = new iopi(0x21);
-dIn10.setPortDirection(0,0xff);
-dIn10.setPortDirection(1,0xff);
+sciPort.on('open',function(err){
+    if(err) return console.log('Error on write : '+ err.message);
+    console.log('serial open');
+});
 
-dIn11.setPortDirection(0,0xff);
-dIn11.setPortDirection(1,0xff);
+sciPort.on('error', function(err) {
+    console.log('Error: ', err.message);
+    console.log('Error Occured');
+});
 
-var dOut10 = new iopi(0x22);
-var dOut11 = new iopi(0x23);
+sciPort.on('data', function(data){
+	console.log('Data:',data);
+});
 
-dOut10.setPortDirection(0,0x00);
-dOut10.setPortDirection(1,0x00);
+// var txMsg = [5,48,48,82,83,83,48,49,48,54,37,67,87,48,48,4,0];
+var ENQ = '\x05';
+var txMsg = ENQ+'01RST\x04';
+//var txMsg = '\x05\x01RST\x04';
+//var txMsg = '\x0500RSS01%PW01002\x04';
+var EOT		= 0x04;
 
-dOut11.setPortDirection(0,0x00);
-dOut11.setPortDirection(1,0x00);
+// var txMsg = ENQ+txMsg1+EOT;
 
-var count = 0 
-setInterval(function() {
+setInterval(function(){
+	console.log('txData: ', txMsg);
+	sciPort.write(txMsg,function(err){
+		if(err) return console.error(err);
+//  	parser.on('data',function (data){
+//			console.log(data);  
+//		});
+	});
 
-	var portVal= dIn10.readPort(0);
+},2000);
 
-	count = 0;	
-	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
-	dOut10.writePort(0,~portVal);
-
-	portVal = dIn10.readPort(1);
-	count++;	
-	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
-	dOut10.writePort(1,~portVal);
-
-	portVal = dIn11.readPort(0);
-	count++;	
-	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
-	dOut11.writePort(0,~portVal);
-
-	portVal = dIn11.readPort(1);
-	count++;	
-	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
-	dOut11.writePort(1,~portVal);
-
-
-},1000);
-
-
-// NodeJS SPI Dump for MCP3008 - Created by Mikael Levén
-
-/*
-var Mcp3008 = require('mcp3008.js');
-var adc = new Mcp3008();
-
-/*
-setInterval(function() {
-	for (var channel = 0; channel <= 7; channel++) {
-		adc.read(channel,function(value){
-			console.log('ch%d = %d',channel,value);
-		});	
-  };
-}, 1000);
-*/
-
-
-/*
-var channel = 7;
-setInterval(function() {
-	adc.read(channel,function(value){
-		console.log('ch%d = %d',channel,value);
-	});	
-}, 1000);
 
 process.on('SIGTERM', function () {
     process.exit(0);
@@ -173,4 +167,4 @@ process.on('exit', function () {
     rpio.spiEnd();
     process.exit(0);
 });
-*/
+

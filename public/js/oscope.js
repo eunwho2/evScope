@@ -1,4 +1,5 @@
 "use strict";
+
 var oscope = (function() {
   var m_canvas;
   var m_context;
@@ -12,8 +13,8 @@ var oscope = (function() {
   var mSecPerDiv		   = 0.100;
   var m_samples_per_second = 600;
   var m_divisions          = 10;
-  var m_yscale             = 32768;
-  var m_sample_bits        = 16;
+  var m_yscale             = 1024;
+  var m_sample_bits        = 10;
   var m_volts_per_div      = 2.5;
   var m_vrange             = 5;
   var m_cursor_index       = 2;
@@ -109,19 +110,6 @@ var oscope = (function() {
       6
   ];
 
-  // ===================================================
-  // SCALING AND LAYOUT
-  // ===================================================
-
-  /**
-   * figure out height of canvas based on window and parent size
-   * find the first fit from the canvas_size array
-   * only needs to be done when window is resized
-   * @param window_height
-   * @param parent_width
-   * @param parent_height
-   * @returns {*}
-   */
   function getCanvasSize(window_height,parent_width,parent_height) {
     var r;
     if (window_height > parent_height) {
@@ -144,12 +132,6 @@ var oscope = (function() {
     return r;
   }
 
-  /**
-   * match text size with canvas width
-   * only needs to be done when window is resized
-   * @param width of canvas (canvas_size[n] maps to text size[n])
-   * @returns {*}
-   */
   function getTextSize(width) {
     var s;
 
@@ -160,13 +142,6 @@ var oscope = (function() {
     return s;
   }
 
-  /**
-   * rescale layout when size changes
-   * start with 'base' for each layout item and
-   * rescale it using the new widht and height
-   * @param w width
-   * @param h height
-   */
   function rescale(w,h) {
     // rescale horizontal divisions
     hgrid = hgrid_base.map(function (v) {
@@ -226,28 +201,11 @@ var oscope = (function() {
     mid_div[3] = mid_div_base[3] * h;
   }
 
-  /**
-   * clear the background
-   * @param ctx canvas context
-   * @param width  of rect
-
-
-
-   * @param height of rect
-   */
   function clear(ctx,width,height) {
     ctx.fillStyle = "black";
     ctx.fillRect(0,0,width,height);
   }
 
-  /**
-   * draw a single line from specified endpoints
-   * @param ctx
-   * @param x0
-   * @param y0
-   * @param x1
-   * @param y1
-   */
   function drawLine(ctx,line)  {
       ctx.beginPath();
       ctx.moveTo(line[0],line[1]);
@@ -255,22 +213,12 @@ var oscope = (function() {
       ctx.stroke();
   }
 
-  /**
-   * draw a set of linesvgrid_base
-   * @param ctx
-   * @param lines array of endpoints
-   */
   function drawLines(ctx,lines) {
     lines.forEach(function(v) {
       drawLine(ctx,v);
     });
   }
 
-  /**
-   * draw a path from a set of points
-   * @param ctx
-   * @param path
-   */
   function drawPath(ctx,path) {
     ctx.beginPath();
     ctx.moveTo(path[0][0],path[0][1]);
@@ -280,12 +228,6 @@ var oscope = (function() {
     ctx.stroke();
   }
 
-  /**
-   * draw the background with the outline, grid etc
-   * @param ctx
-   * @param width
-   * @param height
-   */
   function drawBackground(ctx,width,height,voffset) {
     // clear background
     clear(ctx,width,height);
@@ -297,8 +239,8 @@ var oscope = (function() {
 
     // draw the outline
     ctx.save();
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth   = 4;
+    ctx.strokeStyle = 'gray';
+    ctx.lineWidth   = 6;
     drawPath(ctx,outline);
     ctx.restore();
 
@@ -340,13 +282,6 @@ var oscope = (function() {
     ctx.restore();
   }
 
-  /**
-   * draw text annotations
-   * for text, upper left corner is 0,0 regardless of translation
-   * @param ctx
-   * @param width
-   * @param height
-   */
   function drawAnnotations(ctx,width,height,dy)
   {
     var t;
@@ -364,42 +299,17 @@ var oscope = (function() {
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
     ctx.fillText(t,2,height-4);
-
-
   }
 
-  /**
-   * vertical scale factor
-   * (voltage range/counts per sample) *  (pixels per yaxis / volts per yaxis) = pixel per count
-   * @param vrange
-   * @param yscale
-   * @param height
-   * @param volts
-   * @returns {number}
-   */
   function computeVerticalScale(vrange,yscale,height,volts) {
     // divide by 2 to make scale for signed value
     return (vrange / yscale) * (height / volts) * 0.5;
   }
 
-  /**
-   * horizontal scale factor in pixels/sample
-   * @param seconds
-   * @param sps
-   * @param width
-   * @returns {number}
-   */
   function computeHorizontalScale(seconds,samples_per_second,width) {
     return width / (seconds * samples_per_second);
   }
 
-  /**
-   * draw a single trace
-   * @param ctx
-   * @param trace
-   * @param width used to scale x axis
-   * @param height used to scale y axis
-   */
   function drawTrace(ctx,trace,width,height,voffset) {
     var t = [];
     var ys;
@@ -418,19 +328,19 @@ var oscope = (function() {
 
     // set channel parameters
     switch(trace.channel) {
-    case 1:
+    case 0:
       ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
       ctx.strokeStyle = "yellow";
       break;
-    case 2:
+    case 1:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "blue";
       break;
-    case 3:
+    case 2:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "magenta";
       break;
-    case 4:
+    case 3:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "green";
       break;
@@ -449,10 +359,6 @@ var oscope = (function() {
     // restore context
   }
 
-  /**
-   * repaint the display
-   * @param trace optional trace
-   */
   function onPaint(trace) {
     // draw oscope background
     drawBackground(m_context,m_width,m_height,m_voffset);
@@ -462,7 +368,7 @@ var oscope = (function() {
       // count updates
       m_updates++;
       // store the trace by channel
-      m_trace[trace.channel - 1] = trace;
+      m_trace[trace.channel] = trace;
     }
 
     // draw last traces
@@ -483,19 +389,15 @@ var oscope = (function() {
     drawAnnotations(m_context,m_width,m_height,m_text_size);
   }
 
-  // ===================================================
-  // EVENT HANDLERS
-  // ===================================================
-
-  /**
-   * event handler for setting number of bits per sample
-   * @param bits
-   */
   function onSampleBits(bits) {
     switch(bits) {
     case 8:
       m_sample_bits = 8;
       m_yscale      = 128;
+      break;
+		case 10:
+      m_sample_bits = 10;
+      m_yscale      = 512;
       break;
     case 12:
       m_sample_bits = 12;
@@ -522,10 +424,6 @@ var oscope = (function() {
     onPaint(null);
   }
 
-  /**
-   * event handler for setting volts per division
-   * @param volts
-   */
   function onVoltsPerDiv(volts) {
     m_volts_per_div = volts;
 
@@ -533,10 +431,6 @@ var oscope = (function() {
     onPaint(null);
   }
 
-  /**
-   * event handler for setting seconds per division
-   * @param seconds
-   */
   function onSecondsPerDiv(seconds) {
     mSecPerDiv = seconds;
 
@@ -569,18 +463,12 @@ var oscope = (function() {
     onPaint(null);
   }
 
-  /**
-   * compute cursor diff (changes with seconds/div)
-   */
   function updateCursorDiff() {
     // compute current cursor diff in seconds
     m_cursor_seconds = Math.abs(m_cursor[0][0] - m_cursor[1][0]) * (mSecPerDiv * 10.0 / m_width);
     m_cursor_volts   = Math.abs(m_cursor[2][1] - m_cursor[3][1]) * (m_volts_per_div   * 10.0 / m_height);
   }
 
-  /** set cursor
-   * @param x x position
-   */
   function onCursorMove(x,y) {
     var cursor = m_cursor[m_cursor_index];
     switch(m_cursor_index) {
@@ -600,24 +488,14 @@ var oscope = (function() {
     onPaint(null);
   }
 
-  /**
-   * select which cursor to use
-   * @param index
-   */
   function onCursorSelect(index) {
     m_cursor_index = index;
   }
 
-  /**
-   * run = show traces, stop = show last trace
-   * @param run
-   */
   function onRunStop(run) {
     m_run = run;
   }
-  /**
-   * event handler for window resize
-   */
+
   function onResize() {
     var parent = $("#oscope-parent");
     var size = getCanvasSize($(window).height(),parent.width(),parent.height());
@@ -630,9 +508,6 @@ var oscope = (function() {
     onPaint(null);
   }
 
-  /**
-   * initialize the oscope
-   */
   function onInit() {
     m_canvas  = $("#oscope")[0];
     m_context = m_canvas.getContext("2d");
@@ -640,6 +515,7 @@ var oscope = (function() {
     $(window).resize(onResize);
     onResize();
     onPaint(null);
+
   }
 
 	//--- invert code table create
@@ -665,59 +541,15 @@ var oscope = (function() {
 })();
 
 
-/*
-var chart = AmCharts.makeChart("amchart", {
-  "theme": "light",
-  "type": "gauge",
-  "axes": [{
-    "topTextFontSize": 20,
-    "topTextYOffset": 70,
-    "axisColor": "#31d6ea",
-    "axisThickness": 1,
-    "endValue": 100,
-    "gridInside": true,
-    "inside": true,
-    "radius": "50%",
-    "valueInterval": 10,
-    "tickColor": "#67b7dc",
-    "startAngle": -90,
-    "endAngle": 90,
-    "unit": "%",
-    "bandOutlineAlpha": 0,
-    "bands": [{
-      "color": "#0080ff",
-      "endValue": 100,
-      "innerRadius": "105%",
-      "radius": "170%",
-      "gradientRatio": [0.5, 0, -0.5],
-      "startValue": 0
-    }, {
-      "color": "#3cd3a3",
-      "endValue": 0,
-      "innerRadius": "105%",
-      "radius": "170%",
-      "gradientRatio": [0.5, 0, -0.5],
-      "startValue": 0
-    }]
-  }],
-  "arrows": [{
-    "alpha": 1,
-    "innerRadius": "35%",
-    "nailRadius": 0,
-    "radius": "170%"
-  }]
-});
-
-*/
-
 //--- start the client application
 var socket = io.connect();
 var messages = 0;
 
 socket.on('trace', function (msg) {
-  var trace = JSON.parse(msg);
+  //var trace = JSON.parse(msg);
   messages ++;
-  oscope.onPaint(trace);
+	// console.log(msg.sample);
+  oscope.onPaint(msg);
 });
 
 socket.on('codeTable', function (msg) {
@@ -728,27 +560,107 @@ socket.on('disconnect',function() {
   console.log('disconnected');
 });
 
+
+function radialGaugeInit(){
+
+	var degreePerCelcius = '\xB0'+'C';
+
+	$('#gauge0').attr('data-units',degreePerCelcius);
+/*
+	$('#gauge0').attr('data-width','200');
+	$('#gauge0').attr('data-height','200');
+*/
+	$('#gauge0').attr('data-title',"Temperature");
+
+	$('#gauge0').attr('data-min-value',"0");
+	$('#gauge0').attr('data-max-value',"200");
+	$('#gauge0').attr('data-major-ticks',"[0,50,100,150,200]");
+	$('#gauge0').attr('data-minor-ticks',"10");
+	$('#gauge0').attr('data-stroke-ticks',"true");
+	$('#gauge0').attr('data-highlights',
+		'[{"from":0,"to":150,"color":"rgba(0,0,255,.3)"},{"from":150,"to":200,"color":"rgba(255,0,0,.3)"}]');
+	
+	$('#gauge1').attr('data-units','Mpa');
+	$('#gauge1').attr('data-title',"PRESS GAUGE");
+
+	$('#gauge1').attr('data-min-value',"0");
+	$('#gauge1').attr('data-max-value',"200");
+	$('#gauge1').attr('data-major-ticks',"[0,50,100,150,200]");
+	$('#gauge1').attr('data-minor-ticks',"10");
+	$('#gauge1').attr('data-stroke-ticks',"true");
+	$('#gauge1').attr('data-highlights',
+		'[{"from":0,"to":150,"color":"rgba(0,0,255,.3)"},{"from":150,"to":200,"color":"rgba(255,0,0,.3)"}]');
+
+	for (var gaugeNumber = 0 ; gaugeNumber < 8 ; gaugeNumber++){ 
+	$('#gauge'+gaugeNumber).attr('data-stroke-ticks',"true");
+	// $('#gauge'+gaugeNumber).attr('data-highlights','[{"from": 0, "to": 1.5, "color": "rgba(0,0, 255, .3)"},{"from": 1.5, "to": 2,"color":"rgba(255, 0, 0, .3)"}]');
+	$('#gauge'+gaugeNumber).attr('data-ticks-angle',"225");
+	$('#gauge'+gaugeNumber).attr('data-start-angle',"67.5");
+	$('#gauge'+gaugeNumber).attr('data-color-major-ticks',"#ddd");
+	$('#gauge'+gaugeNumber).attr('data-color-minor-ticks',"#ddd");
+	$('#gauge'+gaugeNumber).attr('data-color-title',"#eee");
+	$('#gauge'+gaugeNumber).attr('data-color-units',"#ccc");
+	$('#gauge'+gaugeNumber).attr('data-color-numbers',"#eee");
+	$('#gauge'+gaugeNumber).attr('data-color-plate',"#222");
+
+	$('#gauge'+gaugeNumber).attr('data-needle-type',"arrow");
+	$('#gauge'+gaugeNumber).attr('data-needle-width',"2");
+	$('#gauge'+gaugeNumber).attr('data-needle-circle-size',"7");
+	$('#gauge'+gaugeNumber).attr('data-needle-circle-outer',"true");
+	$('#gauge'+gaugeNumber).attr('data-needle-circle-inner',"false");
+
+	$('#gauge'+gaugeNumber).attr('data-animation-duration',"150");
+	$('#gauge'+gaugeNumber).attr('data-animation-rule',"linear");
+
+	$('#gauge'+gaugeNumber).attr('data-border-shadow-width',"0");
+	$('#gauge'+gaugeNumber).attr('data-borders',"true");
+	$('#gauge'+gaugeNumber).attr('data-color-border-outer',"#333");
+	$('#gauge'+gaugeNumber).attr('data-color-border-outer-end',"#111");
+	$('#gauge'+gaugeNumber).attr('data-color-border-middle',"#222");
+	$('#gauge'+gaugeNumber).attr('data-color-border-middle-end',"#111");
+	$('#gauge'+gaugeNumber).attr('data-color-border-inner',"#111");
+	$('#gauge'+gaugeNumber).attr('data-color-border-inner-end',"#333");
+
+	$('#gauge'+gaugeNumber).attr('data-color-needle-shadow-down',"#333");
+	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-outer',"#333");
+	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-outer-end',"#111");
+	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-inner',"#111");
+	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-inner-end',"#222");
+
+	$('#gauge'+gaugeNumber).attr('data-value-box-border-radius',"0");
+	$('#gauge'+gaugeNumber).attr('data-color-value-box-rect',"#222");
+	$('#gauge'+gaugeNumber).attr('data-color-value-box-rect-end',"#333");
+	}
+
+	for (var gaugeNumber = 2 ; gaugeNumber < 8 ; gaugeNumber++){ 
+	$('#gauge'+gaugeNumber).attr('data-units','Mpa');
+	$('#gauge'+gaugeNumber).attr('data-title',"VACUUM");
+
+	$('#gauge'+gaugeNumber).attr('data-min-value',"-0.1");
+	$('#gauge'+gaugeNumber).attr('data-max-value',"0.2");
+	$('#gauge'+gaugeNumber).attr('data-major-ticks',"[-0.1,-0.05,0,0.05,0.1, 0.15, 0.2]");
+	//$('#gauge'+gaugeNumber).attr('data-minor-ticks',"0.02");
+	}
+}
+
+
 $("document").ready(function() {
   if (oscope) {
     oscope.init();
   }
 	var dummy = {0:0};
-
+	radialGaugeInit();
 	socket.emit('codeTable',dummy);
-
 });
 
-// set random value
-function randomValue() {
-  var value = Math.round(Math.random() * 100);
-  chart1.arrows[0].setValue(value);
-  chart1.axes[0].setTopText(value + " %");
-  // adjust darker band to new value
-  chart1.axes[0].bands[1].setEndValue(value);
-}
 
-setInterval(randomValue, 2000);
-
-
-
-
+var setValue = 0;
+setInterval( function () {
+	$('#gauge0').attr('data-value', ((setValue < 100) ? setValue++ : (setValue=0) ));
+	$('#gauge1').attr('data-value', setValue);
+	var date = new Date();
+	var n = date.toDateString();
+	var time = date.toLocaleTimeString();
+	// $('#endTimeStamp').innerHTML = n + time;
+	document.getElementById('clock1').innerHTML = n +':'+ time;
+}, 2000);
