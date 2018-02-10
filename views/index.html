@@ -17,17 +17,18 @@
     	<canvas id="oscope" class="oscope-canvas" width='600' height='450'></canvas>
 		</div>
 		<div id='bottomBox' class='csBottomBox'> 
-				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-xlarge'>비상정지</button>
-				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-xlarge'>패턴시작</button>
-				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-xlarge'>패턴정지</button>
-				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-xlarge'>재시동</button>
-				<button id='btnReset' 	class='w3-button w3-round w3-aqua   w3-xlarge'>-리셋-</button>
+				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large'>비상정지</button>
+				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large'>패턴시작</button>
+				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large'>패턴정지</button>
+				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large'>기기정지</button>
+				<button id='btnReset' 	class='w3-button w3-round w3-green  w3-large'>진공선택</button>
+				<span id='idVacRec' 	class='csVacRec'>1</span>
 		</div>
 		<div id='timeStampBox' class = 'csTimeStampBox'>
 			<span class='titleName'>경과시간</span>
 			<span id='endTimeStamp' class='titleName'>00시간 00분 00초</span>
 			<span class='titleName'>현재시간</span>
-			<span id='endTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
+			<span id='clock1' class='titleName'>2018:02:07: 10:10:00</span>
 			<br>	
 			<span class='titleName'> 시작시간</span>
 			<span id='startTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
@@ -44,14 +45,14 @@
 
 	<div class='csRightBox'>
 		<div id="gauge_box" class='gaugeBox'>
-			<canvas id='gauge0' class='gC gC0' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge1' class='gC gC1' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge2' class='gC gC2' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge3' class='gC gC3' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge4' class='gC gC4' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge5' class='gC gC5' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge6' class='gC gC6' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
-			<canvas id='gauge7' class='gC gC7' data-type="radial-gauge" data-width='200' data-height='200'></canvas>
+			<canvas id='gauge0' class='gC gC0' data-type="radial-gauge" data-width='170' data-height='250'></canvas>
+			<canvas id='gauge1' class='gC gC1' data-type="radial-gauge" data-width='170' data-height='250'></canvas>
+			<canvas id='gauge2' class='gC gC2' data-type="radial-gauge" data-width='150' data-height='150'></canvas>
+			<canvas id='gauge3' class='gC gC3' data-type="radial-gauge" data-width='150' data-height='150'></canvas>
+			<canvas id='gauge4' class='gC gC4' data-type="radial-gauge" data-width='150' data-height='150'></canvas>
+			<canvas id='gauge5' class='gC gC5' data-type="radial-gauge" data-width='150' data-height='150'></canvas>
+			<canvas id='gauge6' class='gC gC6' data-type="radial-gauge" data-width='150' data-height='150'></canvas>
+			<canvas id='gauge7' class='gC gC7' data-type="radial-gauge" data-width='150' data-height='150'></canvas>
 		</div>
 	</div>
 </div>

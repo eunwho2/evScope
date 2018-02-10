@@ -75,6 +75,7 @@ server.listen(port);
 
 //--- socket.io support
 
+var emitCount = 0;
 io.on('connection', function (socket) {
 	var host  = socket.client.request.headers.host;
 	console.log('connected to : ' + host);
@@ -87,7 +88,19 @@ io.on('connection', function (socket) {
   });
 
 	setInterval(function() {
-		socket.emit('trace',traceData0);
+
+		socket.emit('vacuum',vacuumData);
+
+		if( emitCount == 0){
+			socket.emit('trace',traceData0);
+			emitCount = 1;
+		}else if( emitCount==1 ){
+			socket.emit('trace',traceData1);
+			emitCount = 2;
+		}else {
+			socket.emit('trace',traceData2);
+			emitCount = 0;
+		}
 	},1000);
 });
 
@@ -126,10 +139,11 @@ var inMcp23017=[0,0,0,0];
 var count = 0 
 var channel = 0;
 
+var vacuumData = { data : [8]};
 
 var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
-var traceData1 = { channel:1,sample:[600]}
-var traceData2 = { channel:2,sample:[600]}
+var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
+var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
 var adcValue = [0,0,0,0,0,0,0,0];
 
 for ( var key in traceData0.sample ){
@@ -168,12 +182,13 @@ setInterval(function() {
 
     var value = ((MSB & 3 ) << 8 ) + LSB;
 		adcValue[channel] = value;
+		vacuumData.data[channel] = value;
 		// process.stdout.write(value.toString() + (channel == 7 ? '\n' : '\t'));
   };
 
 	traceData0.sample[count] = adcValue[0];
-	traceData1.sample[count] = adcValue[1];
-	traceData2.sample[count] = adcValue[2];
+	traceData1.sample[count] = adcValue[1]+50;
+	traceData2.sample[count] = adcValue[2]+100;
  
 	count = (channel > 598 ) ? 0 : count+1; 
 	channel = (channel > 6 ) ? 0 : channel+1; 

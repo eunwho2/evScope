@@ -5,8 +5,8 @@ html, body {
 }
 
 .container{
-	width: 1280px;
-	height:1024px;
+	width: 1024px;
+	height:768px;
 	margin:0px auto;
 	background: black;
 }
@@ -35,10 +35,10 @@ html, body {
 .csLeftBox{
 
 	float:left;
-	width: 700px;
-	height: 1020px;
+	width: 610px;
+	height: 760px;
 
-	border-radius: 10px;
+	border-radius: 5px;
 	margin: 0px;
 	padding:0px;
 	-webkit-align-items:center;
@@ -94,11 +94,11 @@ html, body {
 	top: 0px;
 	left: 10px;
 */
-	width: 480px;
-	height: 1020px;
-	border-radius: 10px;
-	margin: 10px;
-	padding:5px;
+	width: 360px;
+	height: 760px;
+	border-radius: 3px;
+	margin: 1px;
+	padding:1px;
 	-webkit-align-items:center;
 	align-items: center;
 	background: #333;
@@ -106,12 +106,12 @@ html, body {
 
 .gC{
 	background: 	#111;
-	margin:				5px;
+	margin:				1px;
 }
 
 .csTimeStampBox {
 	display:inline;
-	margin-top:70px;
+	margin-top:40px;
 }
 
 #cursor {

@@ -246,7 +246,7 @@ var oscope = (function() {
 
     // draw the grid
     ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.strokeStyle = "rgba(255,255,255,0.5)";
     ctx.lineWidth   = 1;
     ctx.setLineDash([1,1]);
     drawLines(ctx,hgrid);
@@ -549,7 +549,19 @@ socket.on('trace', function (msg) {
   //var trace = JSON.parse(msg);
   messages ++;
 	// console.log(msg.sample);
+
   oscope.onPaint(msg);
+});
+
+socket.on('vacuum', function (msg) {
+	$('#gauge0').attr('data-value', (msg.data[0])/10  );
+	$('#gauge1').attr('data-value', (msg.data[1])/500 );
+	$('#gauge2').attr('data-value', (msg.data[2])/4000 );
+	$('#gauge3').attr('data-value', (msg.data[3])/4000 );
+	$('#gauge4').attr('data-value', (msg.data[4])/4000 );
+	$('#gauge5').attr('data-value', (msg.data[5])/4000 );
+	$('#gauge6').attr('data-value', (msg.data[6])/4000 );
+	$('#gauge7').attr('data-value', (msg.data[7])/4000 );
 });
 
 socket.on('codeTable', function (msg) {
@@ -566,11 +578,7 @@ function radialGaugeInit(){
 	var degreePerCelcius = '\xB0'+'C';
 
 	$('#gauge0').attr('data-units',degreePerCelcius);
-/*
-	$('#gauge0').attr('data-width','200');
-	$('#gauge0').attr('data-height','200');
-*/
-	$('#gauge0').attr('data-title',"Temperature");
+	$('#gauge0').attr('data-title',"온도계");
 
 	$('#gauge0').attr('data-min-value',"0");
 	$('#gauge0').attr('data-max-value',"200");
@@ -581,15 +589,15 @@ function radialGaugeInit(){
 		'[{"from":0,"to":150,"color":"rgba(0,0,255,.3)"},{"from":150,"to":200,"color":"rgba(255,0,0,.3)"}]');
 	
 	$('#gauge1').attr('data-units','Mpa');
-	$('#gauge1').attr('data-title',"PRESS GAUGE");
+	$('#gauge1').attr('data-title',"압력계");
 
 	$('#gauge1').attr('data-min-value',"0");
-	$('#gauge1').attr('data-max-value',"200");
-	$('#gauge1').attr('data-major-ticks',"[0,50,100,150,200]");
-	$('#gauge1').attr('data-minor-ticks',"10");
+	$('#gauge1').attr('data-max-value',"2");
+	$('#gauge1').attr('data-major-ticks',"[0,0.5,1.0,1.5,2.0]");
+	$('#gauge1').attr('data-minor-ticks',"0.1");
 	$('#gauge1').attr('data-stroke-ticks',"true");
 	$('#gauge1').attr('data-highlights',
-		'[{"from":0,"to":150,"color":"rgba(0,0,255,.3)"},{"from":150,"to":200,"color":"rgba(255,0,0,.3)"}]');
+		'[{"from":0,"to":1.5,"color":"rgba(0,255,255,.3)"},{"from":1.5,"to":2.0,"color":"rgba(255,0,0,.3)"}]');
 
 	for (var gaugeNumber = 0 ; gaugeNumber < 8 ; gaugeNumber++){ 
 	$('#gauge'+gaugeNumber).attr('data-stroke-ticks',"true");
@@ -634,7 +642,7 @@ function radialGaugeInit(){
 
 	for (var gaugeNumber = 2 ; gaugeNumber < 8 ; gaugeNumber++){ 
 	$('#gauge'+gaugeNumber).attr('data-units','Mpa');
-	$('#gauge'+gaugeNumber).attr('data-title',"VACUUM");
+	$('#gauge'+gaugeNumber).attr('data-title',"진공 "+(gaugeNumber-1));
 
 	$('#gauge'+gaugeNumber).attr('data-min-value',"-0.1");
 	$('#gauge'+gaugeNumber).attr('data-max-value',"0.2");
@@ -653,14 +661,9 @@ $("document").ready(function() {
 	socket.emit('codeTable',dummy);
 });
 
-
-var setValue = 0;
 setInterval( function () {
-	$('#gauge0').attr('data-value', ((setValue < 100) ? setValue++ : (setValue=0) ));
-	$('#gauge1').attr('data-value', setValue);
 	var date = new Date();
 	var n = date.toDateString();
 	var time = date.toLocaleTimeString();
-	// $('#endTimeStamp').innerHTML = n + time;
 	document.getElementById('clock1').innerHTML = n +':'+ time;
 }, 2000);
