@@ -119,13 +119,15 @@ dOut10.setPortDirection(1,0x00);
 dOut11.setPortDirection(0,0x00);
 dOut11.setPortDirection(1,0x00);
 
+const dataLength = 600;
+
 var inMcp23017=[0,0,0,0];
 
 var count = 0 
 var channel = 0;
 
 
-var traceData0 = { channel:0,sample:[600]}
+var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
 var traceData1 = { channel:1,sample:[600]}
 var traceData2 = { channel:2,sample:[600]}
 var adcValue = [0,0,0,0,0,0,0,0];
