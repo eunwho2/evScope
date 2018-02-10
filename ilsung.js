@@ -75,7 +75,12 @@ server.listen(port);
 
 //--- socket.io support
 
+
 var emitCount = 0;
+var selVacRecord = 1;
+
+var traceData = {channel:[0,0,0]};
+
 io.on('connection', function (socket) {
 	var host  = socket.client.request.headers.host;
 	console.log('connected to : ' + host);
@@ -87,20 +92,15 @@ io.on('connection', function (socket) {
   	console.log('received codeTable request');
   });
 
+	socket.on('noVac',function(from,msg){
+
+			selVacRecord = ( selVacRecord > 5 ) ? 1 : selVacRecord +1;
+			socket.emit('noVacTx',{selVac:selVacRecord});
+  });
+
 	setInterval(function() {
-
+		socket.emit('trace',traceData);
 		socket.emit('vacuum',vacuumData);
-
-		if( emitCount == 0){
-			socket.emit('trace',traceData0);
-			emitCount = 1;
-		}else if( emitCount==1 ){
-			socket.emit('trace',traceData1);
-			emitCount = 2;
-		}else {
-			socket.emit('trace',traceData2);
-			emitCount = 0;
-		}
 	},1000);
 });
 
@@ -186,9 +186,9 @@ setInterval(function() {
 		// process.stdout.write(value.toString() + (channel == 7 ? '\n' : '\t'));
   };
 
-	traceData0.sample[count] = adcValue[0];
-	traceData1.sample[count] = adcValue[1]+50;
-	traceData2.sample[count] = adcValue[2]+100;
+	traceData.channel[0] = adcValue[0];
+	traceData.channel[1] = adcValue[1];
+	traceData.channel[2] = adcValue[1+selVacRecord];
  
 	count = (channel > 598 ) ? 0 : count+1; 
 	channel = (channel > 6 ) ? 0 : channel+1; 

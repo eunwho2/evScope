@@ -368,7 +368,10 @@ var oscope = (function() {
       // count updates
       m_updates++;
       // store the trace by channel
-      m_trace[trace.channel] = trace;
+//      m_trace[trace.channel] = trace;
+      m_trace[0] = trace[0];
+      m_trace[1] = trace[1];
+      m_trace[2] = trace[2];
     }
 
     // draw last traces
@@ -381,10 +384,6 @@ var oscope = (function() {
     if (m_trace[2] !== null) {
       drawTrace(m_context, m_trace[2], m_width, m_height, m_voffset[2]);
     }
-    if (m_trace[3] !== null) {
-      drawTrace(m_context, m_trace[3], m_width, m_height, m_voffset[3]);
-    }
-
     // draw text annotations
     drawAnnotations(m_context,m_width,m_height,m_text_size);
   }
@@ -542,16 +541,39 @@ var oscope = (function() {
 
 
 //--- start the client application
+
+const dataLength = 600;
+
+var traceCount = 0;
+
+var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
+var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
+var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
+
+var trace =[traceData0,traceData1,traceData2];
+ 
+var adcValue = [0,0,0,0,0,0,0,0];
+
+var noVac = 1;
+
 var socket = io.connect();
 var messages = 0;
 
 socket.on('trace', function (msg) {
-  //var trace = JSON.parse(msg);
-  messages ++;
-	// console.log(msg.sample);
+  traceData0.sample[traceCount] = msg.channel[0];
+  traceData1.sample[traceCount] = msg.channel[1];
+  traceData2.sample[traceCount] = msg.channel[2];
 
-  oscope.onPaint(msg);
+	traceCount = (traceCount > 599) ? 0 : traceCount+1;
+	console.log(msg.channel[0]);
+  oscope.onPaint(trace);
 });
+
+socket.on('noVacTx',function(msg){
+    noVac = msg.selVac;
+    document.getElementById('idVacRec').innerHTML = noVac;    
+});
+
 
 socket.on('vacuum', function (msg) {
 	$('#gauge0').attr('data-value', (msg.data[0])/10  );
@@ -651,7 +673,6 @@ function radialGaugeInit(){
 	}
 }
 
-
 $("document").ready(function() {
   if (oscope) {
     oscope.init();
@@ -660,6 +681,8 @@ $("document").ready(function() {
 	radialGaugeInit();
 	socket.emit('codeTable',dummy);
 });
+
+
 
 setInterval( function () {
 	var date = new Date();

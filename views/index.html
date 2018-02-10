@@ -21,7 +21,7 @@
 				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large'>패턴시작</button>
 				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large'>패턴정지</button>
 				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large'>기기정지</button>
-				<button id='btnReset' 	class='w3-button w3-round w3-green  w3-large'>진공선택</button>
+				<button id='btnNoVac' 	class='w3-button w3-round w3-green  w3-large' onclick='changeNoVac()'>진공선택</button>
 				<span id='idVacRec' 	class='csVacRec'>1</span>
 		</div>
 		<div id='timeStampBox' class = 'csTimeStampBox'>
@@ -64,6 +64,11 @@
 <!-- control handlers -->
 <!-- ================ -->
 <script>
+
+  function changeNoVac(){
+		socket.emit('noVac',{selVac:0});
+	}
+
   //--- sampling bits
 
   // =============================================
