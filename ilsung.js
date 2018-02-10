@@ -14,7 +14,6 @@ var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var port      = process.env.PORT || '3000';
 
-
 //--- create express application
 var app = express();
 app.set('port', port);
@@ -74,27 +73,6 @@ app.use(function(err, req, res, next) {
 console.log('http on : ' + port.toString());
 server.listen(port);
 
-var msgCount = 100;
-var trace = {channel:0,length:msgCount,sample:[msgCount]};
-
-function simTraceData( ){
-  var i;
-  var r;
-  var v;
-
-  // channel 1
-	// create a value between 1024
-  r = Math.random();
-  for(i=0 ; i<trace.length ; ++i) {
-  	v = Math.floor(Math.sin(r/Math.PI) * 511 + 511);
-
-    trace.sample[i] = v ;
-    r += 1.0;
-	}
-}
-
-
-
 //--- socket.io support
 
 io.on('connection', function (socket) {
@@ -107,52 +85,107 @@ io.on('connection', function (socket) {
 	socket.on('codeTable',function(from,msg){
   	console.log('received codeTable request');
   });
+
+	setInterval(function() {
+		socket.emit('trace',traceData0);
+	},1000);
 });
 
-//--- serial to inverter
-const SerialPort = require('serialport');
-// const Readline = SerialPort.parsers.Readline;
-const sciPort = new SerialPort('/dev/ttyAMA0',{
-    baudRate: 38400
-});
 
-//const parser = new Readline({delimiter: '03'});
-//sciPort.pipe(parser);
+var rpio = require('rpio');
 
-sciPort.on('open',function(err){
-    if(err) return console.log('Error on write : '+ err.message);
-    console.log('serial open');
-});
+rpio.spiBegin(0);
+rpio.spiChipSelect(0);
+rpio.spiSetCSPolarity(0,rpio.LOW);
+rpio.spiSetClockDivider(2048);
+rpio.spiSetDataMode(0);
 
-sciPort.on('error', function(err) {
-    console.log('Error: ', err.message);
-    console.log('Error Occured');
-});
+var iopi =require('./ABElectronics_NodeJS_Libraries/lib/iopi/iopi');
 
-sciPort.on('data', function(data){
-	console.log('Data:',data);
-});
+var dIn10 = new iopi(0x20);
+var dIn11 = new iopi(0x21);
+dIn10.setPortDirection(0,0xff);
+dIn10.setPortDirection(1,0xff);
 
-// var txMsg = [5,48,48,82,83,83,48,49,48,54,37,67,87,48,48,4,0];
-var ENQ = '\x05';
-var txMsg = ENQ+'01RST\x04';
-//var txMsg = '\x05\x01RST\x04';
-//var txMsg = '\x0500RSS01%PW01002\x04';
-var EOT		= 0x04;
+dIn11.setPortDirection(0,0xff);
+dIn11.setPortDirection(1,0xff);
 
-// var txMsg = ENQ+txMsg1+EOT;
+var dOut10 = new iopi(0x22);
+var dOut11 = new iopi(0x23);
 
-setInterval(function(){
-	console.log('txData: ', txMsg);
-	sciPort.write(txMsg,function(err){
-		if(err) return console.error(err);
-//  	parser.on('data',function (data){
-//			console.log(data);  
-//		});
-	});
+dOut10.setPortDirection(0,0x00);
+dOut10.setPortDirection(1,0x00);
 
-},2000);
+dOut11.setPortDirection(0,0x00);
+dOut11.setPortDirection(1,0x00);
 
+var inMcp23017=[0,0,0,0];
+
+var count = 0 
+var channel = 0;
+
+
+var traceData0 = { channel:0,sample:[600]}
+var traceData1 = { channel:1,sample:[600]}
+var traceData2 = { channel:2,sample:[600]}
+var adcValue = [0,0,0,0,0,0,0,0];
+
+for ( var key in traceData0.sample ){
+	traceData0.sample[key] = traceData1.sample[key] = traceData2.sample[key]=0;
+}
+
+//	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
+
+setInterval(function() {
+
+	inMcp23017[0] = dIn10.readPort(0);
+	dOut10.writePort(0,~inMcp23017[0]);
+
+	inMcp23017[1] = dIn10.readPort(1);
+	dOut10.writePort(1,~inMcp23017[1]);
+
+	inMcp23017[2] = dIn11.readPort(0);
+	dOut11.writePort(0,~inMcp23017[2]);
+
+	inMcp23017[3] = dIn11.readPort(1);
+	dOut11.writePort(1,~inMcp23017[3]);
+	
+  for ( var channel = 0; channel <= 7; channel++){
+		//prepare Tx buffer [trigger byte = 0x01] [channel = 0x80(128)] [placeholder = 0x01]
+    var sendBuffer = new Buffer([0x01,(8 + channel<<4),0x1]);
+    var recieveBuffer = new Buffer(3)
+		rpio.spiTransfer(sendBuffer, recieveBuffer, sendBuffer.length); // send Tx buffer and recieve Rx buffer
+
+    // Extract value from output buffer. Ignore first byte
+    var junk = recieveBuffer[0];
+    var MSB = recieveBuffer[1];
+    var LSB = recieveBuffer[2];
+
+    // Ignore first six bits of MSB, bit shift MSB 8 position and 
+    // finally combine LSB and MSB to get a full 10bit value
+
+    var value = ((MSB & 3 ) << 8 ) + LSB;
+		adcValue[channel] = value;
+		// process.stdout.write(value.toString() + (channel == 7 ? '\n' : '\t'));
+  };
+
+	traceData0.sample[count] = adcValue[0];
+	traceData1.sample[count] = adcValue[1];
+	traceData2.sample[count] = adcValue[2];
+ 
+	count = (channel > 598 ) ? 0 : count+1; 
+	channel = (channel > 6 ) ? 0 : channel+1; 
+	
+	if(( count % 4 ) == 0){
+		console.log('count = ', count);
+	  for ( var i = 0; i <= 7; i ++){
+	    process.stdout.write(adcValue[i].toString() + (i == 7 ? '\n' : '\t'));
+		}
+	  for ( var i = 0; i <= 3; i ++){
+	    process.stdout.write(inMcp23017[i].toString() + (i == 3 ? '\n' : '\t'));
+		}
+	}
+},250);
 
 process.on('SIGTERM', function () {
     process.exit(0);
@@ -161,10 +194,9 @@ process.on('SIGTERM', function () {
 process.on('SIGINT', function () {
     process.exit(0);
 });
-
+ 
 process.on('exit', function () {
     console.log('\nShutting down, performing GPIO cleanup');
     rpio.spiEnd();
     process.exit(0);
 });
-
