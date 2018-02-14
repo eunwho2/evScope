@@ -13,9 +13,9 @@ var oscope = (function() {
   var mSecPerDiv		   = 0.100;
   var m_samples_per_second = 600;
   var m_divisions          = 10;
-  var m_yscale             = 1024;
+  var m_yscale             = 512;
   var m_sample_bits        = 10;
-  var m_volts_per_div      = 2.5;
+  var m_volts_per_div      = 5;
   var m_vrange             = 5;
   var m_cursor_index       = 2;
   var m_cursor_seconds     = 0.0;
@@ -317,7 +317,8 @@ var oscope = (function() {
     var i;
 
     // compute scale factors
-    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div*10);
+    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div);
+//    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div * 10);
     hs = computeHorizontalScale(mSecPerDiv*m_divisions,m_samples_per_second,m_width);
 
     // compute horizonal scale
@@ -681,8 +682,6 @@ $("document").ready(function() {
 	radialGaugeInit();
 	socket.emit('codeTable',dummy);
 });
-
-
 
 setInterval( function () {
 	var date = new Date();

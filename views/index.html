@@ -17,10 +17,10 @@
     	<canvas id="oscope" class="oscope-canvas" width='600' height='450'></canvas>
 		</div>
 		<div id='bottomBox' class='csBottomBox'> 
-				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large'>비상정지</button>
-				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large'>패턴시작</button>
-				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large'>패턴정지</button>
-				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large'>기기정지</button>
+				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large' onclick='btnEmg()'>비상정지</button>
+				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large' onclick='btnStart()'>패턴시작</button>
+				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large' onclick='btnStop()'>패턴정지</button>
+				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large' onclick='btnRestart()'>기기정지</button>
 				<button id='btnNoVac' 	class='w3-button w3-round w3-green  w3-large' onclick='changeNoVac()'>진공선택</button>
 				<span id='idVacRec' 	class='csVacRec'>1</span>
 		</div>
@@ -65,8 +65,32 @@
 <!-- ================ -->
 <script>
 
+	var msgTx = { selVac: 0};
+
   function changeNoVac(){
-		socket.emit('noVac',{selVac:0});
+		msgTx.selVac = 4;
+		console.log('msgTx.selVac = ', msgTx.selVac);
+		socket.emit('btnClick',{selVac :4});
+	}
+
+  function btnEmg(){
+		msgTx.selVac = 0;
+		socket.emit('btnClick',{selVac:0});
+	}
+
+  function btnStart(){
+		msgTx.selVac = 1;
+		socket.emit('btnClick',msgTx);
+	}
+
+  function btnStop(){
+		msgTx.selVac = 2;
+		socket.emit('btnClick',msgTx);
+	}
+
+  function btnRestart(){
+		msgTx.selVac = 3;
+		socket.emit('btnClsik',msgTx);
 	}
 
   //--- sampling bits
@@ -115,6 +139,7 @@
   // =============================================
   // x axis offset handling
   // =============================================
+
   function setChannelOffset(channel,element) {
     var offset = parseInt(element.value);
     if (offset < -4) {

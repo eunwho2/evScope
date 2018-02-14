@@ -69,51 +69,18 @@ app.use(function(err, req, res, next) {
   });
 });
 
-//--- start server
-console.log('http on : ' + port.toString());
-server.listen(port);
-
-//--- socket.io support
-
-
-var emitCount = 0;
-var selVacRecord = 1;
-
-var traceData = {channel:[0,0,0]};
-
-io.on('connection', function (socket) {
-	var host  = socket.client.request.headers.host;
-	console.log('connected to : ' + host);
-	socket.on('disconnect', function () {
-  	console.log('disconnected from : ' + host);
-  });
-
-	socket.on('codeTable',function(from,msg){
-  	console.log('received codeTable request');
-  });
-
-	socket.on('noVac',function(from,msg){
-
-			selVacRecord = ( selVacRecord > 5 ) ? 1 : selVacRecord +1;
-			socket.emit('noVacTx',{selVac:selVacRecord});
-  });
-
-	setInterval(function() {
-		socket.emit('trace',traceData);
-		socket.emit('vacuum',vacuumData);
-	},1000);
-});
-
 
 var rpio = require('rpio');
 
+//set spi
 rpio.spiBegin(0);
 rpio.spiChipSelect(0);
 rpio.spiSetCSPolarity(0,rpio.LOW);
 rpio.spiSetClockDivider(2048);
 rpio.spiSetDataMode(0);
 
-var iopi =require('./ABElectronics_NodeJS_Libraries/lib/iopi/iopi');
+
+var iopi =require('./iopi');
 
 var dIn10 = new iopi(0x20);
 var dIn11 = new iopi(0x21);
@@ -136,6 +103,8 @@ const dataLength = 600;
 
 var inMcp23017=[0,0,0,0];
 
+var digitalOutBuf = [0];
+
 var count = 0 
 var channel = 0;
 
@@ -145,6 +114,7 @@ var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
 var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
 var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
 var adcValue = [0,0,0,0,0,0,0,0];
+var adcOffset = [630,630,630,630,630,630,630,630]
 
 for ( var key in traceData0.sample ){
 	traceData0.sample[key] = traceData1.sample[key] = traceData2.sample[key]=0;
@@ -152,21 +122,96 @@ for ( var key in traceData0.sample ){
 
 //	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
 
+//--- start server
+console.log('http on : ' + port.toString());
+server.listen(port);
+
+//--- socket.io support
+
+
+var emitCount = 0;
+var selVacRecord = 1;
+
+var traceData = {channel:[0,0,0]};
+
+io.on('connection', function (socket) {
+	var host  = socket.client.request.headers.host;
+	console.log('connected to : ' + host);
+	socket.on('disconnect', function () {
+  	console.log('disconnected from : ' + host);
+  });
+
+//	socket.on('codeTable',function(from,msg){
+	socket.on('codeTable',function(msg){
+  	console.log('received codeTable request',msg);
+  });
+
+	socket.on('btnClick',function(msgTx){
+
+		var digitalOut = 1;
+
+		digitalOutBuf = 0 ;
+		setTimeOut( console.log('out') ,1000);
+
+		switch(msgTx.selVac){
+		case 0: // btn Emg 
+			console.log('test');
+			digitalOutBuf = (digitalOutBuf | 1);
+			return;
+		case 1: // btn Emg 
+			digitalOutBuf = (digitalOutBuf | 2);
+			return;
+		case 2: // btn Emg 
+			digitalOutBuf = (digitalOutBuf | 4);
+			return;
+		case 3: // btn Emg 
+			digitalOutBuf = (digitalOutBuf | 8);
+			return;
+		case 4: // btn Emg
+			digitalOut = 0; 
+			selVacRecord = ( selVacRecord > 5 ) ? 1 : selVacRecord +1;
+			socket.emit('noVacTx',{selVac:selVacRecord});
+			return;
+		default:
+			digitalOut = 0;
+			return;
+		}
+
+		if(digitalOut){
+			setTimeOut( console.log('digitalOut') ,2000);
+			digitalOutBuf = 0;
+		}
+  });
+
+	setInterval(function() {
+		socket.emit('trace',traceData);
+		socket.emit('vacuum',vacuumData);
+	},1000);
+
+});
+
 setInterval(function() {
-
-	inMcp23017[0] = dIn10.readPort(0);
-	dOut10.writePort(0,~inMcp23017[0]);
-
-	inMcp23017[1] = dIn10.readPort(1);
-	dOut10.writePort(1,~inMcp23017[1]);
-
-	inMcp23017[2] = dIn11.readPort(0);
-	dOut11.writePort(0,~inMcp23017[2]);
-
-	inMcp23017[3] = dIn11.readPort(1);
-	dOut11.writePort(1,~inMcp23017[3]);
-	
+/*
+	try{
+		inMcp23017[0] = dIn10.readPort(0);
+		inMcp23017[1] = dIn10.readPort(1);
+		inMcp23017[2] = dIn11.readPort(0);
+		inMcp23017[3] = dIn11.readPort(1);
+		
+		dOut10.writePort(0,digitalOutBuf);
+		dOut10.writePort(1,~inMcp23017[1]);
+		dOut11.writePort(0,~inMcp23017[2]);
+		dOut11.writePort(1,~inMcp23017[3]);
+	}catch(e){
+		var date = new Date();
+		var n = date.toLocaleDateString();
+		var time = date.toLocaleTimeString();
+		console.log('E time = ',n+' : ' + time);
+		console.log('digital inout error = ',e);
+	}
+*/
   for ( var channel = 0; channel <= 7; channel++){
+		try{
 		//prepare Tx buffer [trigger byte = 0x01] [channel = 0x80(128)] [placeholder = 0x01]
     var sendBuffer = new Buffer([0x01,(8 + channel<<4),0x1]);
     var recieveBuffer = new Buffer(3)
@@ -183,26 +228,57 @@ setInterval(function() {
     var value = ((MSB & 3 ) << 8 ) + LSB;
 		adcValue[channel] = value;
 		vacuumData.data[channel] = value;
+		} catch(e) {
+			var date = new Date();
+			var n = date.toLocaleDateString();
+			var time = date.toLocaleTimeString();
+			console.log('E time = ',n+' : ' + time);
+			console.log('SPI ADC error = ',e);
+		}
 		// process.stdout.write(value.toString() + (channel == 7 ? '\n' : '\t'));
   };
 
-	traceData.channel[0] = adcValue[0];
-	traceData.channel[1] = adcValue[1];
-	traceData.channel[2] = adcValue[1+selVacRecord];
+	try{
+		traceData.channel[0] = adcValue[0] - adcOffset[0];
+		traceData.channel[1] = adcValue[1] - adcOffset[1];
+		traceData.channel[2] = adcValue[1+selVacRecord] - adcOffset[1+selVacRecord];
  
-	count = (channel > 598 ) ? 0 : count+1; 
-	channel = (channel > 6 ) ? 0 : channel+1; 
+		count = (channel > 598 ) ? 0 : count+1; 
+		channel = (channel > 6 ) ? 0 : channel+1; 
 	
-	if(( count % 4 ) == 0){
-		console.log('count = ', count);
-	  for ( var i = 0; i <= 7; i ++){
-	    process.stdout.write(adcValue[i].toString() + (i == 7 ? '\n' : '\t'));
+		if(( count % 4 ) == 0){
+			console.log('count = ', count);
+	  	for ( var i = 0; i <= 7; i ++){
+	    	process.stdout.write(adcValue[i].toString() + (i == 7 ? '\n' : '\t'));
+			}
+	  	for ( var i = 0; i <= 3; i ++){
+	    	process.stdout.write(inMcp23017[i].toString() + (i == 3 ? '\n' : '\t'));
+			}
 		}
-	  for ( var i = 0; i <= 3; i ++){
-	    process.stdout.write(inMcp23017[i].toString() + (i == 3 ? '\n' : '\t'));
-		}
+	} catch(e) {
+		var date = new Date();
+		var n = date.toLocaleDateString();
+		var time = date.toLocaleTimeString();
+		console.log('E time = ',n+' : ' + time);
+		console.log('process.stdout.write error = ',e);
 	}
-},250);
+},300);
+
+
+process.on('uncaughtException',function(err) {
+	var	stack = err.stack;
+	var timeout = 1;
+
+	console.log('Caught exception: ',err);
+
+//	logger.log('SERVER CRASHED!');
+//	logger.log(err,stack);
+
+	setTimeout( function(){
+//		logger.log('KILLING PROCESS');
+		process.exit();
+	},10000);
+});
 
 process.on('SIGTERM', function () {
     process.exit(0);
