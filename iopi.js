@@ -1,5 +1,3 @@
-//-- rewrite by soonkil cheoung 2018.02.12
-//   
 ﻿//
 //    ================================================
 // ABElectronics IO Pi 32- Channel Port Expander
@@ -95,35 +93,53 @@ IoPi = (function () {
     // Internal function for updating the configuration to the selected channel
     // </summary>
     // <param name="channel">ADC channel, 1 - 8</param>
-
-    IoPi.prototype.i2cReadByte = function(val) {
+/*
+    var i2cReadByteTest = function(val,next) {
         var txbuf = new Buffer([val]);
         var rxbuf = new Buffer(1);
+				
         rpio.i2cSetSlaveAddress(this.i2caddress);
-				try{
-					rpio.i2cWrite(txbuf);
-				} catch(err) {
-					console.log('rpio.i2cWrite =',err);
-					return('ERR');
-				}
-				try{
-        	rpio.i2cRead(rxbuf, 1);
-				}	catch(err) {
-					console.log('rpio.i2cRead =',err);
-					return('ERR');
-				}	
-     	  return rxbuf[0];
+        rpio.i2cWrite(txbuf);
+ 
+       var err = rpio.i2cRead(rxbuf, 1);
+				
+				if(err)	 next(err);
+				else  	next(null, rxbuf[0]);
     }
+*/
 
+    IoPi.prototype.i2cReadByte = function(val) {
+
+				var txbuf = new Buffer([val]);
+        var rxbuf = new Buffer(1);
+
+        rpio.i2cSetSlaveAddress(this.i2caddress);
+        rpio.i2cWrite(txbuf);
+
+        var err = rpio.i2cRead(rxbuf, 1);
+
+				if( err ) return 500 + err;
+				else 			return rxbuf[0];
+    }
+/*
+    IoPi.prototype.i2cReadByteTest1 = function(val,next) {
+        var txbuf = new Buffer([val]);
+        var rxbuf = new Buffer(1);
+				
+        rpio.i2cSetSlaveAddress(this.i2caddress);
+        rpio.i2cWrite(txbuf);
+ 
+       var err = rpio.i2cRead(rxbuf, 1);
+				
+				if(err)	 next(err);
+				else  	next(null, rxbuf[0]);
+    }
+*/
     IoPi.prototype.i2cWriteByte = function (register, val) {
         rpio.i2cSetSlaveAddress(this.i2caddress);
         var txbuf = new Buffer([register, val]);
         var rxbuf = new Buffer(1);
-				try{
-	        rpio.i2cWrite(txbuf);
-				} catch(err) {
-					console.log('err rpio.i2cWrite =',err);
-				}
+        rpio.i2cWrite(txbuf);
     }
 
     updateByte = function(oldByte, bit, value) {
@@ -230,19 +246,11 @@ IoPi = (function () {
         // value = number between 0 and 255 or 0x00 and 0xFF
         //
         if (port == 1) {
-						try{
-	            this.i2cWriteByte(GPIOB, value);
-  	          this.portBVal = value;
-						} catch ( err ) {
-							console.log('err rpio.i2cWrite =',err);
-						}					
+            this.i2cWriteByte(GPIOB, value);
+            this.portBVal = value;
         } else {
-					try{
             this.i2cWriteByte(GPIOA, value);
             this.portAVal = value;
-					}catch(err){
-						console.log('err rpio.i2cWrite =',err);
-					}
         }
     }
 
@@ -269,24 +277,34 @@ IoPi = (function () {
         //  returns number between 0 and 255 or 0x00 and 0xFF
         //
         if (port == 1) {
-					try{
             this.portBVal = this.i2cReadByte(GPIOB);
             return this.portBVal;
-					}catch(err){
-						console.log('err rpio.i2cReadPort =',err);
-						return 'ERR';
-					}
         } else {
-					try{
             this.portAVal = this.i2cReadByte(GPIOA);
             return this.portAVal;
-					} catch ( err) {
-						console.log('err rpio.i2cReadPort =',err);
-						return 'ERR';
-					}
         }
     }
 
+/*
+    IoPi.prototype.readMcp23017Port = function (port) {
+        //
+        // read all pins on the selected port
+        //  port 0 = pins 1 to 8, port 1 = pins 8 to 16
+        //  returns number between 0 and 255 or 0x00 and 0xFF
+        //
+        if (port == 1) {
+						i2cReadByteTest(GPIOB,function(err,res){
+							if( err ) return ;
+							return res + 100;
+						});
+        } else {
+						i2cReadByteTest(GPIOA,function(err,res){            
+							if( err ) return 0;
+							return	res + 100;
+						});
+        }
+    }
+*/
     IoPi.prototype.invertPort = function (port, polarity) {
         //
         // invert the polarity of the pins on a selected port

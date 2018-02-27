@@ -190,26 +190,75 @@ io.on('connection', function (socket) {
 
 });
 
+var errState = 0;
+
+var	startTime = new Date();
+var minute = 0;
+
 setInterval(function() {
-/*
-	try{
-		inMcp23017[0] = dIn10.readPort(0);
-		inMcp23017[1] = dIn10.readPort(1);
-		inMcp23017[2] = dIn11.readPort(0);
-		inMcp23017[3] = dIn11.readPort(1);
-		
-		dOut10.writePort(0,digitalOutBuf);
-		dOut10.writePort(1,~inMcp23017[1]);
-		dOut11.writePort(0,~inMcp23017[2]);
-		dOut11.writePort(1,~inMcp23017[3]);
-	}catch(e){
-		var date = new Date();
-		var n = date.toLocaleDateString();
-		var time = date.toLocaleTimeString();
-		console.log('E time = ',n+' : ' + time);
-		console.log('digital inout error = ',e);
+
+	var inPort;
+
+	if(	errState == 0 ){
+		inPort = dIn10.readPort(0);
+		if(inPort > 255 ){
+			errState = 7;
+			console.log('####################################');
+			console.log('             I2C error');
+			console.log('####################################');
+		} else {
+			inMcp23017[0] = inPort;
+		}
 	}
-*/
+
+	if(	errState == 0 ){
+		inPort = dIn10.readPort(1);
+		if(inPort > 255 ){
+			errState = 7;
+			console.log('####################################');
+			console.log('             I2C error');
+			console.log('####################################');
+		} else {
+			inMcp23017[1] = inPort;
+		}
+	}
+	if(	errState == 0 ){
+		inPort = dIn11.readPort(0);
+		if(inPort > 255 ){
+			errState = 7;
+			console.log('####################################');
+			console.log('             I2C error');
+			console.log('####################################');
+		} else {
+			inMcp23017[2] = inPort;
+		}
+	}
+
+	if(	errState == 0 ){
+		inPort = dIn11.readPort(1);
+		if(inPort > 255 ){
+			errState = 7;
+			console.log('####################################');
+			console.log('             I2C error');
+			console.log('####################################');
+		} else {
+			inMcp23017[3] = inPort;
+		}
+	}
+
+	if( errState == 0){
+		dOut10.writePort(0,digitalOutBuf);
+//		dOut10.writePort(1,~inMcp23017[1]);
+//		dOut11.writePort(0,~inMcp23017[2]);
+//		dOut11.writePort(1,~inMcp23017[3]);
+	} else {
+		errState = errState -1;
+	}
+
+	var date = new Date();
+	var n = date.toLocaleDateString();
+	var time = date.toLocaleTimeString();
+
   for ( var channel = 0; channel <= 7; channel++){
 		try{
 		//prepare Tx buffer [trigger byte = 0x01] [channel = 0x80(128)] [placeholder = 0x01]
@@ -246,6 +295,21 @@ setInterval(function() {
 		count = (channel > 598 ) ? 0 : count+1; 
 		channel = (channel > 6 ) ? 0 : channel+1; 
 	
+		if( (count % 20) == 0 ){
+		
+			var endTime = new Date();
+			var timeDiff = endTime - startTime;
+
+			timeDiff /= 1000;
+
+			timeDiff /= 60;
+
+			minute = Math.round(timeDiff);
+			console.log('-------------------------------------------------------');
+			console.log('                    경과 분  =    ',minute ); 
+			console.log('-------------------------------------------------------');
+		}
+
 		if(( count % 4 ) == 0){
 			console.log('count = ', count);
 	  	for ( var i = 0; i <= 7; i ++){
@@ -277,7 +341,7 @@ process.on('uncaughtException',function(err) {
 	setTimeout( function(){
 //		logger.log('KILLING PROCESS');
 		process.exit();
-	},10000);
+	},1000);
 });
 
 process.on('SIGTERM', function () {
