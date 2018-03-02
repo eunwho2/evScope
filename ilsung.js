@@ -197,64 +197,6 @@ var minute = 0;
 
 setInterval(function() {
 
-	var inPort;
-
-	if(	errState == 0 ){
-		inPort = dIn10.readPort(0);
-		if(inPort > 255 ){
-			errState = 7;
-			console.log('####################################');
-			console.log('             I2C error');
-			console.log('####################################');
-		} else {
-			inMcp23017[0] = inPort;
-		}
-	}
-
-	if(	errState == 0 ){
-		inPort = dIn10.readPort(1);
-		if(inPort > 255 ){
-			errState = 7;
-			console.log('####################################');
-			console.log('             I2C error');
-			console.log('####################################');
-		} else {
-			inMcp23017[1] = inPort;
-		}
-	}
-	if(	errState == 0 ){
-		inPort = dIn11.readPort(0);
-		if(inPort > 255 ){
-			errState = 7;
-			console.log('####################################');
-			console.log('             I2C error');
-			console.log('####################################');
-		} else {
-			inMcp23017[2] = inPort;
-		}
-	}
-
-	if(	errState == 0 ){
-		inPort = dIn11.readPort(1);
-		if(inPort > 255 ){
-			errState = 7;
-			console.log('####################################');
-			console.log('             I2C error');
-			console.log('####################################');
-		} else {
-			inMcp23017[3] = inPort;
-		}
-	}
-
-	if( errState == 0){
-		dOut10.writePort(0,digitalOutBuf);
-//		dOut10.writePort(1,~inMcp23017[1]);
-//		dOut11.writePort(0,~inMcp23017[2]);
-//		dOut11.writePort(1,~inMcp23017[3]);
-	} else {
-		errState = errState -1;
-	}
-
 	var date = new Date();
 	var n = date.toLocaleDateString();
 	var time = date.toLocaleTimeString();
@@ -326,7 +268,7 @@ setInterval(function() {
 		console.log('E time = ',n+' : ' + time);
 		console.log('process.stdout.write error = ',e);
 	}
-},300);
+},1000);
 
 
 process.on('uncaughtException',function(err) {
