@@ -14,6 +14,15 @@ var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var port      = process.env.PORT || '3000';
 
+var i2c				= require('i2c-bus');
+var piI2c			= i2c.openSync(1);
+
+piI2c.scan(function(err,res){
+	if(err) console.log(err);
+	else		console.log(res);
+});
+				
+
 //--- create express application
 var app = express();
 app.set('port', port);
@@ -79,40 +88,24 @@ rpio.spiSetCSPolarity(0,rpio.LOW);
 rpio.spiSetClockDivider(2048);
 rpio.spiSetDataMode(0);
 
-
-var iopi =require('./iopi');
-
-var dIn10 = new iopi(0x20);
-var dIn11 = new iopi(0x21);
-dIn10.setPortDirection(0,0xff);
-dIn10.setPortDirection(1,0xff);
-
-dIn11.setPortDirection(0,0xff);
-dIn11.setPortDirection(1,0xff);
-
-var dOut10 = new iopi(0x22);
-var dOut11 = new iopi(0x23);
-
-dOut10.setPortDirection(0,0x00);
-dOut10.setPortDirection(1,0x00);
-
-dOut11.setPortDirection(0,0x00);
-dOut11.setPortDirection(1,0x00);
-
-const dataLength = 600;
-
 var inMcp23017=[0,0,0,0];
-
 var digitalOutBuf = [0];
 
 var count = 0 
 var channel = 0;
-
+var dataLength = 600;
 var vacuumData = { data : [8]};
 
 var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
 var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
 var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
+var traceData3 = { channel:3,length:dataLength,sample:[dataLength]}
+var traceData4 = { channel:4,length:dataLength,sample:[dataLength]}
+var traceData5 = { channel:5,length:dataLength,sample:[dataLength]}
+var traceData6 = { channel:6,length:dataLength,sample:[dataLength]}
+var traceData7 = { channel:7,length:dataLength,sample:[dataLength]}
+
+
 var adcValue = [0,0,0,0,0,0,0,0];
 var adcOffset = [630,630,630,630,630,630,630,630]
 
@@ -132,7 +125,7 @@ server.listen(port);
 var emitCount = 0;
 var selVacRecord = 1;
 
-var traceData = {channel:[0,0,0]};
+var traceData = {channel:[0,0,0,0,0,0,0,0]};
 
 io.on('connection', function (socket) {
 	var host  = socket.client.request.headers.host;
@@ -153,6 +146,7 @@ io.on('connection', function (socket) {
 		digitalOutBuf = 0 ;
 		setTimeOut( console.log('out') ,1000);
 
+/*
 		switch(msgTx.selVac){
 		case 0: // btn Emg 
 			console.log('test');
@@ -181,12 +175,13 @@ io.on('connection', function (socket) {
 			setTimeOut( console.log('digitalOut') ,2000);
 			digitalOutBuf = 0;
 		}
+*/
   });
 
 	setInterval(function() {
 		socket.emit('trace',traceData);
 		socket.emit('vacuum',vacuumData);
-	},1000);
+	},2000);
 
 });
 
@@ -194,6 +189,90 @@ var errState = 0;
 
 var	startTime = new Date();
 var minute = 0;
+
+var ADDR_IN1 = 0x20, ADDR_IN2 = 0x21, ADDR_OUT1=0x22,ADDR_OUT2= 0x23;
+
+
+piI2c.writeByteSync(ADDR_OUT1,0,0,function(err){
+  if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR_OUT1,1,0,function(err){
+  if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR_OUT2,0,0,function(err){
+  if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR_OUT2,1,0,function(err){
+  if(err) console.log(err);
+});
+
+
+var writeMcp23017 = function(address,port,byte){
+
+  return new Promise(function ( resolve , reject ){
+
+    if(port) var GPIO = 0x13;
+    else     var GPIO = 0x12;
+
+    piI2c.writeByte(address,GPIO,byte,function(err){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
+    });
+  });
+}
+
+var writeCmdMcp23017 = function(address,port,byte){
+
+  return new Promise(function ( resolve , reject ){
+
+    piI2c.writeByteSync(address,port,byte,function(err){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
+    });
+  });
+}
+
+var readMcp23017 = function(address,port){
+
+  return new Promise(function ( resolve , reject ){
+
+    var GPIO = 0x12;
+
+    if( port ) GPIO = 0x13;
+    else       GPIO = 0x12;
+   
+    piI2c.readByte(address,GPIO,function(err,Byte){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve(Byte);
+      }
+    });
+  });
+}
+
+/*
+var promise writeCmdMcp23017(ADDR_OUT1,0,0);
+
+.then(function(){
+	return writeCmdMcp23017(ADDR_OUT1,1,0);
+}).catch(function(ere){
+	console.log(err);
+});
+*/
+
 
 setInterval(function() {
 
@@ -226,18 +305,64 @@ setInterval(function() {
 			console.log('E time = ',n+' : ' + time);
 			console.log('SPI ADC error = ',e);
 		}
-		// process.stdout.write(value.toString() + (channel == 7 ? '\n' : '\t'));
   };
 
+  var promise = readMcp23017(ADDR_IN1,0);
+
+  promise
+  .then(function(byte){
+    if(byte < 256 ){
+      inMcp23017[0] = byte;
+      return writeMcp23017(ADDR_OUT1,0,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(){
+    return(readMcp23017(ADDR_IN1,1));
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(byte){
+    if(byte < 256 ){
+      inMcp23017[1] = byte;
+      return writeMcp23017(ADDR_OUT1,1,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(){
+    return(readMcp23017(ADDR_IN2,0));
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(byte){
+    if(byte < 256 ){
+      inMcp23017[2] = byte;
+      return writeMcp23017(ADDR_OUT2,0,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(){
+    return(readMcp23017(ADDR_IN2,1));
+  }).then(function(byte){
+    if(byte < 256 ){
+	  	inMcp23017[3] = byte;
+      return writeMcp23017(ADDR_OUT2,1,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }); 
+  console.log('%d,%d,%d,%d,%d,%d,%d,%d',
+			adcValue[0],adcValue[1],adcValue[2],adcValue[3],adcValue[4],adcValue[5],adcValue[6],adcValue[7]);
+  console.log('%d,%d,%d,%d',inMcp23017[0],inMcp23017[1],inMcp23017[2],inMcp23017[3]);
+
 	try{
-		traceData.channel[0] = adcValue[0] - adcOffset[0];
-		traceData.channel[1] = adcValue[1] - adcOffset[1];
-		traceData.channel[2] = adcValue[1+selVacRecord] - adcOffset[1+selVacRecord];
- 
+		for ( var i = 0 ; i < 8 ; i++){
+			traceData.channel[i] = adcValue[i] - adcOffset[i];
+		}
 		count = (channel > 598 ) ? 0 : count+1; 
 		channel = (channel > 6 ) ? 0 : channel+1; 
 	
-		if( (count % 20) == 0 ){
+	  var portVal = 0;
+
+		if( (count % 10) == 0 ){
 		
 			var endTime = new Date();
 			var timeDiff = endTime - startTime;
@@ -252,15 +377,6 @@ setInterval(function() {
 			console.log('-------------------------------------------------------');
 		}
 
-		if(( count % 4 ) == 0){
-			console.log('count = ', count);
-	  	for ( var i = 0; i <= 7; i ++){
-	    	process.stdout.write(adcValue[i].toString() + (i == 7 ? '\n' : '\t'));
-			}
-	  	for ( var i = 0; i <= 3; i ++){
-	    	process.stdout.write(inMcp23017[i].toString() + (i == 3 ? '\n' : '\t'));
-			}
-		}
 	} catch(e) {
 		var date = new Date();
 		var n = date.toLocaleDateString();
