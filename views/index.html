@@ -15,6 +15,10 @@
 
    var scatGraphTitle=['','','',''];
 
+   var timeNow = new Date();
+   var now = timeNow.getTime();
+
+		console.log(timeNow);
 
    for( var i = 0 ; i < 1000; i++){
       graphData1.push([i]);
@@ -41,10 +45,15 @@
 
   	data1 = new google.visualization.DataTable();
 
-  	data1.addColumn('number', 'Date');
-  	for( var k = 1 ; k < 9 ; k++){
-	  	data1.addColumn('number' );
-  	}
+  	data1.addColumn('number','Recording Time'); 
+  	data1.addColumn('number','온도' );
+  	data1.addColumn('number','압력' );
+  	data1.addColumn('number','진공1' );
+  	data1.addColumn('number','진공2' );
+  	data1.addColumn('number','진공3' );
+  	data1.addColumn('number','진공4' );
+  	data1.addColumn('number','진공5' );
+  	data1.addColumn('number','진공6' );
 	
 
   	// data.addRows( graphData1);
@@ -52,7 +61,7 @@
     var materialOptions1 = {
     	chart: {title: 'this is title of graph'},
     	width: 1000,
-      height: 200,
+      height: 300,
       series: {0: {axis: 'Sensor Value'}, },
       axes: {  y: {'Sensor Value': {label: ''}, }},
       hAxis:{ title:'',titleTextStyle:{color: ''},
@@ -276,6 +285,16 @@
         setChannelOffset(4,element);
       }
   );
+
+	
+socket.on('graph', function (msg) {
+  console.log(msg);
+	var test = [0,200,2.0,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1];
+	msg.push(test);
+	graphData1 = msg;
+	drawStuff();
+});
+
 </script>
 {% endblock %}
 

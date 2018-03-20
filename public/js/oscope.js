@@ -720,6 +720,10 @@ socket.on('trace', function (msg) {
   oscope.onPaint(trace);
 });
 
+socket.on('graph', function (msg) {
+	console.log(msg);
+});
+
 socket.on('noVacTx',function(msg){
     noVac = msg.selVac;
     document.getElementById('idVacRec').innerHTML = noVac;    

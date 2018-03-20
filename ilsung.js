@@ -1,6 +1,12 @@
-"use strict";
+//"use strict";
+const eventEmitter = require('events');
 
-/*var Promise = require('promise');
+class MyEmitter extends eventEmitter{};
+
+const myEmitter = new MyEmitter();
+
+
+var Promise = require('promise');
 
 var mongoose = require('mongoose');
 
@@ -13,18 +19,16 @@ db.on('error',console.error.bind(console,'mongoose connection error'));
 db.once('open',function(){
    console.log('Ok db connected');
 });
-*/
+
+
 var adcValue = [0,0,0,0,0,0,0,0];
 
-/*
-var wsnSchema = mongoose.Schema({
-	wsnData: adcValue,
-	date:{type:Date,default:Date.now}
+var ilSungSchema = mongoose.Schema({
+	value 		: adcValue,
+	date:{type:Date,default: Date.now}
 });
 
-var ilsung = mongoose.model('ilsung', wsnSchema);
-*/
-
+var ilSungDB = mongoose.model('ilSungDB', ilSungSchema);
 
 var express      = require('express');
 var path         = require('path');
@@ -174,6 +178,40 @@ io.on('connection', function (socket) {
 		setTimeOut( console.log('out') ,1000);
   });
 
+	//--- emitt graph proc 
+	myEmitter.on('event',function(param){
+		console.log('received event');
+
+  	ilSungDB.find({'date':{$gte: param}},
+      {'value':true,_id:false,'date':true},
+      function ( err, docs){
+        if( err ) {
+        	console.log(err);
+      	}else{
+
+					var i = 0;
+					var  test = [];
+					var timeNow = new Date();
+					var now = timeNow.getTime();
+
+				  docs.forEach(function (collection){
+  	  	 		var tmp1 = collection.value;
+        	 	// var dateCount = ( collection.date*1 - now );
+						// test.push([]);
+						// test.push( [(collection.date).getTime()]);
+						test.push( [((collection.date)*1-now)/1000]);
+         		
+						for( var j = 0 ; j < 8 ; j++) test[i].push( tmp1[j]*1 );
+						i++;
+    	  	});
+					// console.log(test);
+					socket.emit('graph',test);
+      	}
+      }
+   ); 
+	});    
+	//-- end of emitt grpah proc
+
 	setInterval(function() {
 //		console.log(traceData.channel[2]);
 		socket.emit('trace',traceData);
@@ -181,6 +219,9 @@ io.on('connection', function (socket) {
 
 
 });
+
+
+
 var errState = 0;
 
 var	startTime = new Date();
@@ -268,7 +309,8 @@ var promise writeCmdMcp23017(ADDR_OUT1,0,0);
 	console.log(err);
 });
 */
-
+var recordState = 0;
+var startTime = 0;
 
 setInterval(function() {
 
@@ -296,9 +338,9 @@ setInterval(function() {
 
 		adcValue[i] = value;
 
-		if( i == 0 )	traceData.channel[0]      = 0.39062 * value - 250; 
-		else if ( i == 1 ) traceData.channel[i] = 0.00390625 * value - 2.5;
-		else	traceData.channel[i]  = -0.0001953125 * value + 0.125 ;
+		if( i == 0 )	traceData.channel[0]      = Math.round( 0.39062 * value - 250); 
+		else if ( i == 1 ) traceData.channel[i] = (0.00390625 * value - 2.5).toFixed(2);
+		else	traceData.channel[i]  = (-0.0001953125 * value + 0.125).toFixed(3) ;
 		
 		} catch(e) {
 			var date = new Date();
@@ -309,22 +351,57 @@ setInterval(function() {
 		}
   };
 	// console.log('check1 = '+ traceData.channel);
-  var promise = readMcp23017(ADDR_IN1,0);
+  var promise = readMcp23017(ADDR_IN1,0); //외부 입력을 읽음
 
   promise
   .then(function(byte){
     if(byte < 256 ){
 			inMcp23017[0] = byte;
       var temp1 =  (inMcp23017[0] & 1 );
-			if( temp1 ) console.log('OFF  Start Input');
-			else				console.log('ON Start Input');
+			if( temp1 ){
+				// first stop state 
+				// draw graph and save to png image file
+				// mongoDB find and set table for graphic data
+				if ( recordState ) {  // 시작상태에 있다가 정지상태로 변환 되는 시점의 처리
+					console.log('set graph data and emit to clients');
+					recordState = 0;
+					myEmitter.emit('event', startTime );
 
-
-
+				}else{
+					console.log('OFF  Start Input');
+				}
+			} else {
+				console.log('ON Start Input');
+				if( recordState == 0 ){
+						recordState = 1;
+						startTime = new Date();
+				} else { // recording analog signal to mongoDB
+					//var adcValue = [0,0,0,0,0,0,0,0];
+					//var ilSungSchema = mongoose.Schema({
+					//	recordId 	: Number,
+					//	value 		: adcValue,
+					//	date:{type:Date,default:Date.now}
+					//});
+					 
+			//--- start for saving data to mongoDB
+					var saveTime = new Date();
+					var mongoIn = new ilSungDB({value:traceData.channel});
+					mongoIn.save(function(err,mongoIn){
+         		if(err){
+            	console.log(err);
+            	return console.error(err);
+         		}else{
+            	console.log('Graph Data saved :'+mongoIn);
+         		}
+      		});  
+			//--- end of saving mongoDb data
+				} // else of input start.				
+/*
       var temp2 =  (inMcp23017[0] & 2 );
 			if( temp2 ) console.log('OFF Stop Input');
 			else				console.log('ON  Stop Input');
-
+*/
+			}
       return writeMcp23017(ADDR_OUT1,0,byte);
     } 
   }).catch(function(err){
