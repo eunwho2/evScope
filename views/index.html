@@ -4,6 +4,76 @@
 <script src="gauge.min.js"></script>
 -->
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+ google.charts.load('current', {'packages':['corechart']});
+
+<!-- start of google scatter -->
+
+
+   var graphData1 = [];
+
+   var scatGraphTitle=['','','',''];
+
+
+   for( var i = 0 ; i < 1000; i++){
+      graphData1.push([i]);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+      graphData1[i].push(700*1);
+   }
+  
+	 graphData1[0][1] = 0;
+   graphData1[0][2] = 1000;
+
+
+	google.charts.load('current', {'packages':['corechart', 'scatter']});
+	google.charts.setOnLoadCallback(drawStuff);
+
+<!-- drawStuff() -->
+
+  function drawStuff( ) {
+
+  	data1 = new google.visualization.DataTable();
+
+  	data1.addColumn('number', 'Date');
+  	for( var k = 1 ; k < 9 ; k++){
+	  	data1.addColumn('number' );
+  	}
+	
+
+  	// data.addRows( graphData1);
+
+    var materialOptions1 = {
+    	chart: {title: 'this is title of graph'},
+    	width: 1000,
+      height: 200,
+      series: {0: {axis: 'Sensor Value'}, },
+      axes: {  y: {'Sensor Value': {label: ''}, }},
+      hAxis:{ title:'',titleTextStyle:{color: ''},
+      format:'#초'
+    }};
+
+	
+		var chart1 = document.getElementById('chart_div1');
+
+		function drawMaterialChart1( ) {
+    	var materialChart = new google.charts.Scatter(chart1);
+      data1.addRows( graphData1);
+      materialChart.draw(data1, google.charts.Scatter.convertOptions(materialOptions1));
+    }
+		drawMaterialChart1( );
+  };
+</script>
+<!-- end of goole gauge -->
+
+
+
 <div class="container">
 <div class='outer'>
 <div class='inner'>
@@ -14,7 +84,27 @@
 			<span class="title1 titleName">일성화이바 오토크레브</span>
 		</div>
 		<div id="oscope-parent" class="csOscope">
-    	<canvas id="oscope" class="oscope-canvas" width='600' height='450'></canvas>
+			<canvas id="oscope" class="oscope-canvas" width='600' height='450'></canvas>
+		</div>
+		<div class="BottomBox">
+			<div id="hr1"></div>
+			<div id="hr2"></div>
+			<div id="hr3"></div>
+			<div id="hr4"></div>
+			<div id="hr5"></div>
+			<div id="hr6"></div>
+			<div id="hr7"></div>
+			<div id="hr8"></div>
+		</div>
+		<div class="Namebox">
+			<div id="name1">온도</div>
+			<div id="name2">압력</div>
+			<div id="name3">진공1</div>
+			<div id="name4">진공2</div>
+			<div id="name5">진공3</div>
+			<div id="name6">진공4</div>
+			<div id="name7">진공5</div>
+			<div id="name8">진공6</div>
 		</div>
 		<div id='bottomBox' class='csBottomBox'> 
 				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large' onclick='btnEmg()'>비상정지</button>
@@ -25,13 +115,13 @@
 				<span id='idVacRec' 	class='csVacRec'>1</span>
 		</div>
 		<div id='timeStampBox' class = 'csTimeStampBox'>
-			<span class='titleName'>경과시간</span>
-			<span id='endTimeStamp' class='titleName'>00시간 00분 00초</span>
+			<span class='titleName1'>경과시간></span>
+			<span id='endTimeStamp' class='titleName1'>00시간 00분 00초</span>
 			<span class='titleName'>현재시간</span>
 			<span id='clock1' class='titleName'>2018:02:07: 10:10:00</span>
 			<br>	
-			<span class='titleName'> 시작시간</span>
-			<span id='startTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
+			<span class='titleName1'> 시작시간</span>
+			<span id='startTimeStamp' class='titleName1'>2018:02:07: 10:10:00</span>
 			<span class='titleName'>정지시간</span>
 			<span id='endTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
 		</div>
@@ -55,6 +145,12 @@
 			<canvas id='gauge7' class='gC gC7' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
 		</div>
 	</div>
+	<div id="graph">
+		<tr>
+			<th> <div id="chart_div1" style="" > </div></th>
+    </tr>
+	<div>
+
 </div>
 </div>
 </div>

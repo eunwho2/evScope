@@ -1,4 +1,31 @@
 "use strict";
+
+/*var Promise = require('promise');
+
+var mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect('mongodb://localhost/ilsung');
+
+var db = mongoose.connection;
+db.on('error',console.error.bind(console,'mongoose connection error'));
+db.once('open',function(){
+   console.log('Ok db connected');
+});
+*/
+var adcValue = [0,0,0,0,0,0,0,0];
+
+/*
+var wsnSchema = mongoose.Schema({
+	wsnData: adcValue,
+	date:{type:Date,default:Date.now}
+});
+
+var ilsung = mongoose.model('ilsung', wsnSchema);
+*/
+
+
 var express      = require('express');
 var path         = require('path');
 var favicon      = require('serve-favicon');
@@ -57,7 +84,8 @@ app.use(function(req, res, next) {
 });
 
 // development error handler
-// will print stacktrace
+// will print stack
+
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -106,7 +134,6 @@ var traceData6 = { channel:6,length:dataLength,sample:[dataLength]}
 var traceData7 = { channel:7,length:dataLength,sample:[dataLength]}
 
 
-var adcValue = [0,0,0,0,0,0,0,0];
 var adcOffset = [630,630,630,630,630,630,630,630]
 
 for ( var key in traceData0.sample ){
@@ -121,7 +148,7 @@ server.listen(port);
 
 //--- socket.io support
 
-
+var testCount = 0;
 var emitCount = 0;
 var selVacRecord = 1;
 
@@ -145,46 +172,15 @@ io.on('connection', function (socket) {
 
 		digitalOutBuf = 0 ;
 		setTimeOut( console.log('out') ,1000);
-
-/*
-		switch(msgTx.selVac){
-		case 0: // btn Emg 
-			console.log('test');
-			digitalOutBuf = (digitalOutBuf | 1);
-			return;
-		case 1: // btn Emg 
-			digitalOutBuf = (digitalOutBuf | 2);
-			return;
-		case 2: // btn Emg 
-			digitalOutBuf = (digitalOutBuf | 4);
-			return;
-		case 3: // btn Emg 
-			digitalOutBuf = (digitalOutBuf | 8);
-			return;
-		case 4: // btn Emg
-			digitalOut = 0; 
-			selVacRecord = ( selVacRecord > 5 ) ? 1 : selVacRecord +1;
-			socket.emit('noVacTx',{selVac:selVacRecord});
-			return;
-		default:
-			digitalOut = 0;
-			return;
-		}
-
-		if(digitalOut){
-			setTimeOut( console.log('digitalOut') ,2000);
-			digitalOutBuf = 0;
-		}
-*/
   });
 
 	setInterval(function() {
+//		console.log(traceData.channel[2]);
 		socket.emit('trace',traceData);
-		socket.emit('vacuum',vacuumData);
 	},2000);
 
-});
 
+});
 var errState = 0;
 
 var	startTime = new Date();
@@ -280,10 +276,10 @@ setInterval(function() {
 	var n = date.toLocaleDateString();
 	var time = date.toLocaleTimeString();
 
-  for ( var channel = 0; channel <= 7; channel++){
+  for ( var i = 0; i <= 7; i++){
 		try{
 		//prepare Tx buffer [trigger byte = 0x01] [channel = 0x80(128)] [placeholder = 0x01]
-    var sendBuffer = new Buffer([0x01,(8 + channel<<4),0x1]);
+    var sendBuffer = new Buffer([0x01,(8 + i<<4),0x1]);
     var recieveBuffer = new Buffer(3)
 		rpio.spiTransfer(sendBuffer, recieveBuffer, sendBuffer.length); // send Tx buffer and recieve Rx buffer
 
@@ -295,9 +291,15 @@ setInterval(function() {
     // Ignore first six bits of MSB, bit shift MSB 8 position and 
     // finally combine LSB and MSB to get a full 10bit value
 
+
     var value = ((MSB & 3 ) << 8 ) + LSB;
-		adcValue[channel] = value;
-		vacuumData.data[channel] = value;
+
+		adcValue[i] = value;
+
+		if( i == 0 )	traceData.channel[0]      = 0.39062 * value - 250; 
+		else if ( i == 1 ) traceData.channel[i] = 0.00390625 * value - 2.5;
+		else	traceData.channel[i]  = -0.0001953125 * value + 0.125 ;
+		
 		} catch(e) {
 			var date = new Date();
 			var n = date.toLocaleDateString();
@@ -306,13 +308,23 @@ setInterval(function() {
 			console.log('SPI ADC error = ',e);
 		}
   };
-
+	// console.log('check1 = '+ traceData.channel);
   var promise = readMcp23017(ADDR_IN1,0);
 
   promise
   .then(function(byte){
     if(byte < 256 ){
-      inMcp23017[0] = byte;
+			inMcp23017[0] = byte;
+      var temp1 =  (inMcp23017[0] & 1 );
+			if( temp1 ) console.log('OFF  Start Input');
+			else				console.log('ON Start Input');
+
+
+
+      var temp2 =  (inMcp23017[0] & 2 );
+			if( temp2 ) console.log('OFF Stop Input');
+			else				console.log('ON  Stop Input');
+
       return writeMcp23017(ADDR_OUT1,0,byte);
     } 
   }).catch(function(err){
@@ -354,11 +366,9 @@ setInterval(function() {
   console.log('%d,%d,%d,%d',inMcp23017[0],inMcp23017[1],inMcp23017[2],inMcp23017[3]);
 
 	try{
-		for ( var i = 0 ; i < 8 ; i++){
-			traceData.channel[i] = adcValue[i] - adcOffset[i];
-		}
+
 		count = (channel > 598 ) ? 0 : count+1; 
-		channel = (channel > 6 ) ? 0 : channel+1; 
+		//channel = (channel > 6 ) ? 0 : channel+1; 
 	
 	  var portVal = 0;
 
@@ -385,6 +395,9 @@ setInterval(function() {
 		console.log('process.stdout.write error = ',e);
 	}
 },1000);
+
+
+
 
 
 process.on('uncaughtException',function(err) {
@@ -415,3 +428,37 @@ process.on('exit', function () {
     rpio.spiEnd();
     process.exit(0);
 });
+
+
+/*	var wsnIn = new ilsung({wsnData:adcValue});
+      wsnIn.save(function(err,ilsung){
+         if(err){
+            console.log(err);
+            return console.error(err);
+         }else{
+            console.log('CH0 SAVED :'+adcValue);
+         }
+      });
+
+*/
+
+/*   wsnDB1.find(
+      {$and:[{
+         "date" :{
+            $lte:new Date(),
+            $gte: new Date( new Date().setDate( new Date().getDate()-7))}
+         },{"wsnData":{$regex:masterName}},
+         {"wsnData":{$regex:sensorId}}
+      ]},
+      {'wsnData':true,_id:false,'date':true},
+      function ( err, docs){
+         if( err ) {
+            reject(err);
+         }else{
+            var test = setSensorDataTb(docs);
+            (param.table).push(test);
+            param.sensorId = tmp;
+            resolve(param);
+         	}
+				}
+*/
