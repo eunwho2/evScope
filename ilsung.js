@@ -1,14 +1,15 @@
 //"use strict";
+var errState = 0;
+var	startTime = new Date();
+var minute = 0;
+var ADDR_IN1 = 0x20, ADDR_IN2 = 0x21, ADDR_OUT1=0x22,ADDR_OUT2= 0x23;
 
 const eventEmitter = require('events');
 
 class MyEmitter extends eventEmitter{};
-
 const myEmitter = new MyEmitter();
 
-
 var Promise = require('promise');
-
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
@@ -16,11 +17,11 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/ilsung');
 
 var db = mongoose.connection;
+
 db.on('error',console.error.bind(console,'mongoose connection error'));
 db.once('open',function(){
    console.log('Ok db connected');
 });
-
 
 var adcValue = [0,0,0,0,0,0,0,0];
 
@@ -214,16 +215,6 @@ io.on('connection', function (socket) {
 
 });
 
-
-
-var errState = 0;
-
-var	startTime = new Date();
-var minute = 0;
-
-var ADDR_IN1 = 0x20, ADDR_IN2 = 0x21, ADDR_OUT1=0x22,ADDR_OUT2= 0x23;
-
-
 piI2c.writeByteSync(ADDR_OUT1,0,0,function(err){
   if(err) console.log(err);
 });
@@ -307,6 +298,10 @@ var startTime = 0;
 var poweroff = 0;
 var startState = 0;
 
+var coefDegr = [[690,900],[0,200]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
+var coefPres = [[690,900],[0,2.0]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
+var coefVacu = [[690,900],[0,-0.1]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
+
 setInterval(function() {
 
 	var date = new Date();
@@ -324,19 +319,28 @@ setInterval(function() {
     var junk = recieveBuffer[0];
     var MSB = recieveBuffer[1];
     var LSB = recieveBuffer[2];
-
     // Ignore first six bits of MSB, bit shift MSB 8 position and 
     // finally combine LSB and MSB to get a full 10bit value
-
-
     var value = ((MSB & 3 ) << 8 ) + LSB;
 
 		adcValue[i] = value;
 
-		if( i == 0 )	traceData.channel[0]      = Math.round(( 0.39062 * value - 250)-21); 
-		else if ( i == 1 ) traceData.channel[i] = (0.00390625 * value - 2.5).toFixed(2);
-		else	traceData.channel[i]  = (-0.0001953125 * value + 0.125).toFixed(3) ;
-		
+		if( i == 0 ){
+			var alpa = (coefDegr[1][1]-coefDegr[1][0])/( coefDegr[0][1] - coefDegr[0][0]);
+			var beta = coefDegr[1][1] - alpa * coefDegr[0][1];
+			var offset = 0.0;
+			traceData.channel[0] = Math.round(( alpa * value + beta) + offset ); 
+		}else if(i == 1 ){
+			var alpa = (coefPres[1][1]-coefPres[1][0])/( coefPres[0][1] - coefPres[0][0]);
+			var beta = coefPres[1][1] - alpa * coefPres[0][1];
+			var offset = 0.0;
+			traceData.channel[1] = ((( alpa * value + beta) + offset ).toFixed(2))*1; 
+		} else{
+			var alpa = (coefVacu[1][1]-coefVacu[1][0])/( coefVacu[0][1] - coefVacu[0][0]);
+			var beta = coefVacu[1][1] - alpa * coefVacu[0][1];
+			var offset = 0.0;
+			traceData.channel[i] = ((( alpa * value + beta) + offset ).toFixed(2))*1; 
+		}
 		} catch(e) {
 			var date = new Date();
 			var n = date.toLocaleDateString();
@@ -345,6 +349,7 @@ setInterval(function() {
 			console.log('SPI ADC error = ',e);
 		}
   };
+
 	// console.log('check1 = '+ traceData.channel);
   var promise = readMcp23017(ADDR_IN1,0); //외부 입력을 읽음
 
@@ -452,6 +457,13 @@ setInterval(function() {
   }); 
   console.log('%d,%d,%d,%d,%d,%d,%d,%d',
 			adcValue[0],adcValue[1],adcValue[2],adcValue[3],adcValue[4],adcValue[5],adcValue[6],adcValue[7]);
+
+  console.log('%d,%d,%d,%d,%d,%d,%d,%d',
+			traceData.channel[0],traceData.channel[1],
+			traceData.channel[2],traceData.channel[3],
+			traceData.channel[4],traceData.channel[6],
+			traceData.channel[6],traceData.channel[7])
+
   console.log('%d,%d,%d,%d',inMcp23017[0],inMcp23017[1],inMcp23017[2],inMcp23017[3]);
 
 	try{
