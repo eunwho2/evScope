@@ -1,0 +1,402 @@
+{%extends 'templates/layout.html' %}
+{% block content %}
+<!--
+<script src="gauge.min.js"></script>
+-->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+ google.charts.load('current', {'packages':['corechart']});
+
+<!-- start of google scatter -->
+
+
+   var graphData1 = [];
+   var graphData2 = [];
+   var graphData3 = [];
+
+   var scatGraphTitle=['','','',''];
+
+   var timeNow = new Date();
+   var now = timeNow.getTime();
+
+		console.log(timeNow);
+	
+   for( var i = 0 ; i < 720; i++){
+      graphData1.push([i]);
+      graphData1[i].push(0);
+ //     graphData1[i].push(2.0);
+
+   }
+  
+	 // graphData1[0][1] = 0;
+   // graphData1[0][2] = 1000;
+	
+
+	google.charts.load('current', {'packages':['corechart', 'scatter']});
+	google.charts.setOnLoadCallback(drawStuff);
+
+<!-- drawStuff() -->
+
+  function drawStuff( titleName ) {
+	
+  	data1 = new google.visualization.DataTable();
+  	data2 = new google.visualization.DataTable();
+  	data3 = new google.visualization.DataTable();
+
+  	data1.addColumn('number','Recording Time'); 
+  	data1.addColumn('number','온도' );
+
+  	data2.addColumn('number','Recording Time'); 
+  	data2.addColumn('number','압력' );
+
+  	data3.addColumn('number','Recording Time'); 
+  	data3.addColumn('number','진공1' );
+  	data3.addColumn('number','진공2' );
+  	data3.addColumn('number','진공3' );
+  	data3.addColumn('number','진공4' );
+  	data3.addColumn('number','진공5' );
+  	data3.addColumn('number','진공6' );
+	
+
+  	// data.addRows( graphData1);
+    var materialOptions1 = {
+    	chart: {title:titleName },
+    	width: 1000,
+      height: 280,
+      series: {0: {axis: 'Sensor Value'}},
+			axes: { y: {'Sensor Value': {label: ''}, }},
+      hAxis:{ 
+				title:'',
+				titleTextStyle:{color:''},
+				viewWindow:{max:12*60,min:0},
+				format:'#분' },
+			vAxis:{	viewWindow: {max:250,	min:-50	}	},
+      pointSize:0
+		};
+
+    var materialOptions2 = {
+    	chart: { },
+    	width: 1000,
+      height: 280,
+      series: {0: {axis: 'Sensor Value'}},
+			axes: { y: {'Sensor Value': {label: ''}, }},
+      hAxis:{ 
+    	chart: {title: '' },
+				titleTextStyle:{color:''},
+				viewWindow:{max:12*60,min:0},
+				format:'#분' },
+			vAxis:{	viewWindow: {max:250,	min:-50	}	},
+      pointSize:0
+		};
+ 		
+		var materialOptions3 = {
+    	chart: {title: '' },
+    	width: 1000,
+      height: 280,
+      series: {0: {axis: 'Sensor Value'}, },
+      axes: {  y: {'Sensor Value': {label: ''}, }},
+      hAxis:{ title:'',titleTextStyle:{color: ''}},
+      format:'#분'
+    };
+
+	
+		var chart1 = document.getElementById('chart_div1');
+		function drawMaterialChart1( ) {
+    	var materialChart = new google.charts.Scatter(chart1);
+      data1.addRows( graphData1);
+      materialChart.draw(data1, google.charts.Scatter.convertOptions(materialOptions1));
+    }
+		drawMaterialChart1( );
+
+		var chart2 = document.getElementById('chart_div2');
+		function drawMaterialChart2( ) {
+    	var materialChart = new google.charts.Scatter(chart2);
+      data2.addRows( graphData2);
+      materialChart.draw(data2, google.charts.Scatter.convertOptions(materialOptions2));
+    }
+		drawMaterialChart2( );
+
+		var chart3 = document.getElementById('chart_div3');
+		function drawMaterialChart3( ) {
+    	var materialChart = new google.charts.Scatter(chart3);
+      data3.addRows( graphData3);
+      materialChart.draw(data3, google.charts.Scatter.convertOptions(materialOptions3));
+    }
+		drawMaterialChart3( );
+	};
+
+</script>
+<!-- end of goole gauge -->
+
+
+
+<div class="container">
+<div class='outer'>
+<div class='inner'>
+<div class='centered'>
+	<div id='leftBox' class='csLeftBox'>
+		<div class='head title1'>
+			<span id='stater' class='csStateLamp'>대기중</span>
+			<span class="title1 titleName">일성화이바 오토크레브</span>
+		</div>
+		<div id="oscope-parent" class="csOscope">
+			<canvas id="oscope" class="oscope-canvas" width='600' height='450'></canvas>
+		</div>
+		<div class="BottomBox">
+			<div id="hr1"></div>
+			<div id="hr2"></div>
+			<div id="hr3"></div>
+			<div id="hr4"></div>
+			<div id="hr5"></div>
+			<div id="hr6"></div>
+			<div id="hr7"></div>
+			<div id="hr8"></div>
+		</div>
+		<div class="Namebox">
+			<div id="name1">온도</div>
+			<div id="name2">압력</div>
+			<div id="name3">진공1</div>
+			<div id="name4">진공2</div>
+			<div id="name5">진공3</div>
+			<div id="name6">진공4</div>
+			<div id="name7">진공5</div>
+			<div id="name8">진공6</div>
+		</div>
+		<div id='bottomBox' class='csBottomBox'> 
+				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large' onclick='btnEmg()'>비상정지</button>
+				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large' onclick='btnStart()'>패턴시작</button>
+				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large' onclick='btnStop()'>패턴정지</button>
+				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large' onclick='btnRestart()'>기기정지</button>
+				<button id='btnNoVac' 	class='w3-button w3-round w3-green  w3-large' onclick='changeNoVac()'>진공선택</button>
+				<span id='idVacRec' 	class='csVacRec'>1</span>
+		</div>
+		<div id='timeStampBox' class = 'csTimeStampBox'>
+			<span class='titleName1'>경과시간></span>
+			<span id='endTimeStamp' class='titleName1'>00시간 00분 00초</span>
+			<span class='titleName'>현재시간</span>
+			<span id='clock1' class='titleName'>2018:02:07: 10:10:00</span>
+			<br>	
+			<span class='titleName1'> 시작시간</span>
+			<span id='startTimeStamp' class='titleName1'>2018:02:07: 10:10:00</span>
+			<span class='titleName'>정지시간</span>
+			<span id='endTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
+		</div>
+
+		<div id='stopRecordBox' class = 'csTripMsgBox'>
+			<div class='titleName'>패턴작업정지기록</div>
+			<textarea id='stopRecord' class='csStopRecord' rows="5" cols="80"> At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies.
+			</textarea>
+		</div>
+	</div> <!-- end of leftBox -->
+
+	<div class='csRightBox'>
+		<div id="gauge_box" class='gaugeBox'>
+			<canvas id='gauge0' class='gC gC0' data-type="radial-gauge" data-width='173' data-height='200'></canvas>
+			<canvas id='gauge1' class='gC gC1' data-type="radial-gauge" data-width='173' data-height='200'></canvas>
+			<canvas id='gauge2' class='gC gC2' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
+			<canvas id='gauge3' class='gC gC3' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
+			<canvas id='gauge4' class='gC gC4' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
+			<canvas id='gauge5' class='gC gC5' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
+			<canvas id='gauge6' class='gC gC6' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
+			<canvas id='gauge7' class='gC gC7' data-type="radial-gauge" data-width='170' data-height='170'></canvas>
+		</div>
+	</div>
+	<div id="graph">
+		<tr>
+			<th> <div id="chart_div1" style="" > </div></th>
+			<th> <div id="chart_div2" style="" > </div></th>
+			<th> <div id="chart_div3" style="" > </div></th>
+    </tr>
+	<div>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- ================ -->
+<!-- control handlers -->
+<!-- ================ -->
+<script>
+
+	var msgTx = { selVac: 0};
+
+  function changeNoVac(){
+		msgTx.selVac = 4;
+		console.log('msgTx.selVac = ', msgTx.selVac);
+		socket.emit('btnClick',{selVac :4});
+	}
+
+  function btnEmg(){
+		msgTx.selVac = 0;
+		socket.emit('btnClick',{selVac:0});
+	}
+
+  function btnStart(){
+		msgTx.selVac = 1;
+		socket.emit('btnClick',msgTx);
+	}
+
+  function btnStop(){
+		msgTx.selVac = 2;
+		socket.emit('btnClick',msgTx);
+	}
+
+  function btnRestart(){
+		msgTx.selVac = 3;
+		socket.emit('btnClsik',msgTx);
+	}
+
+  //--- sampling bits
+
+  // =============================================
+  // canvas mouse event for cursor drag
+  // =============================================
+  var mouse_state = 0;
+  $('#oscope').on('mousedown',function(event) {
+    mouse_state = 1;
+    oscope.onCursorMove(event.offsetX,event.offsetY);
+  });
+
+  $('#oscope').on('mouseup',function() {
+    mouse_state = 0;
+  });
+
+  $('#oscope').on('mouseout',function() {
+    mouse_state = 0;
+  });
+
+  $('#oscope').on('mousemove',function(event) {
+    switch(mouse_state) {
+    case 0:
+      // do nothing
+      break;
+    case 1:
+      oscope.onCursorMove(event.offsetX,event.offsetY);
+      break;
+    }
+  });
+  // =============================================
+  // cursor select
+  // =============================================
+  $('#hcursor1' ).on('change',null,function() {oscope.onCursorSelect(0);});
+  $('#hcursor2' ).on('change',null,function() {oscope.onCursorSelect(1);});
+  $('#vcursor1' ).on('change',null,function() {oscope.onCursorSelect(2);});
+  $('#vcursor2' ).on('change',null,function() {oscope.onCursorSelect(3);});
+
+  // =============================================
+  // run/stop
+  // =============================================
+  $('#btn-run' ).on('change',null,function() {oscope.onRunStop(true );});
+  $('#btn-stop').on('change',null,function() {oscope.onRunStop(false);});
+
+  // =============================================
+  // x axis offset handling
+  // =============================================
+
+  function setChannelOffset(channel,element) {
+    var offset = parseInt(element.value);
+    if (offset < -4) {
+      element.value = "-4";
+      offset = -4;
+    }
+    if (offset > 4) {
+      element.value = "4";
+      offset = 4;
+    }
+    oscope.onVerticalOffset(channel,offset);
+  }
+
+  $('#channel1v').on('change',null,
+      function() {
+        var element = $('#channel1v')[0];
+        setChannelOffset(1,element);
+      }
+  );
+
+  $('#channel2v').on('change',null,
+      function() {
+        var element = $('#channel2v')[0];
+        setChannelOffset(2,element);
+      }
+  );
+
+  $('#channel3v').on('change',null,
+      function() {
+        var element = $('#channel3v')[0];
+        setChannelOffset(3,element);
+      }
+  );
+
+  $('#channel4v').on('change',null,
+      function() {
+        var element = $('#channel4v')[0];
+        setChannelOffset(4,element);
+      }
+  );
+
+//	var test = [0,200,2.0,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1];
+//	msg.push(test);
+  
+
+	
+socket.on('graph', function (msgIn) {
+
+	var msg1=[];
+	var msg2=[];
+	var msg3=[];
+	var i =0;
+
+	var msg = msgIn.graphData;
+	var startTime = msgIn.startTime;
+	var endTime = msgIn.endTime;
+	var startTime = msgIn.startTime;
+  document.getElementById('startTimeStamp').innerHTML = startTime;
+  document.getElementById('endTimeStamp').innerHTML = endTime;
+	console.log(endTime);
+
+
+	msg.forEach(function(each1){
+		msg1.push([each1[0]]);  // time
+		msg1[i].push(each1[1]); // temperature
+		i++;
+	});	
+	console.log(msg1);
+
+	i=0;
+	msg.forEach(function(each1){
+		msg2.push([each1[0]]);  // time
+		msg2[i].push(each1[2]); // pressor
+		i++;
+	});	
+	console.log(msg2);
+
+	i=0;
+	msg.forEach(function(each1){
+		msg3.push([each1[0]]);  // time
+		msg3[i].push(each1[3]); // pressor
+		msg3[i].push(each1[4]); // pressor
+		msg3[i].push(each1[5]); // pressor
+		msg3[i].push(each1[6]); // pressor
+		msg3[i].push(each1[7]); // pressor
+		msg3[i].push(each1[8]); // pressor
+		i++;
+	});	
+	console.log(msg3);
+
+
+
+
+
+	graphData1 = msg1;
+	graphData2 = msg2;
+	graphData3 = msg3;
+	
+	var graphTitle = 'Start Time = ' + startTime + 'End Time = ' + endTime;
+	drawStuff(graphTitle);
+});
+
+</script>
+{% endblock %}
+

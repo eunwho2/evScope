@@ -405,6 +405,7 @@ var oscope = (function() {
 
     case 1:
 			tempOffset = 0.25;
+			//tempOffset = 0.0;
 	    ys = 450 / 2.5; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "#2ECCFA";
@@ -418,7 +419,7 @@ var oscope = (function() {
       break;
 
     case 3:
-			tempOffset = 0.1;
+			tempOffset = 0.1125;
 //	    ys = 450 / 0.125 * (-1); 
 	    ys = 450 / 0.125; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
@@ -426,28 +427,28 @@ var oscope = (function() {
       break;
 
     case 4:
-			tempOffset = 0.0875;
+			tempOffset = 0.1125;
 	    ys = 450 / 0.125 ; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "red";
       break;
 
     case 5:
-			tempOffset = 0.075;
+			tempOffset = 0.1125;
 	    ys = 450 / 0.125 ; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "#FF8000";
       break;
 
     case 6:
-			tempOffset = 0.0625;
+			tempOffset = 0.1125;
 	    ys = 450 / 0.125 ; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "gray";
       break;
 
     case 7:
-			tempOffset = 0.05;
+			tempOffset = 0.1125;
 	    ys = 450 / 0.125 ; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "purple";
@@ -457,7 +458,7 @@ var oscope = (function() {
     // scale the trace y axis
     // samples are Int16Array
     for(i=0;i<trace.length;++i) {
-      t.push([i*hs,(trace.sample[i]+tempOffset) * ys]);
+      t.push([i*hs,((trace.sample[i])*1+tempOffset) * ys]);
     }
 
     // draw it
@@ -716,6 +717,18 @@ socket.on('trace', function (msg) {
 	$('#gauge6').attr('data-value', (msg.channel[6]));
 	$('#gauge7').attr('data-value', (msg.channel[7]));
 
+	if(msg.state == 0 ){
+    var target = document.getElementById('stater');
+		target.innerHTML ='대기중';    
+		$('stater').removeClass('csStateLampRunning');
+		$('stater').addClass('csStateLampReady');
+	}else{
+    var target = document.getElementById('stater');
+		target.innerHTML ='동작중';
+		$('stater').removeClass('csStateLampReady');
+		$('stater').addClass('csStateLampRunning');
+	}	
+	//console.log(msg);
 	traceCount = (traceCount > 599) ? 0 : traceCount+1;
   oscope.onPaint(trace);
 });
@@ -833,5 +846,5 @@ setInterval( function () {
 	var date = new Date();
 	var n = date.toDateString();
 	var time = date.toLocaleTimeString();
-	document.getElementById('clock1').innerHTML = n +':'+ time;
+  document.getElementById('clock1').innerHTML = n +':'+ time;
 }, 2000);

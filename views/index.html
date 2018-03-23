@@ -3,15 +3,20 @@
 <!--
 <script src="gauge.min.js"></script>
 -->
-
+<script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script> 
+<script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+<script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script> 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
- google.charts.load('current', {'packages':['corechart']});
+
+google.charts.load('current', {'packages':['corechart']});
 
 <!-- start of google scatter -->
 
 
    var graphData1 = [];
+   var graphData2 = [];
+   var graphData3 = [];
 
    var scatGraphTitle=['','','',''];
 
@@ -19,69 +24,121 @@
    var now = timeNow.getTime();
 
 		console.log(timeNow);
-
-   for( var i = 0 ; i < 1000; i++){
+	
+   for( var i = 0 ; i < 720; i++){
       graphData1.push([i]);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
-      graphData1[i].push(700*1);
+      graphData1[i].push(0);
+ //     graphData1[i].push(2.0);
+
    }
   
-	 graphData1[0][1] = 0;
-   graphData1[0][2] = 1000;
-
-
+	 // graphData1[0][1] = 0;
+   // graphData1[0][2] = 1000;
+	
 	google.charts.load('current', {'packages':['corechart', 'scatter']});
 	google.charts.setOnLoadCallback(drawStuff);
 
 <!-- drawStuff() -->
 
-  function drawStuff( ) {
-
+  function drawStuff( titleName ) {
+	
   	data1 = new google.visualization.DataTable();
+  	data2 = new google.visualization.DataTable();
+  	data3 = new google.visualization.DataTable();
 
   	data1.addColumn('number','Recording Time'); 
   	data1.addColumn('number','온도' );
-  	data1.addColumn('number','압력' );
-  	data1.addColumn('number','진공1' );
-  	data1.addColumn('number','진공2' );
-  	data1.addColumn('number','진공3' );
-  	data1.addColumn('number','진공4' );
-  	data1.addColumn('number','진공5' );
-  	data1.addColumn('number','진공6' );
-	
 
-  	// data.addRows( graphData1);
+  	data2.addColumn('number','Recording Time'); 
+  	data2.addColumn('number','압력' );
+
+  	data3.addColumn('number','Recording Time'); 
+  	data3.addColumn('number','진공1' );
+  	data3.addColumn('number','진공2' );
+  	data3.addColumn('number','진공3' );
+  	data3.addColumn('number','진공4' );
+  	data3.addColumn('number','진공5' );
+  	data3.addColumn('number','진공6' );
 
     var materialOptions1 = {
-    	chart: {title: 'this is title of graph'},
+    	chart: {title:titleName },
     	width: 1000,
       height: 300,
+			colors: 'GoldenRod',
+      series: {0: {axis: 'Sensor Value'}},
+			axes: { y: {'Sensor Value': {label: ''}, }},
+      hAxis:{ 
+				title:'',
+				titleTextStyle:{color:''},
+				viewWindow:{max:12*60,min:0},
+				format:'#분' },
+			vAxis:{	viewWindow: {max:250,	min:-50	}	},
+			pointsVisible:false,
+			pointSize:0.1
+		};
+
+    var materialOptions2 = {
+    	chart: {title:'' },
+    	width: 1000,
+      height: 300,
+			colors: 'DodgerBlue',
+      series: {0: {axis: 'Sensor Value'}},
+			axes: { y: {'Sensor Value': {label: ''}, }},
+      hAxis:{ 
+				title:'',
+				titleTextStyle:{color:''},
+				viewWindow:{max:12*60,min:0},
+				format:'#분' },
+			vAxis:{	viewWindow: {max:2,	min: -0.5	}	},
+      pointSize:0
+		};
+ 		
+		var materialOptions3 = {
+    	chart: {title: '' },
+    	width: 1000,
+      height: 300,
+			colors: ['Fuchsia','lavender','red','orange','gray','purple'],
       series: {0: {axis: 'Sensor Value'}, },
       axes: {  y: {'Sensor Value': {label: ''}, }},
-      hAxis:{ title:'',titleTextStyle:{color: ''},
-      format:'#초'
-    }};
+      hAxis:{ 
+				title:'',
+				titleTextStyle:{color: ''},
+				viewWindow:{max:10*60,min:0},
+      	format:'#분' },
+			vAxis:{	viewWindow: {max:0,	min:-0.12	}	},
+			pointSize:0
+    };
 
 	
 		var chart1 = document.getElementById('chart_div1');
-
 		function drawMaterialChart1( ) {
     	var materialChart = new google.charts.Scatter(chart1);
       data1.addRows( graphData1);
       materialChart.draw(data1, google.charts.Scatter.convertOptions(materialOptions1));
     }
 		drawMaterialChart1( );
-  };
+
+
+		var chart2 = document.getElementById('chart_div2');
+		function drawMaterialChart2( ) {
+    	var materialChart = new google.charts.Scatter(chart2);
+      data2.addRows( graphData2);
+      materialChart.draw(data2, google.charts.Scatter.convertOptions(materialOptions2));
+    }
+		drawMaterialChart2( );
+
+		var chart3 = document.getElementById('chart_div3');
+		function drawMaterialChart3( ) {
+    	var materialChart = new google.charts.Scatter(chart3);
+      data3.addRows( graphData3);
+      materialChart.draw(data3, google.charts.Scatter.convertOptions(materialOptions3));
+    }
+		drawMaterialChart3( );
+
+	};
+
 </script>
 <!-- end of goole gauge -->
-
-
 
 <div class="container">
 <div class='outer'>
@@ -89,7 +146,7 @@
 <div class='centered'>
 	<div id='leftBox' class='csLeftBox'>
 		<div class='head title1'>
-			<span id='stater' class='csStateLamp'>대기중</span>
+			<span id='stater' class='csStateLampReady'>대기중</span>
 			<span class="title1 titleName">일성화이바 오토크레브</span>
 		</div>
 		<div id="oscope-parent" class="csOscope">
@@ -157,6 +214,8 @@
 	<div id="graph">
 		<tr>
 			<th> <div id="chart_div1" style="" > </div></th>
+			<th> <div id="chart_div2" style="" > </div></th>
+			<th> <div id="chart_div3" style="" > </div></th>
     </tr>
 	<div>
 
@@ -183,14 +242,64 @@
 		socket.emit('btnClick',{selVac:0});
 	}
 
+/*
   function btnStart(){
 		msgTx.selVac = 1;
 		socket.emit('btnClick',msgTx);
 	}
+*/
+      function getImgData(chartContainer) {
+        var chartArea = chartContainer.getElementsByTagName('iframe')[0].contentDocument.getElementById('chartArea');
+        var svg = chartArea.innerHTML;
+        var doc = chartContainer.ownerDocument;
+        var canvas = doc.createElement('canvas');
+        canvas.setAttribute('width', chartArea.offsetWidth);
+        canvas.setAttribute('height', chartArea.offsetHeight);
+        
+        
+        canvas.setAttribute(
+            'style',
+            'position: absolute; ' +
+            'top: ' + (-chartArea.offsetHeight * 2) + 'px;' +
+            'left: ' + (-chartArea.offsetWidth * 2) + 'px;');
+        doc.body.appendChild(canvas);
+        canvg(canvas, svg);
+        var imgData = canvas.toDataURL("image/png");
+        canvas.parentNode.removeChild(canvas);
+        return imgData;
+      }
+
+
+
+function saveAsImg(chartContainer) {
+        var imgData = getImgData(chartContainer);
+        
+        // Replacing the mime-type will force the browser to trigger a download
+        // rather than displaying the image in the browser window.
+        window.location = imgData.replace("image/png", "image/octet-stream");
+      }
+/*
+  function btnStart(){
+			saveAsImg(document.getElementById('chart_div1'));
+	}
+*/
+
+  function btnStart(){
+		var my_div = document.getElementById('chart_div1');
+		var my_chart = google.visualization.ScatterChart(my_div);
+		//var my_chart = new google.visualization.ScatterChart(document.getElementById('chart_div1'));
+
+		google.visualization.events.addListener(my_chart, 'ready', function () {
+  		my_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
+		});
+
+   // drawMaterialChart1( );
+
+//		my_chart.draw(data);
+	}
 
   function btnStop(){
-		msgTx.selVac = 2;
-		socket.emit('btnClick',msgTx);
+
 	}
 
   function btnRestart(){
@@ -286,13 +395,62 @@
       }
   );
 
+//	var test = [0,200,2.0,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1];
+//	msg.push(test);
+  
+
 	
-socket.on('graph', function (msg) {
-  console.log(msg);
-	var test = [0,200,2.0,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1];
-	msg.push(test);
-	graphData1 = msg;
-	drawStuff();
+socket.on('graph', function (msgIn) {
+
+	var msg1=[];
+	var msg2=[];
+	var msg3=[];
+	var i =0;
+
+	var msg = msgIn.graphData;
+	var startTime = msgIn.startTime;
+	var endTime = msgIn.endTime;
+	var startTime = msgIn.startTime;
+
+  document.getElementById('startTimeStamp').innerHTML = startTime;
+  document.getElementById('endTimeStamp').innerHTML = endTime;
+
+	console.log(endTime);
+
+
+	msg.forEach(function(each1){
+		msg1.push([each1[0]/60]);  // time
+		msg1[i].push(each1[1]/60); // temperature
+		i++;
+	});	
+	console.log(msg1);
+
+	i=0;
+	msg.forEach(function(each1){
+		msg2.push([each1[0]/60]);  // time
+		msg2[i].push(each1[2]/60); // pressor
+		i++;
+	});	
+	console.log(msg2);
+
+	i=0;
+	msg.forEach(function(each1){
+		msg3.push([each1[0]/60]);  // time
+		msg3[i].push(each1[3]/60); // vacuum
+		msg3[i].push(each1[4]/60); // vacuum
+		msg3[i].push(each1[5]/60); // vacuum
+		msg3[i].push(each1[6]/60); // vacuum
+		msg3[i].push(each1[7]/60); // vacuum
+		msg3[i].push(each1[8]/60); // vacuum
+		i++;
+	});	
+	console.log(msg3);
+	graphData1 = msg1;
+	graphData2 = msg2;
+	graphData3 = msg3;
+	
+	var graphTitle = 'Start Time = ' + startTime + ' :::   End Time = ' + endTime;
+	drawStuff(graphTitle);
 });
 
 </script>

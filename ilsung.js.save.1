@@ -1,0 +1,568 @@
+//"use strict";
+
+const eventEmitter = require('events');
+
+class MyEmitter extends eventEmitter{};
+
+const myEmitter = new MyEmitter();
+
+
+var Promise = require('promise');
+
+var mongoose = require('mongoose');
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect('mongodb://localhost/ilsung');
+
+var db = mongoose.connection;
+db.on('error',console.error.bind(console,'mongoose connection error'));
+db.once('open',function(){
+   console.log('Ok db connected');
+});
+
+
+var adcValue = [0,0,0,0,0,0,0,0];
+
+var ilSungSchema = mongoose.Schema({
+	value 		: adcValue,
+	date:{type:Date,default: Date.now}
+});
+
+var ilSungDB = mongoose.model('ilSungDB', ilSungSchema);
+
+var express      = require('express');
+var path         = require('path');
+var favicon      = require('serve-favicon');
+var logger       = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser   = require('body-parser');
+var cons         = require('consolidate');
+
+var routes    = require('./routes/index');
+var users     = require('./routes/users');
+// var socket    = require('./lib/socket');
+var receiver  = require('./lib/receiver');
+var debug     = require('debug')('ploty:server');
+var port      = process.env.PORT || '3000';
+
+var i2c				= require('i2c-bus');
+var piI2c			= i2c.openSync(1);
+
+piI2c.scan(function(err,res){
+	if(err) console.log(err);
+	else		console.log(res);
+});
+				
+
+//--- create express application
+var app = express();
+app.set('port', port);
+
+//--- create server
+var server = require('http').Server(app);
+
+//--- connect socket.io to server
+var io = require('socket.io')(server);
+
+//--- view engine setup
+app.engine('html',cons.swig);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+
+//--- uncomment after placing your favicon in /public
+//--- app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/users', users);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// development error handler
+// will print stack
+
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
+
+//--- production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
+
+
+var rpio = require('rpio');
+
+//set spi
+rpio.spiBegin(0);
+rpio.spiChipSelect(0);
+rpio.spiSetCSPolarity(0,rpio.LOW);
+rpio.spiSetClockDivider(2048);
+rpio.spiSetDataMode(0);
+
+var inMcp23017=[0,0,0,0];
+var digitalOutBuf = [0];
+
+var count = 0 
+var channel = 0;
+var dataLength = 600;
+var vacuumData = { data : [8]};
+
+//var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
+//var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
+//var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
+//var traceData3 = { channel:3,length:dataLength,sample:[dataLength]}
+//var traceData4 = { channel:4,length:dataLength,sample:[dataLength]}
+//var traceData5 = { channel:5,length:dataLength,sample:[dataLength]}
+//var traceData6 = { channel:6,length:dataLength,sample:[dataLength]}
+//var traceData7 = { channel:7,length:dataLength,sample:[dataLength]}
+
+
+var adcOffset = [630,630,630,630,630,630,630,630]
+
+/*
+for ( var key in traceData0.sample ){
+	traceData0.sample[key] = traceData1.sample[key] = traceData2.sample[key]=0;
+}
+*/
+//	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
+
+//--- start server
+console.log('http on : ' + port.toString());
+server.listen(port);
+
+//--- socket.io support
+
+var testCount = 0;
+var emitCount = 0;
+var selVacRecord = 1;
+
+var traceData = {channel:[0,0,0,0,0,0,0,0],State:0};
+
+io.on('connection', function (socket) {
+	var host  = socket.client.request.headers.host;
+	console.log('connected to : ' + host);
+	socket.on('disconnect', function () {
+  	console.log('disconnected from : ' + host);
+  });
+
+//	socket.on('codeTable',function(from,msg){
+	socket.on('codeTable',function(msg){
+  	console.log('received codeTable request',msg);
+  });
+
+	socket.on('btnClick',function(msgTx){
+
+		var digitalOut = 1;
+
+		// digitalOutBuf = 0 ;
+		// setTimeOut( console.log('out') ,1000);
+  });
+
+	//--- emitt graph proc 
+	myEmitter.on('event',function(param){
+		console.log('received event');
+
+		var endTime = new Date();
+
+		var socketData = { startTime: '',endTime:'',graphData:[]} ;
+
+		socketData.startTime = param;
+		socketData.endTime = endTime;
+ 
+  	ilSungDB.find({'date':{$gte: param}},
+      {'value':true,_id:false,'date':true},
+      function ( err, docs){
+        if( err ) {
+        	console.log(err);
+      	}else{
+
+					var i = 0;
+					var  test = [];
+					var timeNow = new Date();
+					var now = timeNow.getTime();
+
+				  docs.forEach(function (collection){
+  	  	 		var tmp1 = collection.value;
+        	 	// var dateCount = ( collection.date*1 - now );
+						// test.push([]);
+						// test.push( [(collection.date).getTime()]);
+						test.push( [((collection.date)*1-param)/1000]);
+         		
+						for( var j = 0 ; j < 8 ; j++) test[i].push( tmp1[j]*1 );
+						i++;
+    	  	});
+					socketData.graphData = test;
+
+					// console.log(test);
+					socket.emit('graph',socketData);
+      	}
+      }
+   ); 
+	});    
+	//-- end of emitt grpah proc
+
+	setInterval(function() {
+		traceData.state = machineState;
+		socket.emit('trace',traceData);
+	},2000);
+
+
+});
+
+
+
+var errState = 0;
+
+var	startTime = new Date();
+var minute = 0;
+
+var ADDR_IN1 = 0x20, ADDR_IN2 = 0x21, ADDR_OUT1=0x22,ADDR_OUT2= 0x23;
+
+
+piI2c.writeByteSync(ADDR_OUT1,0,0,function(err){
+  if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR_OUT1,1,0,function(err){
+  if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR_OUT2,0,0,function(err){
+  if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR_OUT2,1,0,function(err){
+  if(err) console.log(err);
+});
+
+
+var writeMcp23017 = function(address,port,byte){
+
+  return new Promise(function ( resolve , reject ){
+
+    if(port) var GPIO = 0x13;
+    else     var GPIO = 0x12;
+
+    piI2c.writeByte(address,GPIO,byte,function(err){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
+    });
+  });
+}
+
+var writeCmdMcp23017 = function(address,port,byte){
+
+  return new Promise(function ( resolve , reject ){
+
+    piI2c.writeByteSync(address,port,byte,function(err){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
+    });
+  });
+}
+
+var readMcp23017 = function(address,port){
+
+  return new Promise(function ( resolve , reject ){
+
+    var GPIO = 0x12;
+
+    if( port ) GPIO = 0x13;
+    else       GPIO = 0x12;
+   
+    piI2c.readByte(address,GPIO,function(err,Byte){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve(Byte);
+      }
+    });
+  });
+}
+
+/*
+var promise writeCmdMcp23017(ADDR_OUT1,0,0);
+
+.then(function(){
+	return writeCmdMcp23017(ADDR_OUT1,1,0);
+}).catch(function(ere){
+	console.log(err);
+});
+*/
+/*
+machineState 
+0   --> ready
+1   --> runing
+2   --> trip
+*/
+
+var machineState = 0;
+var recordState = 0;
+var startTime = 0;
+var poweroff = 0;
+var startState = 0;
+
+setInterval(function() {
+
+	var date = new Date();
+	var n = date.toLocaleDateString();
+	var time = date.toLocaleTimeString();
+
+  for ( var i = 0; i <= 7; i++){
+		try{
+		//prepare Tx buffer [trigger byte = 0x01] [channel = 0x80(128)] [placeholder = 0x01]
+    var sendBuffer = new Buffer([0x01,(8 + i<<4),0x1]);
+    var recieveBuffer = new Buffer(3)
+		rpio.spiTransfer(sendBuffer, recieveBuffer, sendBuffer.length); // send Tx buffer and recieve Rx buffer
+
+    // Extract value from output buffer. Ignore first byte
+    var junk = recieveBuffer[0];
+    var MSB = recieveBuffer[1];
+    var LSB = recieveBuffer[2];
+
+    // Ignore first six bits of MSB, bit shift MSB 8 position and 
+    // finally combine LSB and MSB to get a full 10bit value
+
+
+    var value = ((MSB & 3 ) << 8 ) + LSB;
+
+		adcValue[i] = value;
+
+		if( i == 0 )	traceData.channel[0]      = Math.round(( 0.39062 * value - 250)-21); 
+		else if ( i == 1 ) traceData.channel[i] = (0.00390625 * value - 2.5).toFixed(2);
+		else	traceData.channel[i]  = (-0.0001953125 * value + 0.125).toFixed(3) ;
+		
+		} catch(e) {
+			var date = new Date();
+			var n = date.toLocaleDateString();
+			var time = date.toLocaleTimeString();
+			console.log('E time = ',n+' : ' + time);
+			console.log('SPI ADC error = ',e);
+		}
+  };
+	// console.log('check1 = '+ traceData.channel);
+  var promise = readMcp23017(ADDR_IN1,0); //외부 입력을 읽음
+
+  promise
+  .then(function(byte){
+    if(byte < 256 ){
+			inMcp23017[0] = byte;
+
+      var temp1 =  (inMcp23017[0] & 1 );
+			if( temp1 ){
+				// first stop state 
+				// draw graph and save to png image file
+				// mongoDB find and set table for graphic data
+				if ( recordState ) {  // 시작상태에 있다가 정지상태로 변환 되는 시점의 처리
+					recordState++;
+					if(recordState > 2 ) {
+						console.log('set graph data and emit to clients');
+						//경과시간
+						var endTime = new Date();
+						var elapedTime = endTime-startTime;
+						console.log( elapedTime);
+						myEmitter.emit('event', startTime );
+						recordState = 0;
+					}
+				}else{
+					machineState = 0; // machine ready
+					console.log('OFF  Start Input');
+				}
+			} else {
+				console.log('ON Start Input');
+				if( recordState == 0 ){
+						recordState = 1;
+						startTime = new Date();
+				} else { // recording analog signal to mongoDB
+					//var adcValue = [0,0,0,0,0,0,0,0];
+					//var ilSungSchema = mongoose.Schema({
+					//	recordId 	: Number,
+					//	value 		: adcValue,
+					//	date:{type:Date,default:Date.now}
+					//});
+					 
+			//--- start for saving data to mongoDB
+					machineState = 1;	// machine running
+
+					var saveTime = new Date();
+					var mongoIn = new ilSungDB({value:traceData.channel});
+
+					mongoIn.save(function(err,mongoIn){
+         		if(err){
+            	console.log(err);
+            	return console.error(err);
+         		}else{
+            	console.log('Graph Data saved :'+mongoIn);
+         		}
+      		});  
+			//--- end of saving mongoDb data
+				} // else of input start.				
+	    } 
+
+      var temp2 =  (inMcp23017[0] & 2 );
+			if( temp2 ){
+				console.log('OFF Stop Input');
+				poweroff = 0;
+			} else {
+				poweroff++;
+				console.log('on stop count = %d',poweroff);
+				console.log('ON  Stop Input');
+				if(poweroff > 1 ) shutdown ();
+			}
+		 return writeMcp23017(ADDR_OUT1,0,byte);
+ 		}   
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(){
+    return(readMcp23017(ADDR_IN1,1));
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(byte){
+    if(byte < 256 ){
+      inMcp23017[1] = byte;
+      return writeMcp23017(ADDR_OUT1,1,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(){
+    return(readMcp23017(ADDR_IN2,0));
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(byte){
+    if(byte < 256 ){
+      inMcp23017[2] = byte;
+      return writeMcp23017(ADDR_OUT2,0,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }).then(function(){
+    return(readMcp23017(ADDR_IN2,1));
+  }).then(function(byte){
+    if(byte < 256 ){
+	  	inMcp23017[3] = byte;
+      return writeMcp23017(ADDR_OUT2,1,byte);
+    } 
+  }).catch(function(err){
+    console.log(err);
+  }); 
+  console.log('%d,%d,%d,%d,%d,%d,%d,%d',
+			adcValue[0],adcValue[1],adcValue[2],adcValue[3],adcValue[4],adcValue[5],adcValue[6],adcValue[7]);
+  console.log('%d,%d,%d,%d',inMcp23017[0],inMcp23017[1],inMcp23017[2],inMcp23017[3]);
+
+	try{
+
+		count = (channel > 598 ) ? 0 : count+1; 
+		//channel = (channel > 6 ) ? 0 : channel+1; 
+	
+	  var portVal = 0;
+
+		if( (count % 10) == 0 ){
+		
+			var endTime = new Date();
+			var timeDiff = endTime - startTime;
+
+			timeDiff /= 1000;
+
+			timeDiff /= 60;
+
+			minute = Math.round(timeDiff);
+			console.log('-------------------------------------------------------');
+			console.log('                    경과 분  =    ',minute ); 
+			console.log('-------------------------------------------------------');
+		}
+
+	} catch(e) {
+		var date = new Date();
+		var n = date.toLocaleDateString();
+		var time = date.toLocaleTimeString();
+		console.log('E time = ',n+' : ' + time);
+		console.log('process.stdout.write error = ',e);
+	}
+},1000);
+
+var exec = require('child_process').exec;
+
+function shutdown(callback){
+    exec('shutdown now', function(error, stdout, stderr){ callback(stdout); });
+}
+
+var gracefulShutdown = function() {
+  console.log("Received kill signal, shutting down gracefully.");
+  server.close(function() {
+    console.log("Closed out remaining connections.");
+    process.exit()
+  });
+  
+   // if after 
+   setTimeout(function() {
+       console.error("Could not close connections in time, forcefully shutting down");
+       process.exit()
+  }, 10*1000);
+}
+
+// listen for TERM signal .e.g. kill 
+process.on ('SIGTERM', gracefulShutdown);
+
+// listen for INT signal e.g. Ctrl-C
+process.on ('SIGINT', gracefulShutdown);   
+
+process.on('uncaughtException',function(err) {
+	var	stack = err.stack;
+	var timeout = 1;
+
+	console.log('Caught exception: ',err);
+
+//	logger.log('SERVER CRASHED!');
+//	logger.log(err,stack);
+
+	setTimeout( function(){
+//		logger.log('KILLING PROCESS');
+		process.exit();
+	},1000);
+});
+
+process.on('SIGTERM', function () {
+    process.exit(0);
+});
+
+process.on('SIGINT', function () {
+    process.exit(0);
+});
+ 
+process.on('exit', function () {
+    console.log('\nShutting down, performing GPIO cleanup');
+    rpio.spiEnd();
+    process.exit(0);
+});
+

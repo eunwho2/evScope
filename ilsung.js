@@ -1,4 +1,5 @@
 //"use strict";
+
 const eventEmitter = require('events');
 
 class MyEmitter extends eventEmitter{};
@@ -128,23 +129,7 @@ var channel = 0;
 var dataLength = 600;
 var vacuumData = { data : [8]};
 
-var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
-var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
-var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
-var traceData3 = { channel:3,length:dataLength,sample:[dataLength]}
-var traceData4 = { channel:4,length:dataLength,sample:[dataLength]}
-var traceData5 = { channel:5,length:dataLength,sample:[dataLength]}
-var traceData6 = { channel:6,length:dataLength,sample:[dataLength]}
-var traceData7 = { channel:7,length:dataLength,sample:[dataLength]}
-
-
 var adcOffset = [630,630,630,630,630,630,630,630]
-
-for ( var key in traceData0.sample ){
-	traceData0.sample[key] = traceData1.sample[key] = traceData2.sample[key]=0;
-}
-
-//	process.stdout.write( portVal.toString() + (count == 3 ? '\n' : '\t')); 
 
 //--- start server
 console.log('http on : ' + port.toString());
@@ -156,7 +141,7 @@ var testCount = 0;
 var emitCount = 0;
 var selVacRecord = 1;
 
-var traceData = {channel:[0,0,0,0,0,0,0,0]};
+var traceData = {channel:[0,0,0,0,0,0,0,0],State:0};
 
 io.on('connection', function (socket) {
 	var host  = socket.client.request.headers.host;
@@ -174,14 +159,21 @@ io.on('connection', function (socket) {
 
 		var digitalOut = 1;
 
-		digitalOutBuf = 0 ;
-		setTimeOut( console.log('out') ,1000);
+		// digitalOutBuf = 0 ;
+		// setTimeOut( console.log('out') ,1000);
   });
 
 	//--- emitt graph proc 
 	myEmitter.on('event',function(param){
 		console.log('received event');
 
+		var endTime = new Date();
+
+		var socketData = { startTime: '',endTime:'',graphData:[]} ;
+
+		socketData.startTime = param;
+		socketData.endTime = endTime;
+ 
   	ilSungDB.find({'date':{$gte: param}},
       {'value':true,_id:false,'date':true},
       function ( err, docs){
@@ -199,13 +191,15 @@ io.on('connection', function (socket) {
         	 	// var dateCount = ( collection.date*1 - now );
 						// test.push([]);
 						// test.push( [(collection.date).getTime()]);
-						test.push( [((collection.date)*1-now)/1000]);
+						test.push( [((collection.date)*1-param)/1000]);
          		
 						for( var j = 0 ; j < 8 ; j++) test[i].push( tmp1[j]*1 );
 						i++;
     	  	});
+					socketData.graphData = test;
+
 					// console.log(test);
-					socket.emit('graph',test);
+					socket.emit('graph',socketData);
       	}
       }
    ); 
@@ -213,7 +207,7 @@ io.on('connection', function (socket) {
 	//-- end of emitt grpah proc
 
 	setInterval(function() {
-//		console.log(traceData.channel[2]);
+		traceData.state = machineState;
 		socket.emit('trace',traceData);
 	},2000);
 
@@ -301,16 +295,17 @@ var readMcp23017 = function(address,port){
 }
 
 /*
-var promise writeCmdMcp23017(ADDR_OUT1,0,0);
-
-.then(function(){
-	return writeCmdMcp23017(ADDR_OUT1,1,0);
-}).catch(function(ere){
-	console.log(err);
-});
+machineState 
+0   --> ready
+1   --> runing
+2   --> trip
 */
+
+var machineState = 0;
 var recordState = 0;
 var startTime = 0;
+var poweroff = 0;
+var startState = 0;
 
 setInterval(function() {
 
@@ -338,7 +333,7 @@ setInterval(function() {
 
 		adcValue[i] = value;
 
-		if( i == 0 )	traceData.channel[0]      = Math.round( 0.39062 * value - 250); 
+		if( i == 0 )	traceData.channel[0]      = Math.round(( 0.39062 * value - 250)-21); 
 		else if ( i == 1 ) traceData.channel[i] = (0.00390625 * value - 2.5).toFixed(2);
 		else	traceData.channel[i]  = (-0.0001953125 * value + 0.125).toFixed(3) ;
 		
@@ -357,17 +352,25 @@ setInterval(function() {
   .then(function(byte){
     if(byte < 256 ){
 			inMcp23017[0] = byte;
+
       var temp1 =  (inMcp23017[0] & 1 );
 			if( temp1 ){
 				// first stop state 
 				// draw graph and save to png image file
 				// mongoDB find and set table for graphic data
 				if ( recordState ) {  // 시작상태에 있다가 정지상태로 변환 되는 시점의 처리
-					console.log('set graph data and emit to clients');
-					recordState = 0;
-					myEmitter.emit('event', startTime );
-
+					recordState++;
+					if(recordState > 2 ) {
+						console.log('set graph data and emit to clients');
+						//경과시간
+						var endTime = new Date();
+						var elapedTime = endTime-startTime;
+						console.log( elapedTime);
+						myEmitter.emit('event', startTime );
+						recordState = 0;
+					}
 				}else{
+					machineState = 0; // machine ready
 					console.log('OFF  Start Input');
 				}
 			} else {
@@ -384,8 +387,11 @@ setInterval(function() {
 					//});
 					 
 			//--- start for saving data to mongoDB
+					machineState = 1;	// machine running
+
 					var saveTime = new Date();
 					var mongoIn = new ilSungDB({value:traceData.channel});
+
 					mongoIn.save(function(err,mongoIn){
          		if(err){
             	console.log(err);
@@ -396,14 +402,20 @@ setInterval(function() {
       		});  
 			//--- end of saving mongoDb data
 				} // else of input start.				
-/*
+	    } 
+
       var temp2 =  (inMcp23017[0] & 2 );
-			if( temp2 ) console.log('OFF Stop Input');
-			else				console.log('ON  Stop Input');
-*/
+			if( temp2 ){
+				console.log('OFF Stop Input');
+				poweroff = 0;
+			} else {
+				poweroff++;
+				console.log('on stop count = %d',poweroff);
+				console.log('ON  Stop Input');
+				if(poweroff > 1 ) shutdown ();
 			}
-      return writeMcp23017(ADDR_OUT1,0,byte);
-    } 
+		 return writeMcp23017(ADDR_OUT1,0,byte);
+ 		}   
   }).catch(function(err){
     console.log(err);
   }).then(function(){
@@ -473,9 +485,31 @@ setInterval(function() {
 	}
 },1000);
 
+var exec = require('child_process').exec;
 
+function shutdown(callback){
+    exec('shutdown now', function(error, stdout, stderr){ callback(stdout); });
+}
 
+var gracefulShutdown = function() {
+  console.log("Received kill signal, shutting down gracefully.");
+  server.close(function() {
+    console.log("Closed out remaining connections.");
+    process.exit()
+  });
+  
+   // if after 
+   setTimeout(function() {
+       console.error("Could not close connections in time, forcefully shutting down");
+       process.exit()
+  }, 10*1000);
+}
 
+// listen for TERM signal .e.g. kill 
+process.on ('SIGTERM', gracefulShutdown);
+
+// listen for INT signal e.g. Ctrl-C
+process.on ('SIGINT', gracefulShutdown);   
 
 process.on('uncaughtException',function(err) {
 	var	stack = err.stack;
@@ -506,36 +540,3 @@ process.on('exit', function () {
     process.exit(0);
 });
 
-
-/*	var wsnIn = new ilsung({wsnData:adcValue});
-      wsnIn.save(function(err,ilsung){
-         if(err){
-            console.log(err);
-            return console.error(err);
-         }else{
-            console.log('CH0 SAVED :'+adcValue);
-         }
-      });
-
-*/
-
-/*   wsnDB1.find(
-      {$and:[{
-         "date" :{
-            $lte:new Date(),
-            $gte: new Date( new Date().setDate( new Date().getDate()-7))}
-         },{"wsnData":{$regex:masterName}},
-         {"wsnData":{$regex:sensorId}}
-      ]},
-      {'wsnData':true,_id:false,'date':true},
-      function ( err, docs){
-         if( err ) {
-            reject(err);
-         }else{
-            var test = setSensorDataTb(docs);
-            (param.table).push(test);
-            param.sensorId = tmp;
-            resolve(param);
-         	}
-				}
-*/
