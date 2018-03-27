@@ -1,6 +1,6 @@
 //"use strict";
 var errState = 0;
-var	startTime = new Date();
+var	procStartTime = new Date();
 var minute = 0;
 var ADDR_IN1 = 0x20, ADDR_IN2 = 0x21, ADDR_OUT1=0x22,ADDR_OUT2= 0x23;
 
@@ -299,8 +299,8 @@ var poweroff = 0;
 var startState = 0;
 
 var coefDegr = [[690,900],[0,200]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
-var coefPres = [[690,900],[0,2.0]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
-var coefVacu = [[690,900],[0,-0.1]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
+var coefPres = [[690,900],[0,2.0]]; // 1V --> 0.0Mpa --> 690, 5V --> 2.0 Mpa --> 900,
+var coefVacu = [[690,900],[0,-0.1]]; // 1V --> 0.0Mpa --> 690, 5V --> -0.1Mpa --> 900,
 
 setInterval(function() {
 
@@ -339,7 +339,7 @@ setInterval(function() {
 			var alpa = (coefVacu[1][1]-coefVacu[1][0])/( coefVacu[0][1] - coefVacu[0][0]);
 			var beta = coefVacu[1][1] - alpa * coefVacu[0][1];
 			var offset = 0.0;
-			traceData.channel[i] = ((( alpa * value + beta) + offset ).toFixed(2))*1; 
+			traceData.channel[i] = ((( alpa * value + beta) + offset ).toFixed(3))*1; 
 		}
 		} catch(e) {
 			var date = new Date();
@@ -461,7 +461,7 @@ setInterval(function() {
   console.log('%d,%d,%d,%d,%d,%d,%d,%d',
 			traceData.channel[0],traceData.channel[1],
 			traceData.channel[2],traceData.channel[3],
-			traceData.channel[4],traceData.channel[6],
+			traceData.channel[4],traceData.channel[5],
 			traceData.channel[6],traceData.channel[7])
 
   console.log('%d,%d,%d,%d',inMcp23017[0],inMcp23017[1],inMcp23017[2],inMcp23017[3]);
@@ -476,7 +476,7 @@ setInterval(function() {
 		if( (count % 10) == 0 ){
 		
 			var endTime = new Date();
-			var timeDiff = endTime - startTime;
+			var timeDiff = endTime - procStartTime;
 
 			timeDiff /= 1000;
 
@@ -516,27 +516,6 @@ var gracefulShutdown = function() {
        process.exit()
   }, 10*1000);
 }
-
-// listen for TERM signal .e.g. kill 
-process.on ('SIGTERM', gracefulShutdown);
-
-// listen for INT signal e.g. Ctrl-C
-process.on ('SIGINT', gracefulShutdown);   
-
-process.on('uncaughtException',function(err) {
-	var	stack = err.stack;
-	var timeout = 1;
-
-	console.log('Caught exception: ',err);
-
-//	logger.log('SERVER CRASHED!');
-//	logger.log(err,stack);
-
-	setTimeout( function(){
-//		logger.log('KILLING PROCESS');
-		process.exit();
-	},1000);
-});
 
 process.on('SIGTERM', function () {
     process.exit(0);
