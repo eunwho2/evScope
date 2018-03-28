@@ -1,8 +1,6 @@
 {%extends 'templates/layout.html' %}
 {% block content %}
-<!--
-<script src="gauge.min.js"></script>
--->
+
 <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script> 
 <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
 <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script> 
@@ -173,12 +171,12 @@ google.charts.load('current', {'packages':['corechart']});
 			<div id="name8">진공6</div>
 		</div>
 		<div id='bottomBox' class='csBottomBox'> 
-				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large' onclick='btnEmg()'>비상정지</button>
-				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large' onclick='btnStart()'>패턴시작</button>
-				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large' onclick='btnStop()'>패턴정지</button>
-				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large' onclick='btnRestart()'>기기정지</button>
-				<button id='btnNoVac' 	class='w3-button w3-round w3-green  w3-large' onclick='changeNoVac()'>진공선택</button>
-				<span id='idVacRec' 	class='csVacRec'>1</span>
+				<button id='btnEmg' 		class='w3-button w3-round w3-red    w3-large' onclick='btnEmg()'>동작버튼1</button>
+				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large' onclick='btnStart()'>동작버튼2</button>
+				<button id='btnStop' 		class='w3-button w3-round w3-blue   w3-large' onclick='btnStop()'>동작버튼3</button>
+				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large' onclick='btnRestart()'>동작버튼4</button>
+				<button id='btnNoVac' 	class='w3-button w3-round w3-green  w3-large' onclick='changeNoVac()'>동작버튼5</button>
+			<!--	<span id='idVacRec' 	class='csVacRec'>1</span> -->
 		</div>
 		<div id='timeStampBox' class = 'csTimeStampBox'>
 			<span class='titleName1'>경과시간></span>
