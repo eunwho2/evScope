@@ -329,7 +329,7 @@ setInterval(function() {
 			var alpa = (coefDegr[1][1]-coefDegr[1][0])/( coefDegr[0][1] - coefDegr[0][0]);
 			var beta = coefDegr[1][1] - alpa * coefDegr[0][1];
 			var offset = 0.0;
-			traceData.channel[0] = Math.round(( alpa * value + beta) + offset ); 
+			traceData.channel[0] = ((( alpa * value + beta) + offset ).toFixed(1))*1; 
 		}else if(i == 1 ){
 			var alpa = (coefPres[1][1]-coefPres[1][0])/( coefPres[0][1] - coefPres[0][0]);
 			var beta = coefPres[1][1] - alpa * coefPres[0][1];

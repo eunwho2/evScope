@@ -827,8 +827,11 @@ function radialGaugeInit(){
 	$('#gauge'+gaugeNumber).attr('data-title',"진공 "+(gaugeNumber-1));
 
 	$('#gauge'+gaugeNumber).attr('data-min-value',"-0.1");
-	$('#gauge'+gaugeNumber).attr('data-max-value',"0.2");
-	$('#gauge'+gaugeNumber).attr('data-major-ticks',"[-0.1,-0.05,0,0.05,0.1, 0.15, 0.2]");
+	$('#gauge'+gaugeNumber).attr('data-max-value',"0");
+	$('#gauge'+gaugeNumber).attr('data-major-ticks',"[-0.1,-0.075,-0.05,-0.025,0]");
+
+//	$('#gauge'+gaugeNumber).attr('data-max-value',"0.2");
+//	$('#gauge'+gaugeNumber).attr('data-major-ticks',"[-0.1,-0.05,0,0.05,0.1, 0.15, 0.2]");
 	//$('#gauge'+gaugeNumber).attr('data-minor-ticks',"0.02");
 	}
 }
