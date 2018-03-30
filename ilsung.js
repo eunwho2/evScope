@@ -309,7 +309,7 @@ var poweroff = 0;
 var startState = 0;
 
 var coefDegr = [[690,900],[0,200]]; // 1V --> 0도 --> 690, 5V --> 200degree --> 900,
-var coefPres = [[690,900],[0,2.0]]; // 1V --> 0.0Mpa --> 690, 5V --> 2.0 Mpa --> 900,
+var coefPres = [[690,900],[0,10]]; // 1V --> 0.0Mpa --> 690, 5V --> 2.0 Mpa --> 900,
 var coefVacu = [[690,900],[0,-0.1]]; // 1V --> 0.0Mpa --> 690, 5V --> -0.1Mpa --> 900,
 
 setInterval(function() {
@@ -338,7 +338,7 @@ setInterval(function() {
 		if( i == 0 ){
 			var alpa = (coefDegr[1][1]-coefDegr[1][0])/( coefDegr[0][1] - coefDegr[0][0]);
 			var beta = coefDegr[1][1] - alpa * coefDegr[0][1];
-			var offset = 0.0;
+			var offset = 3.0;
 			traceData.channel[0] = ((( alpa * value + beta) + offset ).toFixed(1))*1; 
 		}else if(i == 1 ){
 			var alpa = (coefPres[1][1]-coefPres[1][0])/( coefPres[0][1] - coefPres[0][0]);

@@ -315,13 +315,13 @@ var oscope = (function() {
     y += dy + 1;
 //    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
     y += dy + 22;
-    ctx.fillText('  2.0MPA	'  ,2,y);
+    ctx.fillText('  6.0kg/cm*2	'  ,2,y);
     y += dy + 80;
+    ctx.fillText('  4.5	'  ,2,y);
+    y += dy + 77;
+    ctx.fillText('  3.0	'  ,2,y);
+    y += dy + 77;
     ctx.fillText('  1.5	'  ,2,y);
-    y += dy + 77;
-    ctx.fillText('  1.0	'  ,2,y);
-    y += dy + 77;
-    ctx.fillText('  0.5	'  ,2,y);
     y += dy + 77;
     ctx.fillText('  0.0 '  ,2,y);
     y += dy + 2;
@@ -404,9 +404,9 @@ var oscope = (function() {
       break;
 
     case 1:
-			tempOffset = 0.25;
+			tempOffset = 0.75;
 			//tempOffset = 0.0;
-	    ys = 450 / 2.5; 
+	    ys = 450 / 7.5; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "#2ECCFA";
       break;
@@ -770,16 +770,16 @@ function radialGaugeInit(){
 	$('#gauge0').attr('data-highlights',
 		'[{"from":0,"to":150,"color":"rgba(0,0,255,.3)"},{"from":150,"to":200,"color":"rgba(255,0,0,.3)"}]');
 	
-	$('#gauge1').attr('data-units','Mpa');
+	$('#gauge1').attr('data-units','kg/cm*2');
 	$('#gauge1').attr('data-title',"압력계");
 
 	$('#gauge1').attr('data-min-value',"0");
-	$('#gauge1').attr('data-max-value',"2");
-	$('#gauge1').attr('data-major-ticks',"[0,0.5,1.0,1.5,2.0]");
+	$('#gauge1').attr('data-max-value',"6");
+	$('#gauge1').attr('data-major-ticks',"[0,1,2,3,4,5,6]");
 	$('#gauge1').attr('data-minor-ticks',"0.1");
 	$('#gauge1').attr('data-stroke-ticks',"true");
 	$('#gauge1').attr('data-highlights',
-		'[{"from":0,"to":1.5,"color":"rgba(0,255,255,.3)"},{"from":1.5,"to":2.0,"color":"rgba(255,0,0,.3)"}]');
+		'[{"from":0,"to":5,"color":"rgba(0,255,255,.3)"},{"from":5,"to":6,"color":"rgba(255,0,0,.3)"}]');
 
 	for (var gaugeNumber = 0 ; gaugeNumber < 8 ; gaugeNumber++){ 
 	$('#gauge'+gaugeNumber).attr('data-stroke-ticks',"true");
