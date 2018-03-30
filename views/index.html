@@ -192,7 +192,7 @@ google.charts.load('current', {'packages':['corechart']});
 
 		<div id='stopRecordBox' class = 'csTripMsgBox'>
 			<div class='titleName'>패턴작업정지기록</div>
-			<textarea id='stopRecord' class='csStopRecord' rows="5" cols="80"> At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies.
+			<textarea id='stopRecord' class='csStopRecord' rows="5" cols="80">
 			</textarea>
 		</div>
 	</div> <!-- end of leftBox -->
@@ -397,7 +397,17 @@ function saveAsImg(chartContainer) {
 //	msg.push(test);
   
 
-	
+socket.on('trip',function(msg){
+	console.log('trip on =%d',msg);
+	  document.getElementById('stater').innerHTML = '이상발생';
+	if(msg == 1 ){
+	  document.getElementById('stopRecord').innerHTML = '모터과열 ,냉각팬,유압모터,팬모터';
+	}else if( msg == 2){
+	  document.getElementById('stopRecord').innerHTML = '히터조절기, 내부 과열 이상';
+	}else if( msg == 3){
+	  document.getElementById('stopRecord').innerHTML = '플로센서 이상';
+	}
+});	
 socket.on('graph', function (msgIn) {
 
 	var msg1=[];

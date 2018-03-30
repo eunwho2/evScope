@@ -1,5 +1,11 @@
 //"use strict";
+var tripNumber=0;
 var errState = 0;
+
+var motorErro =0;
+var heatErro = 0;
+var flowErro = 0;
+
 var	procStartTime = new Date();
 var minute = 0;
 var ADDR_IN1 = 0x20, ADDR_IN2 = 0x21, ADDR_OUT1=0x22,ADDR_OUT2= 0x23;
@@ -165,6 +171,10 @@ io.on('connection', function (socket) {
   });
 
 	//--- emitt graph proc 
+	myEmitter.on('trip',function(param){
+		socket.emit('trip',param);
+	});		
+
 	myEmitter.on('event',function(param){
 		console.log('received event');
 
@@ -358,8 +368,8 @@ setInterval(function() {
     if(byte < 256 ){
 			inMcp23017[0] = byte;
 
-      var temp1 =  (inMcp23017[0] & 1 );
-			if( temp1 ){
+      var temp =  (inMcp23017[0] & 1 );
+			if( temp ){
 				// first stop state 
 				// draw graph and save to png image file
 				// mongoDB find and set table for graphic data
@@ -409,18 +419,52 @@ setInterval(function() {
 				} // else of input start.				
 	    } 
 
-      var temp2 =  (inMcp23017[0] & 2 );
-			if( temp2 ){
-				console.log('OFF Stop Input');
-				poweroff = 0;
-			} else {
-				poweroff++;
-				console.log('on stop count = %d',poweroff);
-				console.log('ON  Stop Input');
-				if(poweroff > 1 ) shutdown ();
-			}
+      temp =  (inMcp23017[0] & 2 );
+		if( temp ){
+			console.log('OFF Stop Input');
+			poweroff = 0;
+		} else {
+			poweroff++;
+			console.log('on stop count = %d',poweroff);
+			console.log('ON  Stop Input');
+			if(poweroff > 1 ) shutdown ();
+		}
+
+      temp =  (inMcp23017[0] & 4 );
+		if( temp ){
+			console.log('No Motor Error');
+				motorError = 0;
+		} else {
+			motorErro++;
+			console.log('motor error count = %d',motorErro);
+			tripNumber = 1; // motor overload
+			if( motorErro > 2 )	myEmitter.emit('trip', tripNumber );
+		}
+
+      temp =  (inMcp23017[0] & 8 );
+		if( temp ){
+			console.log('No Heater Error');
+				heatErro = 0;
+		} else {
+			heatErro++;
+			console.log('heat error count = %d',heatErro);
+			tripNumber = 2; // motor overload
+			if(heatErro > 2 )	myEmitter.emit('trip', tripNumber );
+		}
+      temp =  (inMcp23017[0] & 16 );
+		if( temp ){
+			console.log('No Flow Sensor Error');
+				flowSensErro = 0;
+		} else {
+			flowSensErro ++;
+			console.log('flowSensor count = %d',flowSensErro);
+			tripNumber = 3; // motor overload
+			if(flowSensErro > 2 )	myEmitter.emit('trip', tripNumber );
+		}
 		 return writeMcp23017(ADDR_OUT1,0,byte);
- 		}   
+ 		}
+
+   
   }).catch(function(err){
     console.log(err);
   }).then(function(){

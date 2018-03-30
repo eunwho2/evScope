@@ -350,17 +350,17 @@ var oscope = (function() {
     ctx.fillStyle = "yellow";
 
     y += dy + 22;
-    ctx.fillText('                                                                                             200C	'  ,2,y);
+    ctx.fillText('											                                                            																																																																																			200C	'  ,2,y);
     y += dy + 80;
-    ctx.fillText('                                                                                             150C	'  ,2,y);
+    ctx.fillText('                                                                                  																																																																								150C	'  ,2,y);
     y += dy + 77;
-    ctx.fillText('                                                                                             100C	'  ,2,y);
+    ctx.fillText('                      		                                                                       																																																											100C	'  ,2,y);
     y += dy + 77;
-    ctx.fillText('                                                                                              50C	'  ,2,y);
+    ctx.fillText('                                                                                        																																																																			50C	'  ,2,y);
     y += dy + 77;
-    ctx.fillText('                                                                                              0C	'  ,2,y);
+    ctx.fillText('                                                                              																																																																													0C	'  ,2,y);
     y += dy + 2;
-    ctx.fillText('                                                                                             온도	'  ,2,y);
+    ctx.fillText('                     		                          																																																																																																									온도	'  ,2,y);
 
 
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";

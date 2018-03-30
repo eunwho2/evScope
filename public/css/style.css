@@ -296,6 +296,7 @@ html, body {
 .csStopRecord{
 	margin-top: 10px;
 	width: 610px;
+	color: black;
 }
 
 #graph {
