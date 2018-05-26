@@ -699,38 +699,10 @@ var socket = io.connect();
 var messages = 0;
 
 socket.on('trace', function (msg) {
-  traceData0.sample[traceCount] = msg.channel[0];
-  traceData1.sample[traceCount] = msg.channel[1];
-  traceData2.sample[traceCount] = msg.channel[2];
-  traceData3.sample[traceCount] = msg.channel[3];
-  traceData4.sample[traceCount] = msg.channel[4];
-  traceData5.sample[traceCount] = msg.channel[5];
-  traceData6.sample[traceCount] = msg.channel[6];
-  traceData7.sample[traceCount] = msg.channel[7];
 
-	$('#gauge0').attr('data-value', (msg.channel[0]));
-	$('#gauge1').attr('data-value', (msg.channel[1]));
-	$('#gauge2').attr('data-value', (msg.channel[2]));
-	$('#gauge3').attr('data-value', (msg.channel[3]));
-	$('#gauge4').attr('data-value', (msg.channel[4]));
-	$('#gauge5').attr('data-value', (msg.channel[5]));
-	$('#gauge6').attr('data-value', (msg.channel[6]));
-	$('#gauge7').attr('data-value', (msg.channel[7]));
+	console.log(msg);
+  // oscope.onPaint(trace);
 
-	if(msg.state == 0 ){
-    var target = document.getElementById('stater');
-		target.innerHTML ='대기중';    
-		$('stater').removeClass('csStateLampRunning');
-		$('stater').addClass('csStateLampReady');
-	}else{
-    var target = document.getElementById('stater');
-		target.innerHTML ='동작중';
-		$('stater').removeClass('csStateLampReady');
-		$('stater').addClass('csStateLampRunning');
-	}	
-	//console.log(msg);
-	traceCount = (traceCount > 599) ? 0 : traceCount+1;
-  oscope.onPaint(trace);
 });
 
 socket.on('graph', function (msg) {
@@ -755,94 +727,13 @@ socket.on('disconnect',function() {
 });
 
 
-function radialGaugeInit(){
-
-	var degreePerCelcius = '\xB0'+'C';
-
-	$('#gauge0').attr('data-units',degreePerCelcius);
-	$('#gauge0').attr('data-title',"온도계");
-
-	$('#gauge0').attr('data-min-value',"0");
-	$('#gauge0').attr('data-max-value',"200");
-	$('#gauge0').attr('data-major-ticks',"[0,50,100,150,200]");
-	$('#gauge0').attr('data-minor-ticks',"10");
-	$('#gauge0').attr('data-stroke-ticks',"true");
-	$('#gauge0').attr('data-highlights',
-		'[{"from":0,"to":150,"color":"rgba(0,0,255,.3)"},{"from":150,"to":200,"color":"rgba(255,0,0,.3)"}]');
-	
-	$('#gauge1').attr('data-units','kg/cm*2');
-	$('#gauge1').attr('data-title',"압력계");
-
-	$('#gauge1').attr('data-min-value',"0");
-	$('#gauge1').attr('data-max-value',"6");
-	$('#gauge1').attr('data-major-ticks',"[0,1,2,3,4,5,6]");
-	$('#gauge1').attr('data-minor-ticks',"0.1");
-	$('#gauge1').attr('data-stroke-ticks',"true");
-	$('#gauge1').attr('data-highlights',
-		'[{"from":0,"to":5,"color":"rgba(0,255,255,.3)"},{"from":5,"to":6,"color":"rgba(255,0,0,.3)"}]');
-
-	for (var gaugeNumber = 0 ; gaugeNumber < 8 ; gaugeNumber++){ 
-	$('#gauge'+gaugeNumber).attr('data-stroke-ticks',"true");
-	// $('#gauge'+gaugeNumber).attr('data-highlights','[{"from": 0, "to": 1.5, "color": "rgba(0,0, 255, .3)"},{"from": 1.5, "to": 2,"color":"rgba(255, 0, 0, .3)"}]');
-	$('#gauge'+gaugeNumber).attr('data-ticks-angle',"225");
-	$('#gauge'+gaugeNumber).attr('data-start-angle',"67.5");
-	$('#gauge'+gaugeNumber).attr('data-color-major-ticks',"#ddd");
-	$('#gauge'+gaugeNumber).attr('data-color-minor-ticks',"#ddd");
-	$('#gauge'+gaugeNumber).attr('data-color-title',"#eee");
-	$('#gauge'+gaugeNumber).attr('data-color-units',"#ccc");
-	$('#gauge'+gaugeNumber).attr('data-color-numbers',"#eee");
-	$('#gauge'+gaugeNumber).attr('data-color-plate',"#222");
-
-	$('#gauge'+gaugeNumber).attr('data-needle-type',"arrow");
-	$('#gauge'+gaugeNumber).attr('data-needle-width',"2");
-	$('#gauge'+gaugeNumber).attr('data-needle-circle-size',"7");
-	$('#gauge'+gaugeNumber).attr('data-needle-circle-outer',"true");
-	$('#gauge'+gaugeNumber).attr('data-needle-circle-inner',"false");
-
-	$('#gauge'+gaugeNumber).attr('data-animation-duration',"150");
-	$('#gauge'+gaugeNumber).attr('data-animation-rule',"linear");
-
-	$('#gauge'+gaugeNumber).attr('data-border-shadow-width',"0");
-	$('#gauge'+gaugeNumber).attr('data-borders',"true");
-	$('#gauge'+gaugeNumber).attr('data-color-border-outer',"#333");
-	$('#gauge'+gaugeNumber).attr('data-color-border-outer-end',"#111");
-	$('#gauge'+gaugeNumber).attr('data-color-border-middle',"#222");
-	$('#gauge'+gaugeNumber).attr('data-color-border-middle-end',"#111");
-	$('#gauge'+gaugeNumber).attr('data-color-border-inner',"#111");
-	$('#gauge'+gaugeNumber).attr('data-color-border-inner-end',"#333");
-
-	$('#gauge'+gaugeNumber).attr('data-color-needle-shadow-down',"#333");
-	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-outer',"#333");
-	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-outer-end',"#111");
-	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-inner',"#111");
-	$('#gauge'+gaugeNumber).attr('data-color-needle-circle-inner-end',"#222");
-
-	$('#gauge'+gaugeNumber).attr('data-value-box-border-radius',"0");
-	$('#gauge'+gaugeNumber).attr('data-color-value-box-rect',"#222");
-	$('#gauge'+gaugeNumber).attr('data-color-value-box-rect-end',"#333");
-	}
-
-	for (var gaugeNumber = 2 ; gaugeNumber < 8 ; gaugeNumber++){ 
-	$('#gauge'+gaugeNumber).attr('data-units','Mpa');
-	$('#gauge'+gaugeNumber).attr('data-title',"진공 "+(gaugeNumber-1));
-
-	$('#gauge'+gaugeNumber).attr('data-min-value',"-0.1");
-	$('#gauge'+gaugeNumber).attr('data-max-value',"0");
-	$('#gauge'+gaugeNumber).attr('data-major-ticks',"[-0.1,-0.075,-0.05,-0.025,0]");
-
-//	$('#gauge'+gaugeNumber).attr('data-max-value',"0.2");
-//	$('#gauge'+gaugeNumber).attr('data-major-ticks',"[-0.1,-0.05,0,0.05,0.1, 0.15, 0.2]");
-	//$('#gauge'+gaugeNumber).attr('data-minor-ticks',"0.02");
-	}
-}
-
 $("document").ready(function() {
   if (oscope) {
     oscope.init();
   }
 	var dummy = {0:0};
-	radialGaugeInit();
-	socket.emit('codeTable',dummy);
+//	radialGaugeInit();
+//	socket.emit('codeTable',dummy);
 });
 
 setInterval( function () {
