@@ -1,13 +1,25 @@
 //"use strict";
-
 const SerialPort = require('serialport');
-const ByteLength = require('./byte-length');
+// const ByteLength = require('./byte-length');
+const Readline = SerialPort.parsers.Readline;
 const port = new SerialPort('/dev/ttyAMA0',{
 // baudRate: 115200
    baudRate: 230400
 // baudRate: 38400
 });
-const parser = port.pipe(new ByteLength({length:811}));
+//const parser = port.pipe(new ByteLength({length:811}));
+const parser = new Readline();
+port.pipe(parser);
+
+port.on('open',function(err){
+   if(err) return console.log('Error on write : '+ err.message);
+   console.log('serial open');
+});
+
+port.on('error', function(err) {
+    console.log('Error: ', err.message);
+    console.log('Error Occured');
+});
 
 const eventEmitter = require('events');
 class MyEmitter extends eventEmitter{};
@@ -81,7 +93,8 @@ app.use(function(err, req, res, next) {
 var count = 0 
 var channel = 0;
 var dataLength = 600;
-
+var traceOnOff =0;			// 1 --> send tarace data to client
+var getCodeList = 0;
 //--- start server
 console.log('http on : ' + portAddr.toString());
 server.listen(portAddr);
@@ -100,80 +113,108 @@ io.on('connection', function (socket) {
   	console.log('received codeTable request',msg);
   });
 
+	socket.on('traceOnOff',function(msgTx){
+		traceOnOff = msgTx;
+		traceCount = 0;
+	});
+
+	socket.on('getCodeList',function(msg){
+		port.write('9:4:901:0.000e+0');
+		getCodeList = 1;
+	});
+
 	socket.on('btnClick',function(msgTx){
 
 		var digitalOut = 1;
-
-		// digitalOutBuf = 0 ;
-		// setTimeOut( console.log('out') ,1000);
   });
 
 	//--- emitt graph proc 
-	myEmitter.on('trip',function(param){
-		socket.emit('trip',param);
-	});		
-
 	myEmitter.on('event',function(param){
 		socket.emit('graph',param);
 	});    
-	//-- end of emitt grpah proc
 
+	myEmitter.on('codeTable',function(msg){
+		socket.emit('codeTable',msg);
+	});    
+	//-- end of emitt grpah proc
+/*
 	setInterval(function() {
 		traceData.state = machineState;
-		socket.emit('trace',traceData);
+		// socket.emit('trace',traceData);
 	},2000);
+*/
 });
 
-function getAdcData(){
-  port.write('9:4:900:1.000e+2',function(err){
-      if(err){
-          console.error(err);
-      }else{
-         parser.on('data',function (data){
-            var temp1 = 0;
-            var temp2 = 0;
-            var graphData=[[],[],[],[]];
-            var count = 0;
-				var i =0;
+var graphData=[[],[],[],[]];
+var graphProcCount = 0;
+var testMsg = {data:[]};
+var buffer2 = new Buffer(811);
+var buffer3 = new Buffer(811);
 
-				for( i = 0 ; i < 202 ; i++ ){
-					if( !(data / 2) ){ temp1 = data[i];
-					} else {	temp2 = data[i];
-						graphData[0].push(temp1 + temp2*256);
-            	}
-				}
-				for( i = 202 ; i < 204 ; i++ ){
-					if( !(data / 2) ){ temp1 = data[i];
-					} else {	temp2 = data[i];
-						graphData[1].push(temp1 + temp2*256);
-            	}
-				}
-				for( i = 404 ; i < 606 ; i++ ){
-					if( !(data / 2) ){ temp1 = data[i];
-					} else {	temp2 = data[i];
-						graphData[2].push(temp1 + temp2*256);
-            	}
-				}
-				for( i = 606 ; i < 808 ; i++ ){
-					if( !(data / 2) ){ temp1 = data[i];
-					} else { temp2 = data[i];
-						graphData[3].push(temp1 + temp2*256);
-            	}
-				}
-         });
-			myEmitter.emit('event', graphData);      
+parser.on('data',function (data){
+	var temp1 = 0;
+	var temp2 = 0;
+	var y =0;
+
+	if(getCodeList){
+
+		//console.log(data);
+		var tmp1 = data.split(':');
+
+//		tmp1.forEach(function(key){
+//			console.log(key);
+//		});
+		
+		getCodeList = 0;		
+		myEmitter.emit('codeTable', data);
+		return;
+
+	}else if( traceOnOff){
+
+		console.log('data = %d',data.length);
+		temp1 = data.length-4;
+		y = data.slice(temp1,temp1+4);
+		var ch = y.toString();
+		console.log('channel = %s',ch);		
+
+		var tmp1 = data.split(',');
+
+		//console.log(tmp1);
+
+		var graphArry =[];
+
+		for( var i = 0; i< 100; i++){
+			graphArry.push( tmp1[i] * 1);
 		}
-	});
-}
+
+		if		 ( ch[2] == '0') graphData[0] = graphArry;
+		else if( ch[2] == '1') graphData[1] = graphArry;
+		else if( ch[2] == '2') graphData[2] = graphArry;
+		else if( ch[2] == '3'){
+			graphData[3] = graphArry;
+			//socket.emit('graph',graphData);
+			myEmitter.emit('event', graphData);
+		}      		
+
+		return;
+	}else{
+		console.log(data);
+		return;
+	}	
+	return;
+
+});
 
 setInterval(function() {
-
-},5000);
+	if(traceOnOff){
+	  port.write('9:4:900:1.000e+2');
+	}
+},2000);
 
 var exec = require('child_process').exec;
 
 function shutdown(callback){
-    exec('shutdown now', function(error, stdout, stderr){ callback(stdout); });
+	exec('shutdown now', function(error, stdout, stderr){ callback(stdout); });
 }
 
 var gracefulShutdown = function() {

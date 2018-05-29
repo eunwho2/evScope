@@ -118,9 +118,6 @@ html, body {
    50% { background-color: #AA0; box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #808002 0 -1px 9px, #0F0 0 2px 0; }
     to { background-color: #0F0; }
 }
-
-
-
 .csRightBox{
 
 	float:right;
@@ -310,4 +307,20 @@ html, body {
 }
 #chart_div3{
 	margin-top:10px;	
+}
+
+.csTxtCodeTable{
+/*	background: black; */
+	margin-right:10px;
+	padding:0px;
+	border-radius : 5px;
+	color: black;
+}
+
+.csCodeEdit{
+/*	background: black; */
+	margin-right:10px;
+	padding:0px;
+	border-radius : 5px;
+	color: black;
 }

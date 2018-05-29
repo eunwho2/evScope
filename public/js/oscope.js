@@ -28,29 +28,11 @@ var oscope = (function() {
   m_trace[1]           = null;
   m_trace[2]           = null;
   m_trace[3]           = null;
-  m_trace[4]           = null;
-  m_trace[5]           = null;
-  m_trace[6]           = null;
-  m_trace[7]           = null;
 
-/*
-  m_voffset[0]         = 177;
-  m_voffset[1]         = 132;
-  m_voffset[2]         = 88;
-  m_voffset[3]         = 42;
-  m_voffset[4]         = -2;
-  m_voffset[5]         = -48;
-  m_voffset[6]         = -90;
-  m_voffset[7]         = -138;
-*/
   m_voffset[0]         = 0;
   m_voffset[1]         = 0;
   m_voffset[2]         = 0;
   m_voffset[3]         = 0;
-  m_voffset[4]         = 0;
-  m_voffset[5]         = 0;
-  m_voffset[6]         = 0;
-  m_voffset[7]         = 0;
 
   // ==============================================================
   // background display scaffolding
@@ -315,53 +297,51 @@ var oscope = (function() {
     y += dy + 1;
 //    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
     y += dy + 22;
-    ctx.fillText('  6.0kg/cm*2	'  ,2,y);
+    ctx.fillText('3686',	20,y);
     y += dy + 80;
-    ctx.fillText('  4.5	'  ,2,y);
+    ctx.fillText('2867',	20,y);
     y += dy + 77;
-    ctx.fillText('  3.0	'  ,2,y);
+    ctx.fillText('2048',	20,y);
     y += dy + 77;
-    ctx.fillText('  1.5	'  ,2,y);
+    ctx.fillText('1229',	20,y);
     y += dy + 77;
-    ctx.fillText('  0.0 '  ,2,y);
+    ctx.fillText(' 409',	20,y);
     y += dy + 2;
-    ctx.fillText('  압력	'  ,2,y);
-
+    ctx.fillText('ch0',		20,y);
 
     y = dy + 1;
     y += dy + 1;
     ctx.fillStyle = "white";
 
     y += dy + 22;
-    ctx.fillText('              0	'  ,2,y);
+    ctx.fillText('0',		20+40,y);
     y += dy + 80;
-    ctx.fillText('            -0.025	'  ,2,y);
+    ctx.fillText('-0.025',	20+40,y);
     y += dy + 77;
-    ctx.fillText('            -0.05	'  ,2,y);
+    ctx.fillText('-0.05',	20+40,y);
     y += dy + 77;
-    ctx.fillText('            -0.075	'  ,2,y);
+    ctx.fillText('-0.075',	20+40,y);
     y += dy + 77;
-    ctx.fillText('             -0.1	'  ,2,y);
+    ctx.fillText('-0.1',	20+40,y);
     y += dy + 2;
-    ctx.fillText('             진공	'  ,2,y);
+    ctx.fillText('ch1',	20+40,y);
 
     y = dy + 1;
     y += dy + 1;
     ctx.fillStyle = "yellow";
 
     y += dy + 22;
-    ctx.fillText('											                                                            																																																																																			200C	'  ,2,y);
+    ctx.fillText('3686', 560,y);
     y += dy + 80;
-    ctx.fillText('                                                                                  																																																																								150C	'  ,2,y);
+    ctx.fillText('2867', 560,y);
     y += dy + 77;
-    ctx.fillText('                      		                                                                       																																																											100C	'  ,2,y);
+    ctx.fillText('2048', 560,y);
     y += dy + 77;
-    ctx.fillText('                                                                                        																																																																			50C	'  ,2,y);
+    ctx.fillText('1229', 560,y);
     y += dy + 77;
-    ctx.fillText('                                                                              																																																																													0C	'  ,2,y);
+    ctx.fillText(' 409', 560,y);
     y += dy + 2;
-    ctx.fillText('                     		                          																																																																																																									온도	'  ,2,y);
-
+    ctx.fillText('ch3',  560,y);
 
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
@@ -378,7 +358,7 @@ var oscope = (function() {
   }
 
   function drawTrace(ctx,trace,width,height,voffset) {
-		var	tempOffset = 0;
+	var	tempOffset = 0;
     var t = [];
     var ys;
     var hs;
@@ -395,64 +375,37 @@ var oscope = (function() {
     ctx.scale(1.0,-1.0);
 
     // set channel parameters
-    switch(trace.channel) {
-    case 0:
-			tempOffset = 25;
-	    ys = 450 / 250;
+   switch(trace.channel) {
+   case 0:
+		// tempOffset = 2048;
+		tempOffset = 0;
+		ys = 450 / 4096;
       // ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
       ctx.strokeStyle = "yellow";
       break;
 
-    case 1:
-			tempOffset = 0.75;
+	case 1:
+		tempOffset = 0;
 			//tempOffset = 0.0;
-	    ys = 450 / 7.5; 
+		ys = 450 / 4096; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "#2ECCFA";
       break;
 
     case 2:
-			tempOffset = 0.1125;
-	    ys = 450 / 0.125 ; 
+			tempOffset = 0;
+	    ys = 450 / 4096 ; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "magenta";
       break;
 
     case 3:
-			tempOffset = 0.1125;
-//	    ys = 450 / 0.125 * (-1); 
-	    ys = 450 / 0.125; 
+		tempOffset = 0;
+	    ys = 450 / 4096; 
       // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "white";
       break;
 
-    case 4:
-			tempOffset = 0.1125;
-	    ys = 450 / 0.125 ; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "red";
-      break;
-
-    case 5:
-			tempOffset = 0.1125;
-	    ys = 450 / 0.125 ; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "#FF8000";
-      break;
-
-    case 6:
-			tempOffset = 0.1125;
-	    ys = 450 / 0.125 ; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "gray";
-      break;
-
-    case 7:
-			tempOffset = 0.1125;
-	    ys = 450 / 0.125 ; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "purple";
-      break;
     }
     
     // scale the trace y axis
@@ -482,10 +435,6 @@ var oscope = (function() {
       m_trace[1] = trace[1];
       m_trace[2] = trace[2];
       m_trace[3] = trace[3];
-      m_trace[4] = trace[4];
-      m_trace[5] = trace[5];
-      m_trace[6] = trace[6];
-      m_trace[7] = trace[7];
     }
 
     // draw last traces
@@ -502,50 +451,14 @@ var oscope = (function() {
       drawTrace(m_context, m_trace[3], m_width, m_height, m_voffset[3]);
     }
 
-    if (m_trace[4] !== null) {
-      drawTrace(m_context, m_trace[4], m_width, m_height, m_voffset[4]);
-    }
-
-    if (m_trace[5] !== null) {
-      drawTrace(m_context, m_trace[5], m_width, m_height, m_voffset[5]);
-    }
-
-    if (m_trace[6] !== null) {
-      drawTrace(m_context, m_trace[6], m_width, m_height, m_voffset[6]);
-    }
-
-    if (m_trace[7] !== null) {
-      drawTrace(m_context, m_trace[7], m_width, m_height, m_voffset[7]);
-    }
-
     // draw text annotations
     drawAnnotations(m_context,m_width,m_height,m_text_size);
   }
 
   function onSampleBits(bits) {
-    switch(bits) {
-    case 8:
-      m_sample_bits = 8;
-      m_yscale      = 128;
-      break;
-		case 10:
-      m_sample_bits = 10;
-      m_yscale      = 512;
-      break;
-    case 12:
       m_sample_bits = 12;
       m_yscale      = 2048;
-      break;
-    case 16:
-      m_sample_bits = 16;
-      m_yscale      = 32768;
-      break;
-    default:
-      m_sample_bits = 16;
-      m_yscale      = 32768;
-      break;
-    }
-    onPaint(null);
+	   onPaint(null);
   }
 
   function onVerticalOffset(channel,offset)
@@ -652,9 +565,6 @@ var oscope = (function() {
   }
 
 	//--- invert code table create
-  function createCodeTable(arg1) {
-  }
-
   return {
     init               : onInit,
     onResize           : onResize,
@@ -668,7 +578,6 @@ var oscope = (function() {
     onCursorMove       : onCursorMove,
     onCursorSelect     : onCursorSelect,
     onRunStop          : onRunStop,
-		createCodeTable		 : createCodeTable
   };
 
 })();
@@ -684,15 +593,9 @@ var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
 var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
 var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
 var traceData3 = { channel:3,length:dataLength,sample:[dataLength]}
-var traceData4 = { channel:4,length:dataLength,sample:[dataLength]}
-var traceData5 = { channel:5,length:dataLength,sample:[dataLength]}
-var traceData6 = { channel:6,length:dataLength,sample:[dataLength]}
-var traceData7 = { channel:7,length:dataLength,sample:[dataLength]}
 
-var trace =[traceData0,traceData1,traceData2,traceData3,traceData4,traceData5,traceData6,traceData7];
+var trace =[traceData0,traceData1,traceData2,traceData3];
  
-var adcValue = [0,0,0,0,0,0,0,0];
-
 var noVac = 1;
 
 var socket = io.connect();
@@ -706,7 +609,21 @@ socket.on('trace', function (msg) {
 });
 
 socket.on('graph', function (msg) {
-	console.log(msg);
+	traceData0.sample = traceData0.sample.concat(msg[0]);
+	traceData1.sample = traceData1.sample.concat(msg[1]);
+	traceData2.sample = traceData2.sample.concat(msg[2]);
+	traceData3.sample = traceData3.sample.concat(msg[3]);
+
+	if(traceData0.sample.length > 600){
+		var cutData = (traceData0.sample.length-600);
+		// console.log('cutData = %d',cutData);
+		traceData0.sample.splice(0,cutData);
+		traceData1.sample.splice(0,cutData);
+		traceData2.sample.splice(0,cutData);
+		traceData3.sample.splice(0,cutData);
+	}
+	// console.log(traceData0.sample);
+	oscope.onPaint(trace);
 });
 
 socket.on('noVacTx',function(msg){
@@ -719,7 +636,12 @@ socket.on('vacuum', function (msg) {
 });
 
 socket.on('codeTable', function (msg) {
-  oscope.createCodeTable(msg);
+	var testIn = msg.toString();
+  	//testIn.replace(/:,/g,'\r\n');
+  	var testIn1 = testIn.replace(/:/g,'\r\n');
+  	var testOut = testIn1.replace(/,/g,'\t');
+	// console.log(testIn);
+   document.getElementById('txtCodeTable').innerHTML = testOut;
 });
 
 socket.on('disconnect',function() {
