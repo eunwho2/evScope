@@ -94,6 +94,7 @@ var count = 0
 var channel = 0;
 var dataLength = 600;
 var traceOnOff =0;			// 1 --> send tarace data to client
+var monitorOnOff =0;			// 1 --> send tarace data to client
 var getCodeList = 0;
 //--- start server
 console.log('http on : ' + portAddr.toString());
@@ -114,8 +115,14 @@ io.on('connection', function (socket) {
   });
 
 	socket.on('traceOnOff',function(msgTx){
+		monitorOnOff = 0;
 		traceOnOff = msgTx;
 		traceCount = 0;
+	});
+
+	socket.on('monitor',function(msg){
+		traceOnOff = 0;
+		monitorOnOff = msg;
 	});
 
 	socket.on('getCodeList',function(msg){
@@ -131,6 +138,10 @@ io.on('connection', function (socket) {
 	//--- emitt graph proc 
 	myEmitter.on('event',function(param){
 		socket.emit('graph',param);
+	});    
+
+	myEmitter.on('monitor',function(param){
+		socket.emit('monitor',param);
 	});    
 
 	myEmitter.on('codeTable',function(msg){
@@ -197,6 +208,9 @@ parser.on('data',function (data){
 		}      		
 
 		return;
+	}else if(monitorOnOff){
+		myEmitter.emit('monitor', data);
+		return;
 	}else{
 		console.log(data);
 		return;
@@ -208,6 +222,8 @@ parser.on('data',function (data){
 setInterval(function() {
 	if(traceOnOff){
 	  port.write('9:4:900:1.000e+2');
+	}else if(monitorOnOff){
+	  port.write('9:4:900:0.000e+0');
 	}
 },2000);
 
