@@ -53,7 +53,7 @@
 		</div>
 
 		<div id='stopRecordBox' class = 'csTripMsgBox'>
-			<div class='titleName'>패턴작업정지기록</div>
+			<div class='titleName'>monitor</div>
 			<textarea id='stopRecord' class='csStopRecord' rows="5" cols="80">
 			</textarea>
 		</div>
@@ -61,39 +61,30 @@
 
 	<div class='csRightBox'>
 		<div id ='codeEdit' class ='csCodeEdit'>
-			<textarea id='txtCodeEdit' class='csCodeEdit' rows="1" cols="20">123	</textarea>
-				<button id='btnReadCode' 	class='w3-button w3-round w3-green' onclick='btnReadCode()'>Read</button>
-				<button id='btnWriteCode' 	class='w3-button w3-round w3-red  ' onclick='btnWriteCode()'>Write</button>
-			</br>
-				<span id='readCodeResult' class='csReadCodeResult'>read result</span>
- 
+			<textarea id='txtCodeEdit1' class='csCodeEdit' rows="1" cols="2">  0	</textarea>
+			<textarea id='txtCodeEdit2' class='csCodeEdit' rows="1" cols="10"> 0	</textarea>
+			<button id='btnReadCode' 	class='w3-button w3-round w3-green' onclick='btnReadCode()'>Read</button>
+			<button id='btnWriteCode' 	class='w3-button w3-round w3-red  ' onclick='btnWriteCode()'>Write</button>
+			<br>
+			<span id='codeEditResult' class='csCodeEditResult'>read result</span>
+ 		<div>
 		<div id ='codeTable' class ='csCodeTable'>
-			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="20" cols="35">
-		</textarea>
-	</div>
-	<div id="graph">
-		<tr>
-			<th> <div id="chart_div1" style="" > </div></th>
-    </tr>
-	<div>
-
+			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="20" cols="35">	</textarea>
+		</div>
+	<div> 
 </div>
 </div>
 </div>
 </div>
 
-<!-- ================ -->
 <!-- control handlers -->
-<!-- ================ -->
-
 <script>
+var msgTx = { selVac: 0};
+var traceOnOff = 0;
+var monitorOnOff = 0;
 
-	var msgTx = { selVac: 0};
-	var traceOnOff = 0;
-	var monitorOnOff = 0;
-
-  function changeNoVac(){
-	}
+function changeNoVac(){
+}
 
   function btnTraceOnOff(){
 		monitorOnOff = 0;
@@ -132,17 +123,57 @@ function btnRestart(){
 	socket.emit('btnClsik',msgTx);
 }
 
-function btnReadCode(){
+// '9:4:901:0.000e+0'
+function getSciCmd( ){
+
+	var returns = 'Invalid number';
+	var tmp1 = document.getElementById('txtCodeEdit1').value;
+	var tmp2 = document.getElementById('txtCodeEdit2').value;
+
+	tmp1 = tmp1 * 1;
+	tmp2 = tmp2 * 1;
+
+	if(isNaN(tmp1)) return returns;
+	if(isNaN(tmp2)) return returns;
+	if(( tmp1 > 20 ) || ( tmp1 < 0 )) return returns;
+
+	var sciCmd = '9:4:';
+	if(tmp1 < 10){
+		sciCmd = sciCmd + '00';
+	} else if ( tmp1 < 100 ){ 
+		sciCmd = sciCmd + '0';
+	}
+
+	sciCmd = sciCmd + tmp1 + ':';
+
+	var codeData = tmp2.toExponential(3);
 	
-	var test = document.getElementById('txtCodeEdit').value;
-	console.log(test);
-	//socket.emit('getCodeList',0);
+	sciCmd = sciCmd + codeData;
+
+	if((sciCmd.length) != 16) return returns;
+
+	return sciCmd;
+}
+
+function btnReadCode(){	
+	var returns = getSciCmd( );
+
+	if( returns.length == 16 ){
+		socket.emit('codeEdit',returns);
+	} else {
+		document.getElementById('codeEditResult').innerHTML = returns;
+	}	 
 }
 
 function btnWriteCode(){
-	var test = document.getElementById('txtCodeEdit').value;
-	console.log(test);
-	//socket.emit('getCodeList',0);
+	var returns = getSciCmd( );
+
+	if( returns.length == 16 ){
+		var test = returns.replace('4','6');
+		socket.emit('codeEdit',test);
+	} else {
+		document.getElementById('codeEditResult').innerHTML = returns;
+	}	 
 }
 
   //--- sampling bits
@@ -174,6 +205,7 @@ function btnWriteCode(){
       break;
     }
   });
+
   // =============================================
   // cursor select
   // =============================================
@@ -223,21 +255,13 @@ function btnWriteCode(){
       }
   );
 
-socket.on('trip',function(msg){
-	console.log('trip on =%d',msg);
-	  document.getElementById('stater').innerHTML = '이상발생';
-	if(msg == 1 ){
-	  document.getElementById('stopRecord').innerHTML = '모터과열 ,냉각팬,유압모터,팬모터';
-	}else if( msg == 2){
-	  document.getElementById('stopRecord').innerHTML = '히터조절기, 내부 과열 이상';
-	}else if( msg == 3){
-	  document.getElementById('stopRecord').innerHTML = '플로센서 이상';
-	}
-});	
 
 socket.on('codeList',function(msg){
-	console.log('trip on =%d',msg);
 	document.getElementById('stopRecord').innerHTML = msg;
+});	
+
+socket.on('codeEdit',function(msg){
+	document.getElementById('codeEditResult').innerHTML = msg;
 });	
 
 var monitorCount=0;

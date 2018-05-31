@@ -7,6 +7,7 @@ const port = new SerialPort('/dev/ttyAMA0',{
    baudRate: 230400
 // baudRate: 38400
 });
+
 //const parser = port.pipe(new ByteLength({length:811}));
 const parser = new Readline();
 port.pipe(parser);
@@ -90,11 +91,12 @@ app.use(function(err, req, res, next) {
 });
 
 
-var count = 0 
+var count = 0; 
 var channel = 0;
 var dataLength = 600;
 var traceOnOff =0;			// 1 --> send tarace data to client
 var monitorOnOff =0;			// 1 --> send tarace data to client
+var codeEditOnOff =0;			// 1 --> send tarace data to client
 var getCodeList = 0;
 //--- start server
 console.log('http on : ' + portAddr.toString());
@@ -109,23 +111,31 @@ io.on('connection', function (socket) {
   	console.log('disconnected from : ' + host);
   });
 
-//	socket.on('codeTable',function(from,msg){
-	socket.on('codeTable',function(msg){
-  	console.log('received codeTable request',msg);
-  });
-
 	socket.on('traceOnOff',function(msgTx){
+		codeEditOnOff = 0;
 		monitorOnOff = 0;
 		traceOnOff = msgTx;
 		traceCount = 0;
 	});
 
 	socket.on('monitor',function(msg){
+		codeEditOnOff = 0;
 		traceOnOff = 0;
 		monitorOnOff = msg;
 	});
 
+	socket.on('codeEdit',function(msg){
+		traceOnOff = 0;
+		monitorOnOff = 0;
+		console.log(msg);
+		setTimeout(function(){
+			port.write(msg);
+			codeEditOnOff = 1;
+		},100);
+	});
+
 	socket.on('getCodeList',function(msg){
+		codeEditOnOff = 0;
 		port.write('9:4:901:0.000e+0');
 		getCodeList = 1;
 	});
@@ -147,6 +157,10 @@ io.on('connection', function (socket) {
 	myEmitter.on('codeTable',function(msg){
 		socket.emit('codeTable',msg);
 	});    
+
+	myEmitter.on('codeEdit',function(msg){
+		socket.emit('codeEdit',msg);
+	});    
 	//-- end of emitt grpah proc
 /*
 	setInterval(function() {
@@ -167,31 +181,23 @@ parser.on('data',function (data){
 	var temp2 = 0;
 	var y =0;
 
-	if(getCodeList){
-
-		//console.log(data);
-		var tmp1 = data.split(':');
-
-//		tmp1.forEach(function(key){
-//			console.log(key);
-//		});
+	if(codeEditOnOff){
 		
+		codeEditOnOff = 0;		
+		myEmitter.emit('codeEdit', data);
+		return;
+	}else if(getCodeList){
+		var tmp1 = data.split(':');
 		getCodeList = 0;		
 		myEmitter.emit('codeTable', data);
 		return;
 
 	}else if( traceOnOff){
-
-		console.log('data = %d',data.length);
 		temp1 = data.length-4;
 		y = data.slice(temp1,temp1+4);
 		var ch = y.toString();
-		console.log('channel = %s',ch);		
 
 		var tmp1 = data.split(',');
-
-		//console.log(tmp1);
-
 		var graphArry =[];
 
 		for( var i = 0; i< 100; i++){
@@ -203,7 +209,6 @@ parser.on('data',function (data){
 		else if( ch[2] == '2') graphData[2] = graphArry;
 		else if( ch[2] == '3'){
 			graphData[3] = graphArry;
-			//socket.emit('graph',graphData);
 			myEmitter.emit('event', graphData);
 		}      		
 

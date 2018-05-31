@@ -657,11 +657,11 @@ $("document").ready(function() {
 //	radialGaugeInit();
 //	socket.emit('codeTable',dummy);
 });
-
+/*
 setInterval( function () {
 	var date = new Date();
 	var n = date.toDateString();
 	var time = date.toLocaleTimeString();
   document.getElementById('clock1').innerHTML = n +':'+ time;
 }, 2000);
-
+*/
