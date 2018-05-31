@@ -635,15 +635,6 @@ socket.on('noVacTx',function(msg){
 socket.on('vacuum', function (msg) {
 });
 
-socket.on('codeTable', function (msg) {
-	var testIn = msg.toString();
-  	//testIn.replace(/:,/g,'\r\n');
-  	var testIn1 = testIn.replace(/:/g,'\r\n');
-  	var testOut = testIn1.replace(/,/g,'\t');
-	// console.log(testIn);
-   document.getElementById('txtCodeTable').innerHTML = testOut;
-});
-
 socket.on('disconnect',function() {
   console.log('disconnected');
 });

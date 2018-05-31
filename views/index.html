@@ -255,10 +255,14 @@ function btnWriteCode(){
       }
   );
 
-
-socket.on('codeList',function(msg){
-	document.getElementById('stopRecord').innerHTML = msg;
-});	
+socket.on('codeTable', function (msg) {
+   var testIn = msg.toString();
+   //testIn.replace(/:,/g,'\r\n');
+   var testIn1 = testIn.replace(/:/g,'\r\n');
+   var testOut = testIn1.replace(/,/g,'\t');
+   // console.log(testIn);
+   document.getElementById('txtCodeTable').innerHTML = testOut;
+});
 
 socket.on('codeEdit',function(msg){
 	document.getElementById('codeEditResult').innerHTML = msg;
