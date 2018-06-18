@@ -325,3 +325,48 @@ html, body {
 	border-radius : 5px;
 	color: black;
 }
+
+
+
+.w100 {
+  position:relative;
+  margin-top:6px;
+  margin-bottom:6px;
+  width: 100%;
+}
+
+.w50 {
+  width: 50%;
+  margin-top:1px;
+  margin-bottom:1px;
+}
+
+.tcenter {
+  text-align: center;
+}
+
+.btn-margin {
+  margin-top:4px;
+  margin-bottom: 2px;
+}
+.control-margin {
+  margin-bottom:20px;
+  margin-top:20px;
+}
+
+.outline {
+  padding:2px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.offset {
+	width:80px;
+}

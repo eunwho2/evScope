@@ -9,12 +9,12 @@ var oscope = (function() {
   var m_voffset = [];
   // these must match the initial values of the controls
   // doh! no two way data bindind
-  var mSecPerDiv		  		 = 0.100;
+  var m_seconds_per_div	   = 0.100;
   var m_samples_per_second = 600;
   var m_divisions          = 10;
-  var m_yscale             = 512;
-  var m_sample_bits        = 10;
-  var m_volts_per_div      = 5;
+  var m_yscale             = 2048;
+  var m_sample_bits        = 12;
+  var m_volts_per_div      = 2.5;
   var m_vrange             = 5;
   var m_cursor_index       = 2;
   var m_cursor_seconds     = 0.0;
@@ -56,9 +56,7 @@ var oscope = (function() {
   var vdiv_base  =  1.0/10.0;
   var vdiv;
 
-  var mid_div_base = [
-    0.0,5.0/10.0,1.0,5.0/10.0
-  ];
+  var mid_div_base = [0.0,5.0/10.0,1.0,5.0/10.0];
   var mid_div = [0,0,0,0];
 
   var hgrid_base = [
@@ -92,7 +90,8 @@ var oscope = (function() {
     [0.0,0.0,1.0,0.0],  // 2 vertical
     [0.0,0.0,1.0,0.0],  // 3 vertical
   ];
-  var m_cursor;
+  
+	var m_cursor;
 
   // responsive sizes for canvas
   // aspect ratio of available sizes needs to be 4 over 3
@@ -242,13 +241,13 @@ var oscope = (function() {
     // draw the outline
     ctx.save();
     ctx.strokeStyle = 'gray';
-    ctx.lineWidth   = 6;
+    ctx.lineWidth   = 4;
     drawPath(ctx,outline);
     ctx.restore();
 
     // draw the grid
     ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.5)";
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
     ctx.lineWidth   = 1;
     ctx.setLineDash([1,1]);
     drawLines(ctx,hgrid);
@@ -273,100 +272,56 @@ var oscope = (function() {
     // draw the cursors
     ctx.save();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "MediumSeaGreen";
     drawLine(ctx,m_cursor[0]);
     drawLine(ctx,m_cursor[2]);
-    ctx.strokeStyle = "orange";
+    ctx.strokeStyle = "MediumSeaGreen";
     drawLine(ctx,m_cursor[1]);
     drawLine(ctx,m_cursor[3]);
+
     ctx.restore();
 
     ctx.restore();
+
   }
 
   function drawAnnotations(ctx,width,height,dy)
   {
-
     var t;
     var y;
 
     ctx.font = dy.toFixed(0) + "px monospace";
-    ctx.fillStyle = "#01a9db";
+    ctx.fillStyle = "lime";
     y = dy + 1;
-//     ctx.fillText('sec/div     = ' + (mSecPerDiv*1.0).toFixed(3) + '     dS = ' + m_cursor_seconds.toFixed(4),2,y);
+    ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),2,y);
     y += dy + 1;
-//    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
-    y += dy + 22;
-    ctx.fillText('3686',	20,y);
-    y += dy + 80;
-    ctx.fillText('2867',	20,y);
-    y += dy + 77;
-    ctx.fillText('2048',	20,y);
-    y += dy + 77;
-    ctx.fillText('1229',	20,y);
-    y += dy + 77;
-    ctx.fillText(' 409',	20,y);
-    y += dy + 2;
-    ctx.fillText('ch0',		20,y);
-
-    y = dy + 1;
-    y += dy + 1;
-    ctx.fillStyle = "white";
-
-    y += dy + 22;
-    ctx.fillText('0',		20+40,y);
-    y += dy + 80;
-    ctx.fillText('-0.025',	20+40,y);
-    y += dy + 77;
-    ctx.fillText('-0.05',	20+40,y);
-    y += dy + 77;
-    ctx.fillText('-0.075',	20+40,y);
-    y += dy + 77;
-    ctx.fillText('-0.1',	20+40,y);
-    y += dy + 2;
-    ctx.fillText('ch1',	20+40,y);
-
-    y = dy + 1;
-    y += dy + 1;
-    ctx.fillStyle = "yellow";
-
-    y += dy + 22;
-    ctx.fillText('3686', 560,y);
-    y += dy + 80;
-    ctx.fillText('2867', 560,y);
-    y += dy + 77;
-    ctx.fillText('2048', 560,y);
-    y += dy + 77;
-    ctx.fillText('1229', 560,y);
-    y += dy + 77;
-    ctx.fillText(' 409', 560,y);
-    y += dy + 2;
-    ctx.fillText('ch3',  560,y);
+    ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
 
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
     ctx.fillText(t,2,height-4);
+
+
   }
 
-  function computeVerticalScale ( height , yscale){ 
-	 //divide by 2 to make scale for signed value
-    return height / yscale ;
+  function computeVerticalScale(vrange,yscale,height,volts) {
+    // divide by 2 to make scale for signed value
+    return (vrange / yscale) * (height / volts) * 0.5;
   }
 
   function computeHorizontalScale(seconds,samples_per_second,width) {
     return width / (seconds * samples_per_second);
   }
 
-  function drawTrace(ctx,trace,width,height,voffset) {
-	var	tempOffset = 0;
+ function drawTrace(ctx,trace,width,height,voffset) {
     var t = [];
     var ys;
     var hs;
     var i;
 
     // compute scale factors
-//    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div * 10);
-    hs = computeHorizontalScale(mSecPerDiv*m_divisions,m_samples_per_second,m_width);
+    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div*10);
+    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
 
     // compute horizonal scale
 
@@ -375,43 +330,29 @@ var oscope = (function() {
     ctx.scale(1.0,-1.0);
 
     // set channel parameters
-   switch(trace.channel) {
-   case 0:
-		// tempOffset = 2048;
-		tempOffset = 0;
-		ys = 450 / 4096;
-      // ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
+    switch(trace.channel) {
+    case 0:
+      ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
       ctx.strokeStyle = "yellow";
       break;
-
-	case 1:
-		tempOffset = 0;
-			//tempOffset = 0.0;
-		ys = 450 / 4096; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "#2ECCFA";
+    case 1:
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
+      ctx.strokeStyle = "royalblue";
       break;
-
     case 2:
-			tempOffset = 0;
-	    ys = 450 / 4096 ; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "magenta";
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
+      ctx.strokeStyle = "hotpink";
       break;
-
     case 3:
-		tempOffset = 0;
-	    ys = 450 / 4096; 
-      // ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "white";
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
+      ctx.strokeStyle = "palegreen";
       break;
-
     }
     
     // scale the trace y axis
     // samples are Int16Array
     for(i=0;i<trace.length;++i) {
-      t.push([i*hs,((trace.sample[i])*1+tempOffset) * ys]);
+      t.push([i*hs,trace.sample[i] * ys]);
     }
 
     // draw it
@@ -419,6 +360,26 @@ var oscope = (function() {
     
     ctx.restore();    
     // restore context
+  }
+
+  function onVerticalOffset(channel,offset)
+  {
+    if ((offset < -4)||(4 < offset)) {
+      return;
+    }
+    m_voffset[channel-1] = offset * vdiv;
+    onPaint(null);
+  }
+
+  /**
+   * event handler for setting volts per division
+   * @param volts
+   */
+  function onVoltsPerDiv(volts) {
+    m_volts_per_div = volts;
+
+    updateCursorDiff();
+    onPaint(null);
   }
 
   function onPaint(trace) {
@@ -450,7 +411,6 @@ var oscope = (function() {
     if (m_trace[3] !== null) {
       drawTrace(m_context, m_trace[3], m_width, m_height, m_voffset[3]);
     }
-
     // draw text annotations
     drawAnnotations(m_context,m_width,m_height,m_text_size);
   }
@@ -478,7 +438,7 @@ var oscope = (function() {
   }
 
   function onSecondsPerDiv(seconds) {
-    mSecPerDiv = seconds;
+    m_seconds_per_div = seconds;
 
     updateCursorDiff();
     onPaint(null);
@@ -511,8 +471,8 @@ var oscope = (function() {
 
   function updateCursorDiff() {
     // compute current cursor diff in seconds
-    m_cursor_seconds = Math.abs(m_cursor[0][0] - m_cursor[1][0]) * (mSecPerDiv * 10.0 / m_width);
-    m_cursor_volts   = Math.abs(m_cursor[2][1] - m_cursor[3][1]) * (m_volts_per_div   * 10.0 / m_height);
+    m_cursor_seconds = Math.abs(m_cursor[0][0] - m_cursor[1][0]) * (m_seconds_per_div* 10.0 / m_width);
+    m_cursor_volts   = Math.abs(m_cursor[2][1] - m_cursor[3][1]) * (m_volts_per_div * 10.0 / m_height);
   }
 
   function onCursorMove(x,y) {
@@ -608,7 +568,17 @@ socket.on('trace', function (msg) {
 
 });
 
+
+var inputOffset = [1630,1630,1800,1800];
+
 socket.on('graph', function (msg) {
+
+	for(var j = 0 ;j < 4 ; j++){
+		for( var i = 0 ; i < msg[j].length ; i ++){
+			msg[j][i] = msg[j][i] - inputOffset[j];
+		}
+	}
+	
 	traceData0.sample = traceData0.sample.concat(msg[0]);
 	traceData1.sample = traceData1.sample.concat(msg[1]);
 	traceData2.sample = traceData2.sample.concat(msg[2]);
@@ -625,6 +595,7 @@ socket.on('graph', function (msg) {
 	// console.log(traceData0.sample);
 	oscope.onPaint(trace);
 });
+
 
 socket.on('noVacTx',function(msg){
     noVac = msg.selVac;
@@ -648,6 +619,9 @@ $("document").ready(function() {
 //	radialGaugeInit();
 //	socket.emit('codeTable',dummy);
 });
+
+
+
 /*
 setInterval( function () {
 	var date = new Date();
@@ -656,3 +630,4 @@ setInterval( function () {
   document.getElementById('clock1').innerHTML = n +':'+ time;
 }, 2000);
 */
+

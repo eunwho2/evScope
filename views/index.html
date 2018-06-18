@@ -71,6 +71,82 @@
 		<div id ='codeTable' class ='csCodeTable'>
 			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="20" cols="35">	</textarea>
 		</div>
+
+		<!-- cursor select -->
+		<span class="label label-default " title="select a cursor to place on the display">Cursor Select</span>
+		<div class = "btn-group btn-group-md " data-toggle="buttons">
+			<div>
+				<label class="btn btn-primary btn-margin activ" title="vertical cursor 1">
+					<input type='radio' name="cursor" id="vcursor1" checked >V1
+				</label>
+				<label class="btn btn-primary btn-margin" title="vertical cursor 2">
+					<input type='radio' name="cursor" id="vcursor2" >V2
+				</label>
+				<label class="btn btn-primary btn-margin" title="horizontal cursor 1">
+					<input type='radio' name="cursor" id="hcursor1" >H1
+				</label>
+				<label class="btn btn-primary btn-margin" title="horizontal cursor 2">
+					<input type='radio' name="cursor" id="hcursor2" >H2
+				</label>
+			</div>
+			<div>
+				<span class='csCurPosi'>H Start</span>
+				<span id='curHoriStartPosi' class='csCurPosi'>2047</span>
+				<span class='csCurPosi'>H End</span>
+				<span id='curHoriEndPosi' class='csCurPosi'>2047</span>
+				</br>	
+				<span class='csCurPosi'>V Start</span>
+				<span id='curVerStartPosi' class='csCurPosi'>300</span>
+				<span class='csCurPosi'>V End</span>
+				<span id='curVerEndPosi' class='csCurPosi'>400</span>
+			</div>
+
+			 <div class="label label-default " title="select how many volts one vertical division represents">Volts/Div</div>
+			<div class="btn-group btn-group-md" data-toggle="buttons">
+            <div>
+              <label class="btn btn-primary btn-margin">
+                <input class="vdiv" type="radio" name="vdiv" id="volts10" >0.1
+              </label>
+              <label class="btn btn-primary btn-margin active">
+                <input class="vdiv" type="radio" name="vdiv" id="volts25" >0.2
+              </label>
+              <label class="btn btn-primary btn-margin ">
+                <input class="vdiv" type="radio" name="vdiv" id="volts50" >0.5
+              </label>
+              <label class="btn btn-primary btn-margin">
+                <input class="vdiv" type="radio" name="vdiv" id="volts100" checked >1.0
+              </label>
+            </div>
+          </div>
+
+          <div class="w100"></div>
+			<form>
+          <div class="label label-default" title="enter offset value">CH0 offset</div>
+           <input id='ch0Offset' type="number" class="form-control offset" value="1800" min="1" step="1" size="5">
+
+          <div class="w100"></div>
+          <div class="label label-default" title="enter offset value">CH1 offset</div>
+          <div>
+            <input id='ch1Offset' type="number" class="form-control offset" value="1800" min="1" step="1">
+          </div>
+          <div class="w100"></div>
+
+          <div class="w100"></div>
+          <!-- Sample Rate -->
+          <div class="label label-default" title="enter offset value">CH2 offset</div>
+          <div>
+            <input id='ch2Offset' type="number" class="form-control offset" value="1800" min="1" step="1">
+          </div>
+          <div class="w100"></div>
+          <div class="w100"></div>
+          <!-- Sample Rate -->
+          <div class="label label-default" title="enter offset value">CH3 offset</div>
+          <div>
+            <input id='ch3Offset' type="number" class="form-control offset" value="1800" min="1" step="1">
+          </div>
+          <div class="w100"></div>
+			</form>
+	</div>
 	<div> 
 </div>
 </div>
@@ -83,8 +159,6 @@ var msgTx = { selVac: 0};
 var traceOnOff = 0;
 var monitorOnOff = 0;
 
-function changeNoVac(){
-}
 
   function btnTraceOnOff(){
 		monitorOnOff = 0;
@@ -135,7 +209,7 @@ function getSciCmd( ){
 
 	if(isNaN(tmp1)) return returns;
 	if(isNaN(tmp2)) return returns;
-	if(( tmp1 > 20 ) || ( tmp1 < 0 )) return returns;
+	if(( tmp1 > 500 ) || ( tmp1 < 0 )) return returns;
 
 	var sciCmd = '9:4:';
 	if(tmp1 < 10){
@@ -158,6 +232,8 @@ function getSciCmd( ){
 function btnReadCode(){	
 	var returns = getSciCmd( );
 
+	//console.log(returns);
+
 	if( returns.length == 16 ){
 		socket.emit('codeEdit',returns);
 	} else {
@@ -176,7 +252,61 @@ function btnWriteCode(){
 	}	 
 }
 
+function changeNoVac(){
+
+	var msg = [];
+	for( var i = 0 ; i < 600 ; i++){
+		msg.push( 1500 + 50 * Math.sin( Math.PI / 30 * i ));
+ 	}
+   traceData0.sample = msg;
+
+	msg =[];
+	for( var i = 0 ; i < 600 ; i++){
+		msg.push( 1600 + 50 * Math.sin( Math.PI / 30 * i ));
+ 	}
+   traceData1.sample = msg;
+
+	msg =[];
+	for( var i = 0 ; i < 600 ; i++){
+		msg.push( 1700 + 50 * Math.sin( Math.PI / 30 * i ));
+ 	}
+   traceData2.sample = msg;
+
+	msg =[];
+	for( var i = 0 ; i < 600 ; i++){
+		msg.push( -1800 + 50 * Math.sin( Math.PI / 30 * i ));
+ 	}
+   traceData3.sample = msg;
+
+   oscope.onPaint(trace);
+}
+
+
   //--- sampling bits
+// =============================================
+  // volts per division
+  // =============================================
+
+  $('#volts10' ).on('change',null,function() {oscope.onVoltsPerDiv(0.1 );});
+  $('#volts25' ).on('change',null,function() {oscope.onVoltsPerDiv(0.25);});
+  $('#volts50' ).on('change',null,function() {oscope.onVoltsPerDiv(0.5 );});
+  $('#volts100').on('change',null,function() {oscope.onVoltsPerDiv(1.0 );});
+
+  $('.vdiv' ).on('change',null,function(event) {
+        oscope.onVoltsPerDiv(parseFloat(event.target.parentElement.innerText));
+      }
+  );
+
+  // =============================================
+  // set offset 
+  // =============================================
+  $('#ch0Offset' ).on('change',null,
+		function(){
+			var temp = document.getElementById('ch0Offset').value;
+			//console.log(temp);
+			// oscope.onVerticalOffset(1,temp);
+		}
+  );
 
   // =============================================
   // canvas mouse event for cursor drag
@@ -184,11 +314,13 @@ function btnWriteCode(){
   var mouse_state = 0;
   $('#oscope').on('mousedown',function(event) {
     mouse_state = 1;
+
     oscope.onCursorMove(event.offsetX,event.offsetY);
   });
 
   $('#oscope').on('mouseup',function() {
     mouse_state = 0;
+
   });
 
   $('#oscope').on('mouseout',function() {
@@ -202,6 +334,14 @@ function btnWriteCode(){
       break;
     case 1:
       oscope.onCursorMove(event.offsetX,event.offsetY);
+		var temp = (225 - event.offsetY) * 4096 / 450;
+		var x = document.getElementById('vcursor1').checked;
+
+		if( x ) {
+			document.getElementById('curVerStartPosi').innerHTML = parseInt(temp);
+		}else{
+			document.getElementById('curVerEndPosi').innerHTML = parseInt(temp);
+		}
       break;
     }
   });

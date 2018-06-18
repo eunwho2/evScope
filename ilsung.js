@@ -128,10 +128,11 @@ io.on('connection', function (socket) {
 		traceOnOff = 0;
 		monitorOnOff = 0;
 		console.log(msg);
-		setTimeout(function(){
-			port.write(msg);
+		//setTimeout(function(){
+		//port.write('9:4:000:0.000e+0');
+		port.write(msg);
 			codeEditOnOff = 1;
-		},100);
+		//},100);
 	});
 
 	socket.on('getCodeList',function(msg){
@@ -182,10 +183,11 @@ parser.on('data',function (data){
 	var y =0;
 
 	if(codeEditOnOff){
-		
+		console.log(data);		
 		codeEditOnOff = 0;		
 		myEmitter.emit('codeEdit', data);
 		return;
+
 	}else if(getCodeList){
 		var tmp1 = data.split(':');
 		getCodeList = 0;		
