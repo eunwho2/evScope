@@ -320,7 +320,7 @@ var oscope = (function() {
     var i;
 
     // compute scale factors
-    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div*10);
+    ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div);
     hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
 
     // compute horizonal scale
@@ -569,16 +569,12 @@ socket.on('trace', function (msg) {
 });
 
 
-var inputOffset = [1630,1630,1800,1800];
+var inputOffset = [1817,1817,2121,2009];
 
 socket.on('graph', function (msg) {
 
-	for(var j = 0 ;j < 4 ; j++){
-		for( var i = 0 ; i < msg[j].length ; i ++){
-			msg[j][i] = msg[j][i] - inputOffset[j];
-		}
-	}
-	
+	console.log("ch0 = %d, ch1 = %d",msg[0][0],msg[1][0]);
+
 	traceData0.sample = traceData0.sample.concat(msg[0]);
 	traceData1.sample = traceData1.sample.concat(msg[1]);
 	traceData2.sample = traceData2.sample.concat(msg[2]);
@@ -592,10 +588,8 @@ socket.on('graph', function (msg) {
 		traceData2.sample.splice(0,cutData);
 		traceData3.sample.splice(0,cutData);
 	}
-	// console.log(traceData0.sample);
 	oscope.onPaint(trace);
 });
-
 
 socket.on('noVacTx',function(msg){
     noVac = msg.selVac;

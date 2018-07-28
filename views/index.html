@@ -61,7 +61,7 @@
 
 	<div class='csRightBox'>
 		<div id ='codeEdit' class ='csCodeEdit'>
-			<textarea id='txtCodeEdit1' class='csCodeEdit' rows="1" cols="2">  0	</textarea>
+			<textarea id='txtCodeEdit1' class='csCodeEdit' rows="1" cols="4">  0	</textarea>
 			<textarea id='txtCodeEdit2' class='csCodeEdit' rows="1" cols="10"> 0	</textarea>
 			<button id='btnReadCode' 	class='w3-button w3-round w3-green' onclick='btnReadCode()'>Read</button>
 			<button id='btnWriteCode' 	class='w3-button w3-round w3-red  ' onclick='btnWriteCode()'>Write</button>
@@ -69,7 +69,7 @@
 			<span id='codeEditResult' class='csCodeEditResult'>read result</span>
  		<div>
 		<div id ='codeTable' class ='csCodeTable'>
-			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="20" cols="35">	</textarea>
+			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="20" cols="45">	</textarea>
 		</div>
 
 		<!-- cursor select -->
@@ -209,7 +209,7 @@ function getSciCmd( ){
 
 	if(isNaN(tmp1)) return returns;
 	if(isNaN(tmp2)) return returns;
-	if(( tmp1 > 500 ) || ( tmp1 < 0 )) return returns;
+	if(( tmp1 > 990 ) || ( tmp1 < 0 )) return returns;
 
 	var sciCmd = '9:4:';
 	if(tmp1 < 10){

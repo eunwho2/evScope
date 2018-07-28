@@ -198,9 +198,10 @@ parser.on('data',function (data){
 		temp1 = data.length-4;
 		y = data.slice(temp1,temp1+4);
 		var ch = y.toString();
-
 		var tmp1 = data.split(',');
 		var graphArry =[];
+
+		// console.log(tmp1);
 
 		for( var i = 0; i< 100; i++){
 			graphArry.push( tmp1[i] * 1);
