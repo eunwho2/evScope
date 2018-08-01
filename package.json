@@ -1,8 +1,8 @@
 {
-  "name": "ilsung",
+  "name": "power-pack",
   "version": "0.0.0",
   "scripts": {
-    "start": "node ilsung.js",
+    "start": "node powerPack.js",
     "clean": "node clean.js"
   },
   "repository": {
@@ -20,7 +20,7 @@
     "jquery": "^3.2.1",
     "lodash": "^3.7.0",
     "morgan": "^1.5.3",
-    "serialport": "^6.0.4",
+    "serialport": "^6.2.2",
     "serve-favicon": "^2.2.1",
     "socket.io": "^1.7.4",
     "swig": "^1.4.2"
@@ -42,8 +42,17 @@
   "homepage": "https://github.com/dmh2000/node-oscope#readme",
   "main": "Gruntfile.js",
   "directories": {
+    "lib": "lib",
     "test": "test"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "soonkil jung",
+  "license": "ISC",
+  "keywords": [
+    "scope",
+    "hydro",
+    "unit",
+    "power",
+    "pack",
+    "inverter"
+  ]
 }
