@@ -1,4 +1,96 @@
 //"use strict";
+
+var inveStart = 0;
+var digiOut = 0xff;
+
+var i2c				= require('i2c-bus');
+var piI2c			= i2c.openSync(1);
+
+var writeMcp23017 = function(address,port,byte){
+
+  return new Promise(function ( resolve , reject ){
+
+    if(port) var GPIO = 0x13;
+    else     var GPIO = 0x12;
+
+    piI2c.writeByte(address,GPIO,byte,function(err){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
+    });
+  });
+}
+
+var writeCmdMcp23017 = function(address,port,byte){
+
+  return new Promise(function ( resolve , reject ){
+
+    piI2c.writeByteSync(address,port,byte,function(err){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve();
+      }
+    });
+  });
+}
+
+//--- start of digital inout routine
+
+var ADDR1 = 0x20;
+var ADDR2 = 0x21;
+
+writeMcp23017(ADDR1,0,0xff);
+
+piI2c.writeByteSync(ADDR1,0,0,function(err){
+	if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR1,1,0xff,function(err){
+	if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR2,0,0,function(err){
+	if(err) console.log(err);
+});
+
+piI2c.writeByteSync(ADDR2,1,0,function(err){
+	if(err) console.log(err);
+});
+
+
+var readMcp23017 = function(address,port){
+
+  return new Promise(function ( resolve , reject ){
+
+    var GPIO = 0x12;
+
+    if( port ) GPIO = 0x13;
+    else       GPIO = 0x12;
+   
+    piI2c.readByte(address,GPIO,function(err,Byte){
+      if(err){
+        reject(err);
+      }
+      else{
+        resolve(Byte);
+      }
+    });
+  });
+}
+
+
+var exec = require('child_process').exec;
+
+// Create shutdown function
+function shutdown(callback){
+    exec('shutdown now', function(error, stdout, stderr){ callback(stdout); });
+}
+
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 const port = new SerialPort('/dev/ttyAMA0',{
@@ -35,6 +127,8 @@ var users     = require('./routes/users');
 var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var portAddr  = process.env.PORT || '3000';
+
+
 
 //--- create express application
 var app = express();
@@ -92,6 +186,7 @@ var traceOnOff =0;			// 1 --> send tarace data to client
 var monitorOnOff =0;			// 1 --> send tarace data to client
 var codeEditOnOff =0;			// 1 --> send tarace data to client
 var getCodeList = 0;
+
 //--- start server
 console.log('http on : ' + portAddr.toString());
 server.listen(portAddr);
@@ -137,7 +232,43 @@ io.on('connection', function (socket) {
 
 	socket.on('btnClick',function(msgTx){
 
+		console.log(msgTx.selVac);
 		var digitalOut = 1;
+		if( msgTx.selVac == 0){
+			inveStart = 1;
+			digiOut = digiOut & 0xfe;
+			writeMcp23017(ADDR1,0,digiOut);
+		}else if( msgTx.selVac == 1){
+			inveStart = 0;
+			digiOut = digiOut | 1;
+			writeMcp23017(ADDR1,0,digiOut);
+		} else if( msgTx.selVac == 2){
+			testOn = true;
+		} else if( msgTx.selVac == 3){
+			testOn = false;
+		} else if( msgTx.selVac == 4){
+			digiOut = digiOut | 4;			// clear ArmOff;
+			digiOut = digiOut & 0xfd;
+			writeMcp23017(ADDR1,0,digiOut);
+			setTimeout(function(){ 
+				digiOut = digiOut | 6 ;			
+				writeMcp23017(ADDR1,0,digiOut); 
+			}, 5000);
+		} else if( msgTx.selVac == 5){
+			digiOut = digiOut | 2;			// clear ArmOff;
+			digiOut = digiOut & 0xfb;
+			writeMcp23017(ADDR1,0,digiOut);
+			setTimeout(function(){ 
+				digiOut = digiOut | 6 ;
+				writeMcp23017(ADDR1,0,digiOut); 
+			}, 5000);
+		} else if( msgTx.selVac == 6){
+			shutdown(function(output){
+    			console.log(output);
+			});
+		} else if( msgTx.selVac == 7){
+			gracefulShutdown();
+		}
   });
 
 	//--- emitt graph proc 
@@ -221,12 +352,106 @@ parser.on('data',function (data){
 
 });
 
+function sleepFor( sleepDuration ){
+    var now = new Date().getTime();
+    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
+}
+
+
+function printLine(){
+}
+
+
+
+setInterval(function(){
+	var stamp = new Date().toLocaleString();
+	console.log(stamp);
+},10000);
+
+//--- start of main routune
+// digital out proc 
+setInterval(function() {
+
+	// 0 --> relay ON
+	digiOut = (inveStart) ? digiOut & 0xfe : digiOut | 1 ;
+	writeMcp23017(ADDR1,0,digiOut);
+
+
+	var promise = readMcp23017(ADDR1,1); //외부 입력을 읽음
+
+	promise
+	.then(function(byte){
+		console.log(byte);
+
+	}).catch(function(err){
+		console.log(err);
+	});
+
+/*
+	if(byte < 256 ){
+		inMcp23017[0] = byte;
+
+      var temp =  (inMcp23017[0] & 1 );
+		if( temp == 0 ){
+			console.log('Inverter Trip On proc');
+		}
+      
+		temp =  (inMcp23017[0] & 2 );
+		if( temp ){
+			console.log('OFF Stop Input');
+			poweroff = 0;
+		} else {
+			poweroff++;
+			console.log('on stop count = %d',poweroff);
+			console.log('ON  Stop Input');
+			if(poweroff > 1 ) shutdown ();
+		}
+
+      temp =  (inMcp23017[0] & 4 );
+		if( temp ){
+			console.log('No Motor Error');
+				motorError = 0;
+		} else {
+			motorErro++;
+			console.log('motor error count = %d',motorErro);
+			tripNumber = 1; // motor overload
+			if( motorErro > 2 )	myEmitter.emit('trip', tripNumber );
+		}
+
+      temp =  (inMcp23017[0] & 8 );
+		if( temp ){
+			console.log('No Heater Error');
+				heatErro = 0;
+		} else {
+			heatErro++;
+			console.log('heat error count = %d',heatErro);
+			tripNumber = 2; // motor overload
+			if(heatErro > 2 )	myEmitter.emit('trip', tripNumber );
+		}
+      temp =  (inMcp23017[0] & 16 );
+		if( temp ){
+			console.log('No Flow Sensor Error');
+				flowSensErro = 0;
+		} else {
+			flowSensErro ++;
+			console.log('flowSensor count = %d',flowSensErro);
+			tripNumber = 3; // motor overload
+			if(flowSensErro > 2 )	myEmitter.emit('trip', tripNumber );
+		}
+		 //return writeMcp23017(ADDR_OUT1,0,byte);
+ 	}
+*/
+	//-- end of input 255
+
+},1000);
+
 setInterval(function() {
 	if(traceOnOff){
 	  port.write('9:4:900:1.000e+2');
 	}else if(monitorOnOff){
 	  port.write('9:4:900:0.000e+0');
 	}
+
 },2000);
 
 var exec = require('child_process').exec;
