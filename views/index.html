@@ -190,7 +190,7 @@
   				<option value="2">RESET</option>
   				<option value="3">READ CODE</option>
 			</select>
-			<button id='btnWriteCode' 	class='w3-button w3-round w3-green' onclick='btnSendCmd()'>Send</button>
+			<button id='btnWriteCode' 	class='w3-button w3-round w3-green' onclick='btnOptionSendCmd()'>Send</button>
  		<div>
 		<div id ='codeTable' class ='csCodeTable'>
 			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="8" cols="38">	</textarea>
@@ -315,10 +315,6 @@ function updateCh4Select(selectedGroup){
 		
 	}
 
-function btnReadAll(){
-	socket.emit('getCodeList',0);
-}
-
 function btnMonitor(){
 	traceOnOff = 0;
 	document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
@@ -423,7 +419,7 @@ function btnWriteCode(){
 	}	 
 }
 
-function btnSendCmd(){
+function btnOptionSendCmd(){
 	var selector = document.getElementById("idCmdSelect");
 	var value = selector[selector.selectedIndex].value;
 	var cmd = '9:4:902:5.000e+0';
@@ -437,6 +433,10 @@ function btnSendCmd(){
 	} else if(value == 2) { 
 		cmd = '9:4:902:5.000e+0';	// RESET
 		socket.emit('codeEdit',cmd);
+	} else if(value == 3) { 			// READ ALL CODE
+		//cmd = '9:4:902:5.000e+0';	
+		//socket.emit('codeEdit',cmd);
+		socket.emit('getCodeList',0);
 	}
 }
 
