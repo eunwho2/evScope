@@ -1,11 +1,14 @@
 //"use strict";
 
 
+
 var inveStart = 0;
 var digiOut = 0xff;
 
+/*
 var i2c				= require('i2c-bus');
 var piI2c			= i2c.openSync(1);
+
 
 var writeMcp23017 = function(address,port,byte){
 
@@ -84,6 +87,7 @@ var readMcp23017 = function(address,port){
   });
 }
 
+*/
 
 var exec = require('child_process').exec;
 
@@ -95,7 +99,11 @@ function shutdown(callback){
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 const port = new SerialPort('/dev/ttyAMA0',{
-   baudRate: 230400
+   baudRate: 230400,
+	databits: 8,
+	parity: 'none',
+	stopBits: 1,
+	flowControl: false
 });
 
 const parser = new Readline();
@@ -208,10 +216,11 @@ io.on('connection', function (socket) {
 		traceCount = 0;
 	});
 
-	socket.on('monitor',function(msg){
+	socket.on('scope',function(msg){
 		codeEditOnOff = 0;
-		traceOnOff = 0;
-		monitorOnOff = msg;
+		traceOnOff = msg;
+		monitorOnOff = 0;
+		console.log('traceOnOff ='+ '    ' + traceOnOff);
 	});
 
 	socket.on('codeEdit',function(msg){
@@ -231,8 +240,8 @@ io.on('connection', function (socket) {
 		getCodeList = 1;
 	});
 
+/*
 	socket.on('btnClick',function(msgTx){
-
 		console.log(msgTx.selVac);
 		var digitalOut = 1;
 		if( msgTx.selVac == 0){
@@ -271,6 +280,7 @@ io.on('connection', function (socket) {
 			gracefulShutdown();
 		}
   });
+*/
 
 	//--- emitt graph proc 
 	myEmitter.on('event',function(param){
@@ -321,6 +331,18 @@ parser.on('data',function (data){
 		return;
 
 	}else if( traceOnOff){
+
+		var temp1 = data[0] & 63;
+		var temp2 = data[1];
+
+		var buff = new Buffer(data);
+		// var buff = new Buffer(data,'utf8');
+		// console.log(buff[0],buff[1],buff[2],buff[3]);
+		// console.log(data.toString());
+		// console.log(data.toString('hex'));
+		console.log(buff.toString('hex'));
+		
+/*
 		temp1 = data.length-4;
 		y = data.slice(temp1,temp1+4);
 		var ch = y.toString();
@@ -340,8 +362,24 @@ parser.on('data',function (data){
 			graphData[3] = graphArry;
 			myEmitter.emit('event', graphData);
 		}      		
+*/
 
+/*
+
+		if ( (data[1] & 1 ) !== 0 )  temp1 = temp1 + 64;
+		if ( (data[1] & 2 ) !== 0 )  temp1 = temp1 + 128;
+
+		var temp3 = temp2 & 63;
+		var temp4 = temp3 >> 2;
+		
+		temp1 = temp1 + temp4 * 256;
+
+		console.log('data[0] = ' + data[0] + '  :  ' + 'data[1] = ' + data[1]);
+		// console.log('received scope data = '+temp1);
+
+*/
 		return;
+
 	}else if(monitorOnOff){
 		myEmitter.emit('monitor', data);
 		return;
@@ -369,8 +407,12 @@ setInterval(function(){
 	console.log(stamp);
 },10000);
 
+
+
 //--- start of main routune
 // digital out proc 
+
+/*
 setInterval(function() {
 
 	// 0 --> relay ON
@@ -388,63 +430,8 @@ setInterval(function() {
 		console.log(err);
 	});
 
-/*
-	if(byte < 256 ){
-		inMcp23017[0] = byte;
-
-      var temp =  (inMcp23017[0] & 1 );
-		if( temp == 0 ){
-			console.log('Inverter Trip On proc');
-		}
-      
-		temp =  (inMcp23017[0] & 2 );
-		if( temp ){
-			console.log('OFF Stop Input');
-			poweroff = 0;
-		} else {
-			poweroff++;
-			console.log('on stop count = %d',poweroff);
-			console.log('ON  Stop Input');
-			if(poweroff > 1 ) shutdown ();
-		}
-
-      temp =  (inMcp23017[0] & 4 );
-		if( temp ){
-			console.log('No Motor Error');
-				motorError = 0;
-		} else {
-			motorErro++;
-			console.log('motor error count = %d',motorErro);
-			tripNumber = 1; // motor overload
-			if( motorErro > 2 )	myEmitter.emit('trip', tripNumber );
-		}
-
-      temp =  (inMcp23017[0] & 8 );
-		if( temp ){
-			console.log('No Heater Error');
-				heatErro = 0;
-		} else {
-			heatErro++;
-			console.log('heat error count = %d',heatErro);
-			tripNumber = 2; // motor overload
-			if(heatErro > 2 )	myEmitter.emit('trip', tripNumber );
-		}
-      temp =  (inMcp23017[0] & 16 );
-		if( temp ){
-			console.log('No Flow Sensor Error');
-				flowSensErro = 0;
-		} else {
-			flowSensErro ++;
-			console.log('flowSensor count = %d',flowSensErro);
-			tripNumber = 3; // motor overload
-			if(flowSensErro > 2 )	myEmitter.emit('trip', tripNumber );
-		}
-		 //return writeMcp23017(ADDR_OUT1,0,byte);
- 	}
-*/
-	//-- end of input 255
-
 },1000);
+*/
 
 setInterval(function() {
 	if(traceOnOff){
@@ -453,7 +440,7 @@ setInterval(function() {
 	  port.write('9:4:900:0.000e+0');
 	}
 
-},2000);
+},4000);
 
 var exec = require('child_process').exec;
 

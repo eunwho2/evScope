@@ -1,10 +1,10 @@
 {%extends 'templates/layout.html' %}
 {% block content %}
 
-<script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script> 
-<script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
-<script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script> 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script --> 
+<!-- script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script -->
+<!-- script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script --> 
+<!-- script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script -->
 
 <!-- end of goole gauge -->
 <div class="container">
@@ -34,13 +34,13 @@
 			<button id='btnInvStart'	class='w3-button w3-round w3-green' onclick='btnInvStart()'>유압동작</button>
 			<button id='btnTestOn'		class='w3-button w3-round w3-green' onclick='btnTestOn()'>실험시작</button -->
 			<button id='btnArmOn'	class='w3-button w3-round w3-green   ' onclick='btnArmOn()'>전진</button>
-			<button id='btnMonitorStart'	class='w3-button w3-round w3-blue   ' onclick='btnMonitorStart()'>StartGraph</button>
+			<button id='btnScopeStart'	class='w3-button w3-round w3-blue ' onclick='startScope()'>StartScope</button>
 			</br>--------------------------------------
 			</br>
 			<button id='btnInvStop'		class='w3-button w3-round w3-red'	onclick='btnInvStop()'>유압정지</button>
 			<button id='btnTestOff'	class='w3-button w3-round w3-red'		onclick='btnTestOff()'>실험정지</button>
 			<button id='btnArmOff'	class='w3-button w3-round w3-red' onclick='btnArmOff()'>후진</button>
-			<button id='btnMonitorStop'	class='w3-button w3-round w3-red' onclick='btnMonitorStop()'>Stop Graph</button>
+			<button id='btnScopeStop'	class='w3-button w3-round w3-red' onclick='stopScope()'>Stop Scope</button>
 			</br>
 			<button id='btnShutDown' class='w3-button w3-round w3-indigo ' onclick='btnShutDown()'>SHUTDOWN</button>
 			<button id='btnNoVac' 	class='w3-button w3-round w3-green  ' onclick='changeNoVac()'>동작버튼5</button>
@@ -185,10 +185,12 @@
 			<button id='btnWriteCode' 	class='w3-circle w3-red'    onclick='btnWriteCode()'>W</button>
 			</br>
 			<select id="idCmdSelect">
-  				<option value="0">READADC</option>
-  				<option value="1">SAVE</option>
-  				<option value="2">RESET</option>
-  				<option value="3">READ CODE</option>
+  				<option value="0">READ SENSOR ADC</option>
+  				<option value="1">READ INV STATUS</option>
+  				<option value="2">RESET FROM TRIP</option>
+  				<option value="3">READ ALL CODES</option>
+  				<option value="4">SAVE TUNING</option>
+  				<option value="5">RESET CODE VALUES</option>
 			</select>
 			<button id='btnWriteCode' 	class='w3-button w3-round w3-green' onclick='btnOptionSendCmd()'>Send</button>
  		<div>
@@ -315,17 +317,14 @@ function updateCh4Select(selectedGroup){
 		
 	}
 
-function btnMonitor(){
-	traceOnOff = 0;
-	document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
-	if( monitorOnOff ){
-		monitorOnOff = 0 ;
-		document.getElementById('btnMonitor').innerHTML = '모니터시작';
-	}else{
-		monitorOnOff = 1;
-		document.getElementById('btnMonitor').innerHTML = '모니터정지';
-	}
-	socket.emit('monitor',monitorOnOff);
+function startScope(){
+
+	socket.emit('scope',1);
+}
+
+function stopScope(){
+
+	socket.emit('scope',0);
 }
 
 function btnInvStart(){
@@ -428,7 +427,7 @@ function btnOptionSendCmd(){
 		cmd = '9:4:910:0.000e+0';	// read adc
 		socket.emit('codeEdit',cmd);
 	} else if(value == 1) { 
-		cmd = '9:6:900:4.000e+1';	// save
+		cmd = '9:4:900:0.000e+0';	// read status
 		socket.emit('codeEdit',cmd);
 	} else if(value == 2) { 
 		cmd = '9:4:902:5.000e+0';	// RESET
@@ -437,6 +436,12 @@ function btnOptionSendCmd(){
 		//cmd = '9:4:902:5.000e+0';	
 		//socket.emit('codeEdit',cmd);
 		socket.emit('getCodeList',0);
+	} else if(value == 4) { 
+		cmd = '9:6:900:4.000e+1';	// save
+		socket.emit('codeEdit',cmd);
+	} else if(value == 5) { 
+		cmd = '9:6:900:9.000e+1';	// reset all codes to factory setting
+		socket.emit('codeEdit',cmd);
 	}
 }
 
