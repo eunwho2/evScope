@@ -318,6 +318,8 @@ parser.on('data',function (data){
 	var temp2 = 0;
 	var y =0;
 
+	console.log('received data =' + data );
+
 	if(codeEditOnOff){
 		console.log(data);		
 		codeEditOnOff = 0;		
