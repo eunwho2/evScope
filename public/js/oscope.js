@@ -1,5 +1,5 @@
 "use strict";
-var scope = (function() {
+var graphInverter = (function() {
   var m_canvas;
   var m_context;
   var m_width;
@@ -292,8 +292,6 @@ var scope = (function() {
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
     ctx.fillText(t,2,height-4);
-
-
   }
 
   function computeVerticalScale(vrange,yscale,height,volts) {
@@ -533,7 +531,7 @@ var scope = (function() {
   };
 
 })();
-// --- end of scope
+// --- end of graphInverter
 
 
 var oscope = (function() {
@@ -1082,12 +1080,19 @@ const dataLength = 600;
 
 var traceCount = 0;
 
-var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
-var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
-var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
-var traceData3 = { channel:3,length:dataLength,sample:[dataLength]}
-
+var traceData0 = { channel:0,length:dataLength,sample:[dataLength]};
+var traceData1 = { channel:1,length:dataLength,sample:[dataLength]};
+var traceData2 = { channel:2,length:dataLength,sample:[dataLength]};
+var traceData3 = { channel:3,length:dataLength,sample:[dataLength]};
 var trace =[traceData0,traceData1,traceData2,traceData3];
+
+var graphData = new Array();
+
+graphData[0] = { channel:0,length:dataLength,sample:[dataLength]};
+graphData[1] = { channel:1,length:dataLength,sample:[dataLength]};
+graphData[2] = { channel:2,length:dataLength,sample:[dataLength]};
+graphData[3] = { channel:3,length:dataLength,sample:[dataLength]};
+
  
 var noVac = 1;
 
@@ -1102,11 +1107,25 @@ socket.on('trace', function (msg) {
 });
 
 
-var inputOffset = [1817,1817,2121,2009];
+// var inputOffset = [1817,1817,2121,2009];
+var graphCount = 0;
 
+//socket.on('graph', function (msg) {
 socket.on('graph', function (msg) {
 
-	console.log("ch0 = %d, ch1 = %d",msg[0][0],msg[1][0]);
+	console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'ImPower = ',msg.ImPower);
+
+	graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
+
+	graphData[0].sample[graphCount] = msg.rpm  ; 
+	graphData[1].sample[graphCount] = msg.Irms ; 
+	graphData[2].sample[graphCount] = msg.P_total; 
+	graphInverter.onPaint(graphData);
+});
+
+
+
+socket.on('scope', function (msg) {
 
 	traceData0.sample = traceData0.sample.concat(msg[0]);
 	traceData1.sample = traceData1.sample.concat(msg[1]);
@@ -1116,7 +1135,7 @@ socket.on('graph', function (msg) {
 	if(traceData0.sample.length > 600){
 		var cutData = (traceData0.sample.length-600);
 		// console.log('cutData = %d',cutData);
-		traceData0.sample.splice(0,cutData);
+		// graphData[0].sample[graphCount] = .splice(0,cutData);
 		traceData1.sample.splice(0,cutData);
 		traceData2.sample.splice(0,cutData);
 		traceData3.sample.splice(0,cutData);
@@ -1124,14 +1143,7 @@ socket.on('graph', function (msg) {
 	oscope.onPaint(trace);
 });
 
-socket.on('noVacTx',function(msg){
-    noVac = msg.selVac;
-    document.getElementById('idVacRec').innerHTML = noVac;    
-});
 
-
-socket.on('vacuum', function (msg) {
-});
 
 socket.on('disconnect',function() {
   console.log('disconnected');
@@ -1144,19 +1156,7 @@ $("document").ready(function() {
   }
 	var dummy = {0:0};
 
-	scope.init();
-//	radialGaugeInit();
-//	socket.emit('codeTable',dummy);
+	graphInverter.init();
 });
 
-
-
-/*
-setInterval( function () {
-	var date = new Date();
-	var n = date.toDateString();
-	var time = date.toLocaleTimeString();
-  document.getElementById('clock1').innerHTML = n +':'+ time;
-}, 2000);
-*/
-
+// end of oscope.js

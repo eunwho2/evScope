@@ -1,9 +1,8 @@
 //"use strict";
-
-
-
 var inveStart = 0;
 var digiOut = 0xff;
+var graphOnOff = 0;
+var scopeOnOff = 0;
 
 /*
 var i2c				= require('i2c-bus');
@@ -99,11 +98,13 @@ function shutdown(callback){
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 const port = new SerialPort('/dev/ttyAMA0',{
-   baudRate: 230400,
-	databits: 8,
-	parity: 'none',
-	stopBits: 1,
-	flowControl: false
+//   baudRate: 230400,
+   baudRate: 115200
+
+//	databits: 8,
+//	parity: 'none',
+//	stopBits: 1,
+//	flowControl: false
 });
 
 const parser = new Readline();
@@ -209,35 +210,20 @@ io.on('connection', function (socket) {
   	console.log('disconnected from : ' + host);
   });
 
-	socket.on('traceOnOff',function(msgTx){
-		codeEditOnOff = 0;
-		monitorOnOff = 0;
-		traceOnOff = msgTx;
-		traceCount = 0;
+	socket.on('graph',function(msg){
+		graphOnOff = msg;
 	});
 
 	socket.on('scope',function(msg){
-		codeEditOnOff = 0;
-		traceOnOff = msg;
-		monitorOnOff = 0;
-		console.log('traceOnOff ='+ '    ' + traceOnOff);
+		scopeOnOff = msg;
 	});
 
 	socket.on('codeEdit',function(msg){
-		traceOnOff = 0;
-		monitorOnOff = 0;
-		console.log(msg);
-		//setTimeout(function(){
-		//port.write('9:4:000:0.000e+0');
 		port.write(msg);
-			codeEditOnOff = 1;
-		//},100);
 	});
 
 	socket.on('getCodeList',function(msg){
-		codeEditOnOff = 0;
 		port.write('9:4:901:0.000e+0');
-		getCodeList = 1;
 	});
 
 /*
@@ -283,31 +269,26 @@ io.on('connection', function (socket) {
 */
 
 	//--- emitt graph proc 
-	myEmitter.on('event',function(param){
-		socket.emit('graph',param);
+	myEmitter.on('mMessage',function(data){
+		socket.emit('message',data);
 	});    
 
-	myEmitter.on('monitor',function(param){
-		socket.emit('monitor',param);
+	myEmitter.on('mCodeList',function(data){
+		socket.emit('codeList',data);
 	});    
 
-	myEmitter.on('codeTable',function(msg){
-		socket.emit('codeTable',msg);
+	myEmitter.on('mGraph',function(data){
+		socket.emit('graph',data);
 	});    
 
-	myEmitter.on('codeEdit',function(msg){
-		socket.emit('codeEdit',msg);
+	myEmitter.on('mScope',function(data){
+		socket.emit('scope',data);
 	});    
-	//-- end of emitt grpah proc
-/*
-	setInterval(function() {
-		traceData.state = machineState;
-		// socket.emit('trace',traceData);
-	},2000);
-*/
+
 });
 
-var graphData=[[],[],[],[]];
+var graphData = { rpm:0,Irms:0,P_toatal:0,RePower:0,ImPower:0};
+ 
 var graphProcCount = 0;
 var testMsg = {data:[]};
 var buffer2 = new Buffer(811);
@@ -318,98 +299,75 @@ parser.on('data',function (data){
 	var temp2 = 0;
 	var y =0;
 
-	console.log('received data =' + data );
+	console.log(data);
 
-	if(codeEditOnOff){
-		console.log(data);		
-		codeEditOnOff = 0;		
-		myEmitter.emit('codeEdit', data);
+	var buff = new Buffer(data);
+	var command_addr = parseInt(buff.slice(4,7));
+	var command_data = parseFloat(buff.slice(8,16));
+
+	if(( buff.length < 16 ) || ( command_addr !== 900 )){
+		myEmitter.emit('mMessage', data);
 		return;
+	}
 
-	}else if(getCodeList){
-		var tmp1 = data.split(':');
-		getCodeList = 0;		
-		myEmitter.emit('codeTable', data);
+	if( command_data == 50 ){
+		myEmitter.emit('mCodeList', data);
 		return;
+	} else if ( command_data < 100 ) {
 
-	}else if( traceOnOff){
 
-		var temp1 = data[0] & 63;
-		var temp2 = data[1];
+   	var buff2 = data.substr(24);
+   	var buff = new Buffer(buff2,'utf8');
 
-		var buff = new Buffer(data);
-		// var buff = new Buffer(data,'utf8');
-		// console.log(buff[0],buff[1],buff[2],buff[3]);
-		// console.log(data.toString());
-		// console.log(data.toString('hex'));
-		console.log(buff.toString('hex'));
-		
-/*
-		temp1 = data.length-4;
-		y = data.slice(temp1,temp1+4);
-		var ch = y.toString();
-		var tmp1 = data.split(',');
-		var graphArry =[];
+   	console.log('received data =' + buff.toString('hex'));
 
-		// console.log(tmp1);
+   	var i = 0;
+   	var lsb = (buff[ i*3 + 2] & 0x0f) * 1 + (buff[i*3 + 1] & 0x0f) * 16;
+   	var msb = ( buff[i*3] & 0x0f ) * 256;
+   	var tmp = msb + lsb;
+   	console.log ( ' rpm = ', tmp );
+		graphData.rpm = tmp;
 
-		for( var i = 0; i< 100; i++){
-			graphArry.push( tmp1[i] * 1);
-		}
+   	i = 1;
+   	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1]  & 0x0f) * 16;
+   	msb = ( buff[i*3] & 0x0f ) * 256;
+   	tmp = msb + lsb;
+   	console.log ( ' Irms = ', tmp );
+		graphData.Irms = tmp;
 
-		if		 ( ch[2] == '0') graphData[0] = graphArry;
-		else if( ch[2] == '1') graphData[1] = graphArry;
-		else if( ch[2] == '2') graphData[2] = graphArry;
-		else if( ch[2] == '3'){
-			graphData[3] = graphArry;
-			myEmitter.emit('event', graphData);
-		}      		
-*/
+   	i = 2;
+   	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1] & 0x0f) * 16;
+   	msb = ( buff[i*3] & 0x0f ) * 256;
+   	tmp = msb + lsb;
+   	console.log ( ' P_total = ', tmp );
+		graphData.P_total = tmp;
 
-/*
+   	i = 3;
+   	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1] & 0x0f) * 16;
+   	msb = ( buff[i*3] & 0x0f ) * 256;
+   	tmp = msb + lsb;
+   	console.log ( ' P_power = ', tmp );
+		graphData.RePower = tmp;
 
-		if ( (data[1] & 1 ) !== 0 )  temp1 = temp1 + 64;
-		if ( (data[1] & 2 ) !== 0 )  temp1 = temp1 + 128;
+ 		i = 4;
+   	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1] & 0x0f) * 16;
+   	msb = ( buff[i*3] & 0x0f ) * 256;
+   	tmp = msb + lsb;
+   	console.log ( ' Q_power = ', tmp ); 
+		graphData.ImPower = tmp;
 
-		var temp3 = temp2 & 63;
-		var temp4 = temp3 >> 2;
-		
-		temp1 = temp1 + temp4 * 256;
-
-		console.log('data[0] = ' + data[0] + '  :  ' + 'data[1] = ' + data[1]);
-		// console.log('received scope data = '+temp1);
-
-*/
+		myEmitter.emit('mGraph', graphData);
 		return;
-
-	}else if(monitorOnOff){
-		myEmitter.emit('monitor', data);
+	} else {
+		myEmitter.emit('mScope', data);
 		return;
-	}else{
-		console.log(data);
-		return;
-	}	
-	return;
-
+	}
 });
 
 function sleepFor( sleepDuration ){
     var now = new Date().getTime();
     while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
 }
-
-
-function printLine(){
-}
-
-
-
-setInterval(function(){
-	var stamp = new Date().toLocaleString();
-	console.log(stamp);
-},10000);
-
-
 
 //--- start of main routune
 // digital out proc 
@@ -435,14 +393,20 @@ setInterval(function() {
 },1000);
 */
 
-setInterval(function() {
-	if(traceOnOff){
-	  port.write('9:4:900:1.000e+2');
-	}else if(monitorOnOff){
-	  port.write('9:4:900:0.000e+0');
-	}
 
+setInterval(function(){
+	if(graphOnOff) port.write('9:4:900:0.000e+0');
+},2000);
+
+
+setInterval(function() {
+	if(scopeOnOff)	  port.write('9:4:900:1.000e+2');
 },4000);
+
+setInterval(function(){
+	var stamp = new Date().toLocaleString();
+	console.log(stamp);
+},10000);
 
 var exec = require('child_process').exec;
 

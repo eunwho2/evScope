@@ -31,21 +31,23 @@
 			<canvas id="plot1" class="oscope-canvas oscope-canvas2" width="600" height="200"></canvas>
 		</div>
 		<div id = "plotName">
-			<button id='btnInvStart'	class='w3-button w3-round w3-green' onclick='btnInvStart()'>유압동작</button>
-			<button id='btnTestOn'		class='w3-button w3-round w3-green' onclick='btnTestOn()'>실험시작</button -->
-			<button id='btnArmOn'	class='w3-button w3-round w3-green   ' onclick='btnArmOn()'>전진</button>
-			<button id='btnScopeStart'	class='w3-button w3-round w3-blue ' onclick='startScope()'>StartScope</button>
+			<button class='w3-button w3-round w3-green' onclick='btnInvStart()'>유압동작</button>
+			<button class='w3-button w3-round w3-green' onclick='btnTestOn()'>실험시작</button -->
+			<button class='w3-button w3-round w3-green   ' onclick='btnArmOn()'>전진</button>
 			</br>--------------------------------------
 			</br>
-			<button id='btnInvStop'		class='w3-button w3-round w3-red'	onclick='btnInvStop()'>유압정지</button>
-			<button id='btnTestOff'	class='w3-button w3-round w3-red'		onclick='btnTestOff()'>실험정지</button>
-			<button id='btnArmOff'	class='w3-button w3-round w3-red' onclick='btnArmOff()'>후진</button>
-			<button id='btnScopeStop'	class='w3-button w3-round w3-red' onclick='stopScope()'>Stop Scope</button>
+			<button class='w3-button w3-round w3-red'	onclick='btnInvStop()'>유압정지</button>
+			<button class='w3-button w3-round w3-red'		onclick='btnTestOff()'>실험정지</button>
+			<button class='w3-button w3-round w3-red' onclick='btnArmOff()'>후진</button>
+			</br>--------------------------------------
 			</br>
-			<button id='btnShutDown' class='w3-button w3-round w3-indigo ' onclick='btnShutDown()'>SHUTDOWN</button>
-			<button id='btnNoVac' 	class='w3-button w3-round w3-green  ' onclick='changeNoVac()'>동작버튼5</button>
-			<!--button id='btnTraceOnOff'	class='w3-button w3-round w3-red' onclick='btnTraceOnOff()'>실험시작</button -->
-			<!-- button id='btnReadAll' 	class='w3-button w3-round w3-green ' onclick='btnReadAll()'>ReadAll</button -->
+			<button class='w3-button w3-round w3-green' onclick='btnGraphOnOff(1)'>GraphStart</button>
+			<button class='w3-button w3-round w3-blue ' onclick='btnScopeOnOff(1)'>ScopeStart</button>
+			<button class='w3-button w3-round w3-indigo ' onclick='btnShutDown()'>SHUTDOWN</button>
+			</br>
+			<button class='w3-button w3-round w3-red' onclick='btnGraphOnOff(0)'>Graph Stop</button>
+			<button class='w3-button w3-round w3-red' onclick='btnScopeOnOff(0)'>Scope Stop</button>
+			<button class='w3-button w3-round w3-green  ' onclick='changeNoVac()'>동작버튼5</button>
 
 		</did> <!-- end of plotName -->
 	</div> <!-- end of plotRpm-->
@@ -72,22 +74,26 @@
 						<option value='adc'>ADC </option>
 						<option value='pwm'>PWM </option>
 						</select>
-						<select name="ch1_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
+						<select name="ch1_list1_list2" onClick="selectScopeCh(0,this.options[this.options.selectedIndex].value)">
 						</select>
 					</th> 
 					<th> 
-						<select id="idCh1Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
+						<select id="idScaleCh1">
+			            <option value="0.2"  >  0.2/div</option>
+			            <option value="1.0"  >  1.0/div</option>
+			            <option selected value="5.0"  >  5.0/div</option>
+			            <option value="10.0" > 10.0/div</option>
+			            <option value="20.0" > 20.0/div</option>
+			            <option value="50.0" > 50.0/div</option>
+			            <option value="100.0">100.0/div</option>
          			</select>
 					</th>
 					<th><font color="gold">OFFSET</font>
-						<input id='ch1Offset' type="number" class="offset" value="0" size="3">
+						<input id='idOffsetCh1' type="number" class="offset" value="0" size="3">
 					</th>
+					<th>
+						<button id='btnSetScopeCh1' class='w3-button w3-tiny w3-yellow' onclick='setScopeCh(0)'>SET</button>
+					</th>			
 				</tr>
 
 				<tr>
@@ -100,22 +106,26 @@
 						<option value='adc'>ADC</option>
 						<option value='pwm'>PWM</option>
 						</select>
-						<select name="ch2_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
+						<select name="ch2_list1_list2" onClick="selectScopeCh(1,this.options[this.options.selectedIndex].value)">
 						</select>
 					</th> 
 					<th> 
-						<select id="idCh2Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
+						<select id="idScaleCh2">
+			            <option value="0.2"  >  0.2/div</option>
+			            <option value="1.0"  >  1.0/div</option>
+			            <option selected value="5.0"  >  5.0/div</option>
+			            <option value="10.0" > 10.0/div</option>
+			            <option value="20.0" > 20.0/div</option>
+			            <option value="50.0" > 50.0/div</option>
+			            <option value="100.0">100.0/div</option>
          			</select>
 					</th>
 					<th><font color="blue">OFFSET</font> 
-						<input id='ch2Offset' type="number" class="offset" value="0" size="3">
+						<input id='idOffsetCh2' type="number" class="offset" value="0" size="3">
 					</th>
+					<th>
+						<button id='btnSetScopeCh2' class='w3-button w3-tiny w3-blue' onclick='setScopeCh(1)'>SET</button>
+					</th>			
 				</tr>
 
 				<tr>
@@ -128,22 +138,26 @@
 						<option value='adc'>ADC</option>
 						<option value='pwm'>PWM</option>
 						</select>
-						<select name="ch3_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
+						<select name="ch3_list1_list2" onClick="selectScopeCh(2,this.options[this.options.selectedIndex].value)">
 						</select>
 					</th> 
 					<th> 
-						<select id="idCh3Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
+						<select id="idScaleCh3">
+			            <option value="0.2"  >  0.2/div</option>
+			            <option value="1.0"  >  1.0/div</option>
+			            <option selected value="5.0"  >  5.0/div</option>
+			            <option value="10.0" > 10.0/div</option>
+			            <option value="20.0" > 20.0/div</option>
+			            <option value="50.0" > 50.0/div</option>
+			            <option value="100.0">100.0/div</option>
          			</select>
 					</th>
 					<th><font color="hotpink">OFFSET</font>
-						<input id='ch3Offset' type="number" class="offset" value="0" size="3">
+						<input id='idOffsetCh3' type="number" class="offset" value="0" size="3">
 					</th>
+					<th>
+						<button id='btnSetScopeCh3' class='w3-button w3-tiny w3-pink' onclick='setScopeCh(2)'>SET</button>
+					</th>			
 				</tr>
 				<tr>
 					<th><font color="palegreen">CH4</font></th> 
@@ -155,22 +169,26 @@
 						<option value='adc'>ADC</option>
 						<option value='pwm'>PWM</option>
 						</select>
-						<select name="ch4_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
+						<select name="ch4_list1_list2" onClick="selectScopeCh(3,this.options[this.options.selectedIndex].value)">
 						</select>
 					</th> 
 					<th> 
-						<select id="idCh4Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
+						<select id="idScaleCh4">
+			            <option value="0.2"  >  0.2/div</option>
+			            <option value="1.0"  >  1.0/div</option>
+			            <option selected value="5.0"  >  5.0/div</option>
+			            <option value="10.0" > 10.0/div</option>
+			            <option value="20.0" > 20.0/div</option>
+			            <option value="50.0" > 50.0/div</option>
+			            <option value="100.0">100.0/div</option>
          			</select>
 					</th>
 					<th><font color="palegreen">OFFSET</font>
-						<input id='ch4Offset' type="number" class="offset" value="0" size="3">
+						<input id='idOffsetCh4' type="number" class="offset" value="0" size="3">
 					</th>
+					<th>
+						<button id='btnSetScopeCh4' class='w3-button w3-tiny w3-green' onclick='setScopeCh(3)'>SET</button>
+					</th>			
 				</tr>
 
 			</table>
@@ -224,6 +242,61 @@
 
 <!-- control handlers -->
 <script>
+
+function sendSetScopeChCmd(ch,point,scale,offset){
+
+   var returns = 'Invalid number';
+
+	var addr = 101 + 3*ch;
+   var sciCmd = '9:6:'+addr+':';
+   var codeData = (point*1.0).toExponential(3);
+
+   var setPoint = sciCmd + codeData;
+
+	if( setPoint.length !== 16 ){
+		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setPoint ;
+		return;
+	}	 
+
+	setTimeout(function(){
+		console.log('set Scope Point command =', setPoint);
+		socket.emit('codeEdit',setPoint);
+	},500);
+
+	//--- setScale
+	addr = 102 + 3*ch;
+   sciCmd = '9:6:'+addr+':';
+   codeData = (scale*1.0).toExponential(3);
+	var setScale = sciCmd + codeData;
+
+	if( setScale.length !== 16 ){
+		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setScale ;
+		return;
+	}	 
+
+	setTimeout(function(){
+		console.log('set Scope Scale command =', setScale);
+		socket.emit('codeEdit',setScale);
+	},1000);
+
+	//--- setOffset
+	addr = 103 + 3*ch;
+   sciCmd = '9:6:'+addr+':';
+   codeData = (offset*1.0).toExponential(3);
+	var setOffset = sciCmd + codeData;
+
+	if( setOffset.length !== 16 ){
+		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setOffset ;
+		return;
+	}	 
+
+	setTimeout(function(){
+		console.log('set Scope Offset command =', setOffset);
+		socket.emit('codeEdit',setOffset);
+	},1500);
+}
+
+
 var msgTx = { selVac: 0};
 var traceOnOff = 0;
 var monitorOnOff = 0;
@@ -233,98 +306,91 @@ var ch2_list = document.getElementsByName('ch2_list1_list2')[0];
 var ch3_list = document.getElementsByName('ch3_list1_list2')[0];
 var ch4_list = document.getElementsByName('ch4_list1_list2')[0];
 
-var ch1List = new Array();
-ch1List[0] ='';
-ch1List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch1List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch1List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch1List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-var ch2List = new Array();
-ch2List[0] ='';
-ch2List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch2List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch2List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch2List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-var ch3List = new Array();
-ch3List[0] ='';
-ch3List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch3List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch3List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch3List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-var ch4List = new Array();
-ch4List[0] ='';
-ch4List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch4List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch4List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch4List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-function updateTestSelect(selectedGroup){
-    test_list.options.length=0;
-    if (selectedGroup>0){
-        for (i=0; i < testList[selectedGroup].length; i++)
-            test_list.options[test_list.options.length]=new Option(testList[selectedGroup][i].split("|")[0], testList[selectedGroup][i].split("|")[1]);
-    }
-}
+var chList = new Array();
+chList[0] ='';
+chList[1] = ['U|4','V|5','W|6','d|0','q|1','D|2','Q|3'];
+chList[2] = ['U|11','V|12','W|13','d|7','q|8','D|9','Q|10'];
+chList[3] = ['Iu|14','Iv|15','se|18','cmd|19','Vdc|16','T|17'];
+chList[4] = ['U|20','V|21','W|22'];
 
 function updateCh1Select(selectedGroup){
     ch1_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch1List[selectedGroup].length; i++)
-            ch1_list.options[ch1_list.options.length]=new Option(ch1List[selectedGroup][i].split("|")[0], ch1List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch1_list.options[ch1_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
 function updateCh2Select(selectedGroup){
     ch2_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch2List[selectedGroup].length; i++)
-            ch2_list.options[ch2_list.options.length]=new Option(ch2List[selectedGroup][i].split("|")[0], ch2List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch2_list.options[ch2_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
 function updateCh3Select(selectedGroup){
     ch3_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch3List[selectedGroup].length; i++)
-            ch3_list.options[ch3_list.options.length]=new Option(ch3List[selectedGroup][i].split("|")[0], ch3List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch3_list.options[ch3_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
 function updateCh4Select(selectedGroup){
     ch4_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch4List[selectedGroup].length; i++)
-            ch4_list.options[ch4_list.options.length]=new Option(ch4List[selectedGroup][i].split("|")[0], ch4List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch4_list.options[ch4_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
+var chSelected = new Array();
+chSelected[0] = 0;
+chSelected[1] = 1;
+chSelected[2] = 2;
+chSelected[3] = 3;
 
-  function btnTraceOnOff(){
-		monitorOnOff = 0;
-		document.getElementById('btnMonitor').innerHTML = '모니터시작';
-
-		if( traceOnOff ){
-			traceOnOff = 0 ;
-			document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
-		}else{
-			traceOnOff = 1;
-	  		document.getElementById('btnTraceOnOff').innerHTML = '측정중지';
-		}
-		socket.emit('traceOnOff',traceOnOff);
-		
-	}
-
-function startScope(){
-
-	socket.emit('scope',1);
+function selectScopeCh(ch, selected){
+	chSelected[ch] = selected;
 }
 
-function stopScope(){
+function setScopeCh(ch){
 
-	socket.emit('scope',0);
+	var chanel = ch+1;
+	var selector = document.getElementById("idScaleCh"+chanel);
+	var scale = selector[selector.selectedIndex].value;
+
+	var setId = "idOffsetCh"+chanel;
+	console.log("setId = ",setId); 
+	var offset = document.getElementById(setId).value;
+
+	console.log(chSelected[ch],scale,offset);
+	sendSetScopeChCmd(ch,chSelected[ch],scale,offset);
+}
+
+function btnTraceOnOff(){
+	monitorOnOff = 0;
+	document.getElementById('btnMonitor').innerHTML = '모니터시작';
+
+	if( traceOnOff ){
+		traceOnOff = 0 ;
+		document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
+	}else{
+		traceOnOff = 1;
+		document.getElementById('btnTraceOnOff').innerHTML = '측정중지';
+	}
+	socket.emit('traceOnOff',traceOnOff);		
+}
+
+
+function btnGraphOnOff(onOff){
+	// onOff = 0 --> stop send grpah data 
+	socket.emit('graph',onOff);
+}
+
+function btnScopeOnOff(onOff){
+	socket.emit('scope',onOff);
 }
 
 function btnInvStart(){
@@ -588,29 +654,23 @@ function changeNoVac(){
       }
   );
 
-socket.on('codeTable', function (msg) {
-   var testIn = msg.toString();
-   //testIn.replace(/:,/g,'\r\n');
-   var testIn1 = testIn.replace(/:/g,'\r\n');
-   var testOut = testIn1.replace(/,/g,'\t');
-   // console.log(testIn);
-   document.getElementById('txtCodeTable').innerHTML = testOut;
-});
 
-socket.on('codeEdit',function(msg){
+//--- socket processing
+
+socket.on('message',function(msg){
 	document.getElementById('codeEditResult').innerHTML = msg;
 });	
 
-var monitorCount=0;
+socket.on('codeList', function (msg) {
 
-socket.on('monitor',function(msg){
+	var msg1 = msg.substr(17);				// subtract uart command '9:6:900:5.000e+1:'
+   var testIn = msg1.toString();
 	
-	(monitorCount > 99 ) ? monitorCount = 0 : monitorCount++;
-
-	var msgOut = document.getElementById('stopRecord').innerHTML;
-	if((monitorCount %5) == 0 ) msgOut ='';  
-	document.getElementById('stopRecord').innerHTML = msgOut + '#'+ monitorCount +' '+ msg;
-});	
+   //testIn.replace(/:,/g,'\r\n');
+   var testIn1 = testIn.replace(/:/g,'\r\n');
+   var testOut = testIn1.replace(/,/g,'\t');
+   document.getElementById('txtCodeTable').innerHTML = testOut;
+});
 
 </script>
 {% endblock %}
