@@ -211,18 +211,23 @@ io.on('connection', function (socket) {
   });
 
 	socket.on('graph',function(msg){
+		console.log('scoket on graph =',msg);
 		graphOnOff = msg;
 	});
 
 	socket.on('scope',function(msg){
+		console.log('scoket on scope =',msg);
+		console.log(msg);
 		scopeOnOff = msg;
 	});
 
 	socket.on('codeEdit',function(msg){
+		console.log('scoket on codeEdit =',msg);
 		port.write(msg);
 	});
 
 	socket.on('getCodeList',function(msg){
+		console.log('scoket on codeList =',msg);
 		port.write('9:4:901:0.000e+0');
 	});
 
@@ -288,6 +293,8 @@ io.on('connection', function (socket) {
 });
 
 var graphData = { rpm:0,Irms:0,P_toatal:0,RePower:0,ImPower:0};
+var scopeData = {Ch:0,data:[]};
+
  
 var graphProcCount = 0;
 var testMsg = {data:[]};
@@ -298,68 +305,98 @@ parser.on('data',function (data){
 	var temp1 = 0;
 	var temp2 = 0;
 	var y =0;
-
-	console.log(data);
+	// console.log(data);
 
 	var buff = new Buffer(data);
 	var command_addr = parseInt(buff.slice(4,7));
+	var rx_data = data.slice(8,16);
+
+	//console.log( 'rx_data =',rx_data);
+
 	var command_data = parseFloat(buff.slice(8,16));
 
+	//console.log('command_addr ', command_addr);
+	//console.log('command_data ', command_data);
+
 	if(( buff.length < 16 ) || ( command_addr !== 900 )){
-		myEmitter.emit('mMessage', data);
-		return;
+
+		if( command_addr == 901 ){ 
+			myEmitter.emit('mCodeList', data);
+			return;
+		} else {
+			myEmitter.emit('mMessage', data);
+			return;
+		}
 	}
 
-	if( command_data == 50 ){
-		myEmitter.emit('mCodeList', data);
-		return;
-	} else if ( command_data < 100 ) {
-
+	if ( command_data < 100 ) {
 
    	var buff2 = data.substr(24);
    	var buff = new Buffer(buff2,'utf8');
 
-   	console.log('received data =' + buff.toString('hex'));
+   	//console.log('received data =' + buff.toString('hex'));
 
    	var i = 0;
    	var lsb = (buff[ i*3 + 2] & 0x0f) * 1 + (buff[i*3 + 1] & 0x0f) * 16;
    	var msb = ( buff[i*3] & 0x0f ) * 256;
    	var tmp = msb + lsb;
-   	console.log ( ' rpm = ', tmp );
+   	//console.log ( ' rpm = ', tmp );
 		graphData.rpm = tmp;
 
    	i = 1;
    	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1]  & 0x0f) * 16;
    	msb = ( buff[i*3] & 0x0f ) * 256;
    	tmp = msb + lsb;
-   	console.log ( ' Irms = ', tmp );
+   	//console.log ( ' Irms = ', tmp );
 		graphData.Irms = tmp;
 
    	i = 2;
    	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1] & 0x0f) * 16;
    	msb = ( buff[i*3] & 0x0f ) * 256;
    	tmp = msb + lsb;
-   	console.log ( ' P_total = ', tmp );
+   	//console.log ( ' P_total = ', tmp );
 		graphData.P_total = tmp;
 
    	i = 3;
    	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1] & 0x0f) * 16;
    	msb = ( buff[i*3] & 0x0f ) * 256;
    	tmp = msb + lsb;
-   	console.log ( ' P_power = ', tmp );
+   	//console.log ( ' P_power = ', tmp );
 		graphData.RePower = tmp;
 
  		i = 4;
    	lsb = (buff[ i*3 + 2] & 0x0f)*1 + (buff[i*3 + 1] & 0x0f) * 16;
    	msb = ( buff[i*3] & 0x0f ) * 256;
    	tmp = msb + lsb;
-   	console.log ( ' Q_power = ', tmp ); 
+   	//console.log ( ' Q_power = ', tmp ); 
 		graphData.ImPower = tmp;
 
 		myEmitter.emit('mGraph', graphData);
 		return;
-	} else {
-		myEmitter.emit('mScope', data);
+	} else if( command_data > 99 ) {
+
+		//console.log(data);
+   	var buff2 = data.substr(17);
+   	var buff = new Buffer(buff2,'utf8');
+   	// console.log('received data =' + buff.toString('hex'));
+
+		var i = 0;
+		var j = 0;
+   	var lsb = 0;
+   	var msb = 0;
+   	var tmp = 0;
+		var offset = 4;
+
+		var scope = {Ch:0,data:[]};
+		scope.Ch = buff[2];
+  		for ( i = 0; i < 600 ; i++){
+  			lsb = (buff[ i*3 + 2 + offset] & 0x0f) * 1 + (buff[i*3 + 1 + offset] & 0x0f) * 16;
+  			msb = ( buff[i*3 + offset ] & 0x0f ) * 256;
+  			tmp = msb + lsb;
+			scope.data.push(tmp);
+		}
+		console.log(scope);
+		myEmitter.emit('mScope', scope);
 		return;
 	}
 });

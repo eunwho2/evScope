@@ -499,9 +499,8 @@ function btnOptionSendCmd(){
 		cmd = '9:4:902:5.000e+0';	// RESET
 		socket.emit('codeEdit',cmd);
 	} else if(value == 3) { 			// READ ALL CODE
-		//cmd = '9:4:902:5.000e+0';	
-		//socket.emit('codeEdit',cmd);
-		socket.emit('getCodeList',0);
+		cmd = '9:4:901:0.000e+0';	
+		socket.emit('codeEdit',cmd);
 	} else if(value == 4) { 
 		cmd = '9:6:900:4.000e+1';	// save
 		socket.emit('codeEdit',cmd);
@@ -656,6 +655,7 @@ function changeNoVac(){
 
 
 //--- socket processing
+
 
 socket.on('message',function(msg){
 	document.getElementById('codeEditResult').innerHTML = msg;

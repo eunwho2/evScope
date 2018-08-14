@@ -9,11 +9,11 @@ var graphInverter = (function() {
   var m_voffset = [];
 
   var m_seconds_per_div	   = 60;
-  var m_samples_per_second = 2;
+  var m_samples_per_second = 1;
   var m_divisions          = 10;
   var m_yscale             = 2048;
   var m_sample_bits        = 12;
-  var m_volts_per_div      = 0.2;
+  var m_volts_per_div      = 1;
   var m_vrange             = 1;
   var m_cursor_index       = 1;			// ?
   var m_cursor_seconds     = 0.0;
@@ -27,7 +27,6 @@ var graphInverter = (function() {
   m_trace[2]           = null;
   m_trace[3]           = null;
   m_trace[4]           = null;
-  m_trace[5]           = null;
 
   // ==============================================================
   // background display scaffolding
@@ -246,6 +245,7 @@ var graphInverter = (function() {
     drawLines(ctx,vgrid);
     ctx.restore();
 
+/*
     // draw the x axes
     ctx.save();
     ctx.translate(0,voffset[0]);
@@ -253,7 +253,7 @@ var graphInverter = (function() {
     ctx.lineWidth   = 1;
     drawLine(ctx,xaxis[0]);
     ctx.restore();
-
+*/
     ctx.save();
     ctx.translate(0,voffset[1]);
     ctx.strokeStyle = "yellow";
@@ -337,6 +337,10 @@ var graphInverter = (function() {
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
       ctx.strokeStyle = "palegreen";
       break;
+    case 4:
+      ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
+      ctx.strokeStyle = "white";
+      break;
     }
     
     // scale the trace y axis
@@ -386,6 +390,7 @@ var graphInverter = (function() {
       m_trace[1] = trace[1];
       m_trace[2] = trace[2];
       m_trace[3] = trace[3];
+      m_trace[4] = trace[4];
     }
 
     // draw last traces
@@ -399,6 +404,9 @@ var graphInverter = (function() {
       drawTrace(m_context, m_trace[2], m_width, m_height, m_voffset[2]);
     }
     if (m_trace[3] !== null) {
+      drawTrace(m_context, m_trace[3], m_width, m_height, m_voffset[3]);
+    }
+    if (m_trace[4] !== null) {
       drawTrace(m_context, m_trace[3], m_width, m_height, m_voffset[3]);
     }
     // draw text annotations
@@ -549,8 +557,8 @@ var oscope = (function() {
   var m_divisions          = 10;
   var m_yscale             = 2048;
   var m_sample_bits        = 12;
-  var m_volts_per_div      = 2.5;
-  var m_vrange             = 5;
+  var m_volts_per_div      = 1;
+  var m_vrange             = 1;
   var m_cursor_index       = 2;
   var m_cursor_seconds     = 0.0;
   var m_cursor_volts       = 0.0;
@@ -1078,20 +1086,20 @@ var oscope = (function() {
 
 const dataLength = 600;
 
-var traceCount = 0;
-
-var traceData0 = { channel:0,length:dataLength,sample:[dataLength]};
-var traceData1 = { channel:1,length:dataLength,sample:[dataLength]};
-var traceData2 = { channel:2,length:dataLength,sample:[dataLength]};
-var traceData3 = { channel:3,length:dataLength,sample:[dataLength]};
-var trace =[traceData0,traceData1,traceData2,traceData3];
-
 var graphData = new Array();
 
 graphData[0] = { channel:0,length:dataLength,sample:[dataLength]};
 graphData[1] = { channel:1,length:dataLength,sample:[dataLength]};
 graphData[2] = { channel:2,length:dataLength,sample:[dataLength]};
 graphData[3] = { channel:3,length:dataLength,sample:[dataLength]};
+graphData[4] = { channel:3,length:dataLength,sample:[dataLength]};
+
+var scopeData = new Array();
+
+scopeData[0] = { channel:0,length:dataLength,sample:[dataLength]};
+scopeData[1] = { channel:1,length:dataLength,sample:[dataLength]};
+scopeData[2] = { channel:2,length:dataLength,sample:[dataLength]};
+scopeData[3] = { channel:3,length:dataLength,sample:[dataLength]};
 
  
 var noVac = 1;
@@ -1117,33 +1125,47 @@ socket.on('graph', function (msg) {
 
 	graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
-	graphData[0].sample[graphCount] = msg.rpm  ; 
+	graphData[0].sample[graphCount] = msg.rpm ; 
 	graphData[1].sample[graphCount] = msg.Irms ; 
 	graphData[2].sample[graphCount] = msg.P_total; 
+	graphData[3].sample[graphCount] = msg.RePower; 
+	graphData[4].sample[graphCount] = msg.ImPower; 
+
 	graphInverter.onPaint(graphData);
+
 });
 
 
 
 socket.on('scope', function (msg) {
 
-	traceData0.sample = traceData0.sample.concat(msg[0]);
-	traceData1.sample = traceData1.sample.concat(msg[1]);
-	traceData2.sample = traceData2.sample.concat(msg[2]);
-	traceData3.sample = traceData3.sample.concat(msg[3]);
+	// console.log('socket on scope =',msg);
 
-	if(traceData0.sample.length > 600){
-		var cutData = (traceData0.sample.length-600);
-		// console.log('cutData = %d',cutData);
-		// graphData[0].sample[graphCount] = .splice(0,cutData);
-		traceData1.sample.splice(0,cutData);
-		traceData2.sample.splice(0,cutData);
-		traceData3.sample.splice(0,cutData);
-	}
-	oscope.onPaint(trace);
+	var chanel = msg.Ch - 49;
+
+	console.log('chanel = ',chanel);
+
+	scopeData[chanel].sample = msg.data ; 
+	oscope.onPaint(scopeData);
+
 });
 
+/*
+setInterval(function(){
+	graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
+	//graphData[0].sample[graphCount] = msg.rpm ; 
+	//graphData[1].sample[graphCount] = msg.Irms ; 
+	//graphData[2].sample[graphCount] = msg.P_total; 
+
+	graphData[0].sample[graphCount] = 2048 * Math.sin( 8 * Math.PI * graphCount / 600 + Math.PI * 2 / 3) +2048; 
+	graphData[1].sample[graphCount] = 2048 * Math.sin( 8 * Math.PI * graphCount / 600 + Math.PI * 4 /3) + 2048;
+	graphData[2].sample[graphCount] = 2048 * Math.sin( 8 * Math.PI * graphCount / 600 + 0 ) + 2048 ; 
+	graphInverter.onPaint(graphData);
+
+},200);
+
+*/
 
 socket.on('disconnect',function() {
   console.log('disconnected');
@@ -1159,4 +1181,4 @@ $("document").ready(function() {
 	graphInverter.init();
 });
 
-// end of oscope.js
+//---- end of oscope.js
