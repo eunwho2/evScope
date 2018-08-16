@@ -1119,10 +1119,19 @@ socket.on('trace', function (msg) {
 var graphCount = 0;
 
 //socket.on('graph', function (msg) {
+
+function btnGraphClear(){
+	for( var j = 0 ; j < 5 ; j++){
+		for( var i = 0 ; i < 600 ; i++ )	graphData[j].sample[i] = 0;
+	}
+	graphCount = 0;
+	graphInverter.onPaint(graphData);
+	
+}
+
 socket.on('graph', function (msg) {
 
-	console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'ImPower = ',msg.ImPower);
-
+	// console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'ImPower = ',msg.ImPower);
 	graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
 	graphData[0].sample[graphCount] = msg.rpm ; 
@@ -1135,7 +1144,13 @@ socket.on('graph', function (msg) {
 
 });
 
-
+function btnScopeClear(){
+	for( var j = 0 ; j < 4 ; j++){
+		for( var i = 0 ; i < 600 ; i++ )	scopeData[j].sample[i] = 0;
+	}
+	graphInverter.onPaint(graphData);
+	
+}
 
 socket.on('scope', function (msg) {
 
@@ -1143,7 +1158,7 @@ socket.on('scope', function (msg) {
 
 	var chanel = msg.Ch - 49;
 
-	console.log('chanel = ',chanel);
+	//console.log('chanel = ',chanel);
 
 	scopeData[chanel].sample = msg.data ; 
 	oscope.onPaint(scopeData);
@@ -1164,7 +1179,6 @@ setInterval(function(){
 	graphInverter.onPaint(graphData);
 
 },200);
-
 */
 
 socket.on('disconnect',function() {

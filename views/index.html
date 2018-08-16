@@ -41,13 +41,15 @@
 			<button class='w3-button w3-round w3-red' onclick='btnArmOff()'>후진</button>
 			</br>--------------------------------------
 			</br>
-			<button class='w3-button w3-round w3-green' onclick='btnGraphOnOff(1)'>GraphStart</button>
-			<button class='w3-button w3-round w3-blue ' onclick='btnScopeOnOff(1)'>ScopeStart</button>
-			<button class='w3-button w3-round w3-indigo ' onclick='btnShutDown()'>SHUTDOWN</button>
+			<button class='w3-button w3-round w3-green' onclick='btnGraphOnOff(1)'>G-Start</button>
+			<button class='w3-button w3-round w3-blue ' onclick='btnScopeOnOff(1)'>S-Start</button>
+			<button class='w3-button w3-round w3-indigo ' onclick='btnGraphClear()'>G-Clear</button>
+			<button class='w3-button w3-round w3-indigo ' onclick='btnScopeClear()'>S-Clear</button>
 			</br>
-			<button class='w3-button w3-round w3-red' onclick='btnGraphOnOff(0)'>Graph Stop</button>
-			<button class='w3-button w3-round w3-red' onclick='btnScopeOnOff(0)'>Scope Stop</button>
-			<button class='w3-button w3-round w3-green  ' onclick='changeNoVac()'>동작버튼5</button>
+			<button class='w3-button w3-round w3-red' onclick='btnGraphOnOff(0)'>G- Stop</button>
+			<button class='w3-button w3-round w3-red' onclick='btnScopeOnOff(0)'>S- Stop</button>
+			<button class='w3-button w3-round w3-green  ' onclick='changeNoVac()'>버튼5</button>
+			<button class='w3-button w3-round w3-indigo ' onclick='btnShutDown()'>S-Off</button>
 
 		</did> <!-- end of plotName -->
 	</div> <!-- end of plotRpm-->
@@ -198,13 +200,13 @@
 		<div id ='codeEdit' class ='csCodeEdit'>
 			<div id='codeEditResult' class='csEditResult'>code result</div>
 			<label>Code :</label><textarea id='txtCodeEdit1' class='csCodeEdit1'>0</textarea>
-			<label>Data :</label><textarea id='txtCodeEdit2' class='csCodeEdit1'>0</textarea>
+			<label>Data :</label><textarea id='txtCodeEdit2' class='csCodeEdit2' cols='10' >0</textarea>
 			<button id='btnReadCode' 	class='w3-circle w3-green'  onclick='btnReadCode()'>R</button>
 			<button id='btnWriteCode' 	class='w3-circle w3-red'    onclick='btnWriteCode()'>W</button>
 			</br>
 			<select id="idCmdSelect">
   				<option value="0">READ SENSOR ADC</option>
-  				<option value="1">READ INV STATUS</option>
+  				<option value="1">READ RPM etc </option>
   				<option value="2">RESET FROM TRIP</option>
   				<option value="3">READ ALL CODES</option>
   				<option value="4">SAVE TUNING</option>
@@ -493,7 +495,7 @@ function btnOptionSendCmd(){
 		cmd = '9:4:910:0.000e+0';	// read adc
 		socket.emit('codeEdit',cmd);
 	} else if(value == 1) { 
-		cmd = '9:4:900:0.000e+0';	// read status
+		cmd = '9:4:909:0.000e+0';	// read RPM
 		socket.emit('codeEdit',cmd);
 	} else if(value == 2) { 
 		cmd = '9:4:902:5.000e+0';	// RESET

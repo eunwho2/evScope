@@ -4,7 +4,7 @@ var digiOut = 0xff;
 var graphOnOff = 0;
 var scopeOnOff = 0;
 
-/*
+
 var i2c				= require('i2c-bus');
 var piI2c			= i2c.openSync(1);
 
@@ -48,6 +48,7 @@ var ADDR1 = 0x20;
 var ADDR2 = 0x21;
 
 writeMcp23017(ADDR1,0,0xff);
+// writeMcp23017(ADDR1,0,0x00);
 
 piI2c.writeByteSync(ADDR1,0,0,function(err){
 	if(err) console.log(err);
@@ -86,8 +87,6 @@ var readMcp23017 = function(address,port){
   });
 }
 
-*/
-
 var exec = require('child_process').exec;
 
 // Create shutdown function
@@ -98,13 +97,7 @@ function shutdown(callback){
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 const port = new SerialPort('/dev/ttyAMA0',{
-//   baudRate: 230400,
    baudRate: 115200
-
-//	databits: 8,
-//	parity: 'none',
-//	stopBits: 1,
-//	flowControl: false
 });
 
 const parser = new Readline();
@@ -137,8 +130,6 @@ var users     = require('./routes/users');
 var receiver  = require('./lib/receiver');
 var debug     = require('debug')('ploty:server');
 var portAddr  = process.env.PORT || '3000';
-
-
 
 //--- create express application
 var app = express();
@@ -231,7 +222,7 @@ io.on('connection', function (socket) {
 		port.write('9:4:901:0.000e+0');
 	});
 
-/*
+/* use io */
 	socket.on('btnClick',function(msgTx){
 		console.log(msgTx.selVac);
 		var digitalOut = 1;
@@ -271,7 +262,6 @@ io.on('connection', function (socket) {
 			gracefulShutdown();
 		}
   });
-*/
 
 	//--- emitt graph proc 
 	myEmitter.on('mMessage',function(data){
@@ -294,12 +284,7 @@ io.on('connection', function (socket) {
 
 var graphData = { rpm:0,Irms:0,P_toatal:0,RePower:0,ImPower:0};
 var scopeData = {Ch:0,data:[]};
-
- 
 var graphProcCount = 0;
-var testMsg = {data:[]};
-var buffer2 = new Buffer(811);
-var buffer3 = new Buffer(811);
 
 parser.on('data',function (data){
 	var temp1 = 0;
@@ -309,8 +294,8 @@ parser.on('data',function (data){
 
 	var buff = new Buffer(data);
 	var command_addr = parseInt(buff.slice(4,7));
-	var rx_data = data.slice(8,16);
 
+	//var rx_data = data.slice(8,16);
 	//console.log( 'rx_data =',rx_data);
 
 	var command_data = parseFloat(buff.slice(8,16));
@@ -330,11 +315,14 @@ parser.on('data',function (data){
 	}
 
 	if ( command_data < 100 ) {
+   
+		var rx_data = data.slice(17,24);
+		// console.log( 'rx_data =',rx_data);
 
-   	var buff2 = data.substr(24);
+		var buff2 = data.substr(24);
    	var buff = new Buffer(buff2,'utf8');
 
-   	//console.log('received data =' + buff.toString('hex'));
+   	// console.log('received data =' + buff.toString('hex'));
 
    	var i = 0;
    	var lsb = (buff[ i*3 + 2] & 0x0f) * 1 + (buff[i*3 + 1] & 0x0f) * 16;
@@ -395,7 +383,6 @@ parser.on('data',function (data){
   			tmp = msb + lsb;
 			scope.data.push(tmp);
 		}
-		console.log(scope);
 		myEmitter.emit('mScope', scope);
 		return;
 	}
@@ -406,34 +393,11 @@ function sleepFor( sleepDuration ){
     while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
 }
 
-//--- start of main routune
-// digital out proc 
-
-/*
-setInterval(function() {
-
-	// 0 --> relay ON
-	digiOut = (inveStart) ? digiOut & 0xfe : digiOut | 1 ;
-	writeMcp23017(ADDR1,0,digiOut);
-
-
-	var promise = readMcp23017(ADDR1,1); //외부 입력을 읽음
-
-	promise
-	.then(function(byte){
-		console.log(byte);
-
-	}).catch(function(err){
-		console.log(err);
-	});
-
-},1000);
-*/
-
+//--- time interval 
 
 setInterval(function(){
 	if(graphOnOff) port.write('9:4:900:0.000e+0');
-},2000);
+},100);
 
 
 setInterval(function() {
@@ -444,6 +408,9 @@ setInterval(function(){
 	var stamp = new Date().toLocaleString();
 	console.log(stamp);
 },10000);
+
+
+//--- processing 
 
 var exec = require('child_process').exec;
 
@@ -458,7 +425,6 @@ var gracefulShutdown = function() {
     process.exit()
   });
   
-   // if after 
    setTimeout(function() {
        console.error("Could not close connections in time, forcefully shutting down");
        process.exit()
@@ -477,4 +443,6 @@ process.on('exit', function () {
     console.log('\nShutting down, performing GPIO cleanup');
     process.exit(0);
 });
+
+//--- end of scope
 
