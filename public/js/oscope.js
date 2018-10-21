@@ -1,5 +1,5 @@
 "use strict";
-var scope = (function() {
+var graphInverter = (function() {
   var m_canvas;
   var m_context;
   var m_width;
@@ -9,11 +9,11 @@ var scope = (function() {
   var m_voffset = [];
 
   var m_seconds_per_div	   = 60;
-  var m_samples_per_second = 2;
+  var m_samples_per_second = 1;
   var m_divisions          = 10;
   var m_yscale             = 2048;
   var m_sample_bits        = 12;
-  var m_volts_per_div      = 0.2;
+  var m_volts_per_div      = 1;
   var m_vrange             = 1;
   var m_cursor_index       = 1;			// ?
   var m_cursor_seconds     = 0.0;
@@ -26,8 +26,6 @@ var scope = (function() {
   m_trace[1]           = null;
   m_trace[2]           = null;
   m_trace[3]           = null;
-  m_trace[4]           = null;
-  m_trace[5]           = null;
 
   // ==============================================================
   // background display scaffolding
@@ -93,7 +91,7 @@ var scope = (function() {
   // aspect ratio of available sizes needs to be 4 over 3
   // and must fit the twitter boostrap grid size allocated
   var canvas_size = [
-    {width:600,height:200}
+    {width:600,height:300}
   ];
 
   // responsive text size
@@ -195,7 +193,7 @@ var scope = (function() {
   }
 
   function clear(ctx,width,height) {
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.fillRect(0,0,width,height);
   }
 
@@ -232,49 +230,20 @@ var scope = (function() {
 
     // draw the outline
     ctx.save();
-    ctx.strokeStyle = 'gray';
+    ctx.strokeStyle = 'black';
     ctx.lineWidth   = 4;
     drawPath(ctx,outline);
     ctx.restore();
 
     // draw the grid
     ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.strokeStyle = "black";
     ctx.lineWidth   = 1;
     ctx.setLineDash([1,1]);
     drawLines(ctx,hgrid);
     drawLines(ctx,vgrid);
     ctx.restore();
-
-    // draw the x axes
-    ctx.save();
-    ctx.translate(0,voffset[0]);
-    ctx.strokeStyle = "magenta";
-    ctx.lineWidth   = 1;
-    drawLine(ctx,xaxis[0]);
     ctx.restore();
-
-    ctx.save();
-    ctx.translate(0,voffset[1]);
-    ctx.strokeStyle = "yellow";
-    ctx.lineWidth   = 1;
-    drawLine(ctx,xaxis[1]);
-    ctx.restore();
-
-    // draw the cursors
-    ctx.save();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "MediumSeaGreen";
-    drawLine(ctx,m_cursor[0]);
-    drawLine(ctx,m_cursor[2]);
-    ctx.strokeStyle = "MediumSeaGreen";
-    drawLine(ctx,m_cursor[1]);
-    drawLine(ctx,m_cursor[3]);
-
-    ctx.restore();
-
-    ctx.restore();
-
   }
 
   function drawAnnotations(ctx,width,height,dy)
@@ -283,17 +252,33 @@ var scope = (function() {
     var y;
 
     ctx.font = dy.toFixed(0) + "px monospace";
+
     ctx.fillStyle = "lime";
     y = dy + 1;
     ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),2,y);
+
     y += dy + 1;
     ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
+
+    ctx.fillStyle = "darkgoldenrod";
+    y += dy + 1;
+    ctx.fillText('CH1 : RPM 500 RPM / DIV ',440,10);
+
+    ctx.fillStyle = "indigo";
+    y += dy + 1;
+    ctx.fillText('CH2 : Irms 5A / DIV ',440,10+dy);
+
+    ctx.fillStyle = "red";
+    y += dy + 1;
+    ctx.fillText('CH3 : P_total 2kW / DIV ',440,10+ dy * 2);
+
+    ctx.fillStyle = "green";
+    y += dy + 1;
+    ctx.fillText('CH4 : P Power 2kW / DIV ',440,10 + dy * 3);
 
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
     ctx.fillText(t,2,height-4);
-
-
   }
 
   function computeVerticalScale(vrange,yscale,height,volts) {
@@ -325,19 +310,19 @@ var scope = (function() {
     switch(trace.channel) {
     case 0:
       ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
-      ctx.strokeStyle = "yellow";
+      ctx.strokeStyle = "darkgoldenrod";
       break;
     case 1:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "royalblue";
+      ctx.strokeStyle = "indigo";
       break;
     case 2:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "hotpink";
+      ctx.strokeStyle = "red";
       break;
     case 3:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "palegreen";
+      ctx.strokeStyle = "green";
       break;
     }
     
@@ -349,7 +334,6 @@ var scope = (function() {
 
     // draw it
     drawPath(ctx,t);
-    
     ctx.restore();    
     // restore context
   }
@@ -513,7 +497,6 @@ var scope = (function() {
     $(window).resize(onResize);
     onResize();
     onPaint(null);
-
   }
 
 	//--- invert code table create
@@ -533,8 +516,7 @@ var scope = (function() {
   };
 
 })();
-// --- end of scope
-
+// --- end of graphInverter
 
 var oscope = (function() {
   var m_canvas;
@@ -551,8 +533,8 @@ var oscope = (function() {
   var m_divisions          = 10;
   var m_yscale             = 2048;
   var m_sample_bits        = 12;
-  var m_volts_per_div      = 2.5;
-  var m_vrange             = 5;
+  var m_volts_per_div      = 1;
+  var m_vrange             = 1;
   var m_cursor_index       = 2;
   var m_cursor_seconds     = 0.0;
   var m_cursor_volts       = 0.0;
@@ -635,8 +617,6 @@ var oscope = (function() {
   // and must fit the twitter boostrap grid size allocated
   var canvas_size = [
     {width:600,height:450},
-    {width:400,height:300},
-    {width:200,height:150}
   ];
 
   // responsive text size
@@ -740,7 +720,7 @@ var oscope = (function() {
   }
 
   function clear(ctx,width,height) {
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.fillRect(0,0,width,height);
   }
 
@@ -777,14 +757,14 @@ var oscope = (function() {
 
     // draw the outline
     ctx.save();
-    ctx.strokeStyle = 'gray';
+    ctx.strokeStyle = 'black';
     ctx.lineWidth   = 4;
     drawPath(ctx,outline);
     ctx.restore();
 
     // draw the grid
     ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.strokeStyle = "black";
     ctx.lineWidth   = 1;
     ctx.setLineDash([1,1]);
     drawLines(ctx,hgrid);
@@ -801,7 +781,7 @@ var oscope = (function() {
 
     ctx.save();
     ctx.translate(0,voffset[1]);
-    ctx.strokeStyle = "yellow";
+    ctx.strokeStyle = "darkgoldenrod";
     ctx.lineWidth   = 1;
     drawLine(ctx,xaxis[1]);
     ctx.restore();
@@ -817,7 +797,6 @@ var oscope = (function() {
     drawLine(ctx,m_cursor[3]);
 
     ctx.restore();
-
     ctx.restore();
 
   }
@@ -870,19 +849,19 @@ var oscope = (function() {
     switch(trace.channel) {
     case 0:
       ctx.translate(xaxis[0][0],xaxis[0][1] + voffset);
-      ctx.strokeStyle = "yellow";
+      ctx.strokeStyle = "darkgoldenrod";
       break;
     case 1:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "royalblue";
+      ctx.strokeStyle = "indigo";
       break;
     case 2:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "hotpink";
+      ctx.strokeStyle = "red";
       break;
     case 3:
       ctx.translate(xaxis[1][0],xaxis[1][1] + voffset);
-      ctx.strokeStyle = "palegreen";
+      ctx.strokeStyle = "green";
       break;
     }
     
@@ -1080,14 +1059,20 @@ var oscope = (function() {
 
 const dataLength = 600;
 
-var traceCount = 0;
+var graphData = new Array();
 
-var traceData0 = { channel:0,length:dataLength,sample:[dataLength]}
-var traceData1 = { channel:1,length:dataLength,sample:[dataLength]}
-var traceData2 = { channel:2,length:dataLength,sample:[dataLength]}
-var traceData3 = { channel:3,length:dataLength,sample:[dataLength]}
+graphData[0] = { channel:0,length:dataLength,sample:[dataLength]};
+graphData[1] = { channel:1,length:dataLength,sample:[dataLength]};
+graphData[2] = { channel:2,length:dataLength,sample:[dataLength]};
+graphData[3] = { channel:3,length:dataLength,sample:[dataLength]};
 
-var trace =[traceData0,traceData1,traceData2,traceData3];
+var scopeData = new Array();
+
+scopeData[0] = { channel:0,length:dataLength,sample:[dataLength]};
+scopeData[1] = { channel:1,length:dataLength,sample:[dataLength]};
+scopeData[2] = { channel:2,length:dataLength,sample:[dataLength]};
+scopeData[3] = { channel:3,length:dataLength,sample:[dataLength]};
+
  
 var noVac = 1;
 
@@ -1102,40 +1087,99 @@ socket.on('trace', function (msg) {
 });
 
 
-var inputOffset = [1817,1817,2121,2009];
+// var inputOffset = [1817,1817,2121,2009];
+var graphCount = 0;
+
+//socket.on('graph', function (msg) {
+
+function btnGraphClear(){
+	for( var j = 0 ; j < 4 ; j++){
+		for( var i = 0 ; i < 600 ; i++ )	graphData[j].sample[i] = 0;
+	}
+	graphCount = 0;
+	graphInverter.onPaint(graphData);
+}
 
 socket.on('graph', function (msg) {
+ 
+	console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'ImPower = ',msg.ImPower);
+	graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
-	console.log("ch0 = %d, ch1 = %d",msg[0][0],msg[1][0]);
+	graphData[0].sample[graphCount] = msg.rpm ; 
+	graphData[1].sample[graphCount] = msg.Irms ; 
+	graphData[2].sample[graphCount] = msg.P_total; 
+	graphData[3].sample[graphCount] = msg.ImPower; 
+	graphInverter.onPaint(graphData);
+//convert to
+	var speed = 	((msg.rpm 		-2048)/ 2048) * 2000;
+	var power = 	((msg.P_total	-2048)/ 2048) * 10;
+	var I_rms = 	((msg.Irms		-2048)/ 2048) * 20;
+	var Q_power = 	((msg.ImPower	-2048)/ 2048) * 10;
 
-	traceData0.sample = traceData0.sample.concat(msg[0]);
-	traceData1.sample = traceData1.sample.concat(msg[1]);
-	traceData2.sample = traceData2.sample.concat(msg[2]);
-	traceData3.sample = traceData3.sample.concat(msg[3]);
+   $('#gauge1').attr('data-value', speed);
+   $('#gauge2').attr('data-value', power);
+   $('#gauge3').attr('data-value', I_rms);
+   $('#gauge4').attr('data-value', Q_power);
+});
 
-	if(traceData0.sample.length > 600){
-		var cutData = (traceData0.sample.length-600);
-		// console.log('cutData = %d',cutData);
-		traceData0.sample.splice(0,cutData);
-		traceData1.sample.splice(0,cutData);
-		traceData2.sample.splice(0,cutData);
-		traceData3.sample.splice(0,cutData);
+function btnScopeClear(){
+	for( var j = 0 ; j < 4 ; j++){
+		for( var i = 0 ; i < 600 ; i++ )	scopeData[j].sample[i] = 0;
 	}
-	oscope.onPaint(trace);
-});
+	graphInverter.onPaint(graphData);
+}
 
-socket.on('noVacTx',function(msg){
-    noVac = msg.selVac;
-    document.getElementById('idVacRec').innerHTML = noVac;    
-});
+socket.on('scope', function (msg) {
 
+	// console.log('socket on scope =',msg);
 
-socket.on('vacuum', function (msg) {
+	var chanel = msg.Ch - 49;
+
+	//console.log('chanel = ',chanel);
+	scopeData[chanel].sample = msg.data ;
+
+	if(chanel == 3 ){ 
+		oscope.onPaint(scopeData);
+	}
+
 });
 
 socket.on('disconnect',function() {
   console.log('disconnected');
 });
+
+var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:0,max:2000,
+mTick:[0,500,1000,1500,2000],
+alarm:'[ {"from": 0, "to":1000,"color": "rgba(255,255,255,1.0)"},{"from": 1000,"to":1800, "color": "rgba(0,255,0,1)"},{"from":1800 ,"to":2000, "color": "rgba(255,0,0,1.0)"}]'
+}
+
+var gaugePower={id:'gauge2',unit:'[kW]',title:'Power',min:0,max:5,
+mTick:[0,1,2,3,4,5],
+alarm:'[ {"from": 0, "to":2.2,"color": "rgba(255,255,255,1.0)"},{"from": 2.2,  "to":3.0, "color": "rgba(255,0,0,.3)"},{"from": 3.0,  "to":5.0, "color": "rgba(255,0,0,1.0)"}]'
+}
+
+var gaugeI={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:20,
+mTick:[0,5,10,15,20],
+alarm:'[ {"from": 0, "to":10.0,"color": "rgba(255,255,255,1.0)"},{"from": 10.0,  "to":15.0, "color": "rgba(255,0,0,.3)"},{"from": 15.0,  "to":20.0, "color": "rgba(255,0,0,1.0)"}]'
+}
+
+var gaugeQ={id:'gauge4',unit:'[kW]',title:'Q kW',min:0,max:5,
+mTick:[0,1,2,3,4,5],
+alarm:'[ {"from": 0, "to":2.2,"color": "rgba(255,255,255,1.0)"},{"from": 2.2,  "to":3.0, "color": "rgba(255,0,0,.3)"},{"from": 3.0,  "to":5.0, "color": "rgba(255,0,0,1.0)"}]'
+}
+
+function gaugeInit(arg){
+   var a = 'canvas[id=' + arg.id + ']';
+
+   $(a).attr('data-units',arg.unit);
+   $(a).attr('data-title',arg.title);
+   $(a).attr('data-min-value',arg.min);
+   $(a).attr('data-max-value',arg.max);
+   $(a).attr('data-major-ticks',arg.mTick);
+// $(a).attr('data-minor-ticks',5);
+   $(a).attr('data-stroke-ticks',true);
+   $(a).attr('data-highlights',arg.alarm);
+}
 
 
 $("document").ready(function() {
@@ -1144,19 +1188,13 @@ $("document").ready(function() {
   }
 	var dummy = {0:0};
 
-	scope.init();
-//	radialGaugeInit();
-//	socket.emit('codeTable',dummy);
+	graphInverter.init();
+
+	gaugeInit(gaugeSpeed);
+	gaugeInit(gaugePower);
+	gaugeInit(gaugeI);
+	gaugeInit(gaugeQ);
+
 });
 
-
-
-/*
-setInterval( function () {
-	var date = new Date();
-	var n = date.toDateString();
-	var time = date.toLocaleTimeString();
-  document.getElementById('clock1').innerHTML = n +':'+ time;
-}, 2000);
-*/
-
+//---- end of oscope.js

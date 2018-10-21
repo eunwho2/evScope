@@ -1,227 +1,333 @@
 {%extends 'templates/layout.html' %}
 {% block content %}
-
-<script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script> 
-<script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
-<script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script> 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
 <!-- end of goole gauge -->
-<div class="container">
-<div class="top">
-	<div class='head title1'>
-		<span id='stater' class='csStateLampReady'>대기중</span>
-		<span class="title1 titleName">인버터 스코프</span>
-	</div>
-	<div id='bottomBox' class='csBottomBox'> 
-	</div>
-	<div id='timeStampBox' class = 'csTimeStampBox'>
-		<span class='titleName1'>경과시간></span>
-		<span id='endTimeStamp' class='titleName1'>00시간 00분 00초</span>
-		<span class='titleName'>현재시간</span>
-		<span id='clock1' class='titleName'>2018:02:07: 10:10:00</span>
-		<br>	
-		<span class='titleName1'> 시작시간</span>
-		<span id='startTimeStamp' class='titleName1'>2018:02:07: 10:10:00</span>
-		<span class='titleName'>정지시간</span>
-		<span id='endTimeStamp' class='titleName'>2018:02:07: 10:10:00</span>
-	</div>
-	<div id="plotRpm">
-		<div id="plot1-parent" class="csPlot1">
-			<canvas id="plot1" class="oscope-canvas oscope-canvas2" width="600" height="200"></canvas>
-		</div>
-		<div id = "plotName">
-			<button id='btnInvStart'	class='w3-button w3-round w3-green' onclick='btnInvStart()'>유압동작</button>
-			<button id='btnTestOn'		class='w3-button w3-round w3-green' onclick='btnTestOn()'>실험시작</button -->
-			<button id='btnArmOn'	class='w3-button w3-round w3-green   ' onclick='btnArmOn()'>전진</button>
-			<button id='btnMonitorStart'	class='w3-button w3-round w3-blue   ' onclick='btnMonitorStart()'>StartGraph</button>
-			</br>--------------------------------------
-			</br>
-			<button id='btnInvStop'		class='w3-button w3-round w3-red'	onclick='btnInvStop()'>유압정지</button>
-			<button id='btnTestOff'	class='w3-button w3-round w3-red'		onclick='btnTestOff()'>실험정지</button>
-			<button id='btnArmOff'	class='w3-button w3-round w3-red' onclick='btnArmOff()'>후진</button>
-			<button id='btnMonitorStop'	class='w3-button w3-round w3-red' onclick='btnMonitorStop()'>Stop Graph</button>
-			</br>
-			<button id='btnShutDown' class='w3-button w3-round w3-indigo ' onclick='btnShutDown()'>SHUTDOWN</button>
-			<button id='btnNoVac' 	class='w3-button w3-round w3-green  ' onclick='changeNoVac()'>동작버튼5</button>
-			<!--button id='btnTraceOnOff'	class='w3-button w3-round w3-red' onclick='btnTraceOnOff()'>실험시작</button -->
-			<!-- button id='btnReadAll' 	class='w3-button w3-round w3-green ' onclick='btnReadAll()'>ReadAll</button -->
+<div class="container" align="center">
+<!--h1 align ="center" style="margin:30px;"> DONG HO INVERTR MONITORING SYSTEM </h1 --> 
+<h1> DONG HO INVERTR MONITORING SYSTEM </h1> 
+</br>
 
-		</did> <!-- end of plotName -->
-	</div> <!-- end of plotRpm-->
-</div> <!-- p-->
-
-<div id='leftBox' class='csLeftBox'>
-
-	<div id="oscope-parent" class="csOscope">
-		<canvas id="oscope" class="oscope-canvas" width='600' height='400' ></canvas>
+<div class="wrapper1" align="center">
+	<div class="g1-one" align="center">
+      <canvas id="gauge1" class='cssGauge' data-type="radial-gauge" data-value-box="true" data-width="200" data-height="200"></canvas>
 	</div>
 
-</div> <!-- end of leftBox -->
+	<div class="g1-two" align="center">
+      <canvas id="gauge2" class='cssGauge' data-type="radial-gauge" data-value-box="true" data-width="200" data-height="200"></canvas>
+	</div>
 
-	<div class="csRightBox">
-		<div id = 'chanOptions'>
-			<table>
-				<tr>
-					<th><font color= "gold">CH1</font></th> 
-					<th class="csCh1List1">
-						<select name="ch1_list1" onChange="updateCh1Select(this.selectedIndex)">
-						<option selected>probe </option> 
-						<option value='I'>Amp </option>
-						<option value='V'>Volt </option>
-						<option value='adc'>ADC </option>
-						<option value='pwm'>PWM </option>
-						</select>
-						<select name="ch1_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
-						</select>
-					</th> 
-					<th> 
-						<select id="idCh1Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
-         			</select>
-					</th>
-					<th><font color="gold">OFFSET</font>
-						<input id='ch1Offset' type="number" class="offset" value="0" size="3">
-					</th>
-				</tr>
-
-				<tr>
-					<th><font color="blue">CH2</font></th> 
-					<th>
-						<select name="ch2_list1" onChange="updateCh2Select(this.selectedIndex)">
-						<option selected>probe</option>
-						<option value='I'>Amp</option>
-						<option value='V'>Volt</option>
-						<option value='adc'>ADC</option>
-						<option value='pwm'>PWM</option>
-						</select>
-						<select name="ch2_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
-						</select>
-					</th> 
-					<th> 
-						<select id="idCh2Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
-         			</select>
-					</th>
-					<th><font color="blue">OFFSET</font> 
-						<input id='ch2Offset' type="number" class="offset" value="0" size="3">
-					</th>
-				</tr>
-
-				<tr>
-					<th><font color="hotpink">CH3</font></th> 
-					<th>
-						<select name="ch3_list1" onChange="updateCh3Select(this.selectedIndex)">
-						<option selected>probe</option>
-						<option value='I'>Amp</option>
-						<option value='V'>Volt</option>
-						<option value='adc'>ADC</option>
-						<option value='pwm'>PWM</option>
-						</select>
-						<select name="ch3_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
-						</select>
-					</th> 
-					<th> 
-						<select id="idCh3Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
-         			</select>
-					</th>
-					<th><font color="hotpink">OFFSET</font>
-						<input id='ch3Offset' type="number" class="offset" value="0" size="3">
-					</th>
-				</tr>
-				<tr>
-					<th><font color="palegreen">CH4</font></th> 
-					<th>
-						<select name="ch4_list1" onChange="updateCh4Select(this.selectedIndex)">
-						<option selected>probe</option>
-						<option value='I'>Amp</option>
-						<option value='V'>Volt</option>
-						<option value='adc'>ADC</option>
-						<option value='pwm'>PWM</option>
-						</select>
-						<select name="ch4_list1_list2" onClick="alert(this.options[this.options.selectedIndex].value)">
-						</select>
-					</th> 
-					<th> 
-						<select id="idCh4Div">
-			            <option value="0">1.0A/div</option>
-			            <option value="1">5.0A/div</option>
-			            <option value="2">10.0A/div</option>
-			            <option value="3">20.0A/div</option>
-			            <option value="4">50.0V/div</option>
-			            <option value="5">100.0/div</option>
-         			</select>
-					</th>
-					<th><font color="palegreen">OFFSET</font>
-						<input id='ch4Offset' type="number" class="offset" value="0" size="3">
-					</th>
-				</tr>
-
-			</table>
-
+	<div class="g1-three" align="center">
+		<div id="plot1-parent" class="csPlot1" align="center">
+			<canvas id="plot1" class="oscope-canvas oscope-canvas2" width="600" height="300" align="center"></canvas>
 		</div>
+	</div>
 
-		<div id ='codeEdit' class ='csCodeEdit'>
-			<div id='codeEditResult' class='csEditResult'>code result</div>
-			<label>Code :</label><textarea id='txtCodeEdit1' class='csCodeEdit1'>0</textarea>
-			<label>Data :</label><textarea id='txtCodeEdit2' class='csCodeEdit1'>0</textarea>
-			<button id='btnReadCode' 	class='w3-circle w3-green'  onclick='btnReadCode()'>R</button>
-			<button id='btnWriteCode' 	class='w3-circle w3-red'    onclick='btnWriteCode()'>W</button>
-			</br>
-			<select id="idCmdSelect">
-  				<option value="0">READADC</option>
-  				<option value="1">SAVE</option>
-  				<option value="2">RESET</option>
-  				<option value="3">READ CODE</option>
-			</select>
-			<button id='btnWriteCode' 	class='w3-button w3-round w3-green' onclick='btnSendCmd()'>Send</button>
- 		<div>
-		<div id ='codeTable' class ='csCodeTable'>
-			<textarea id='txtCodeTable' class='csTxtCodeTable' rows="8" cols="38">	</textarea>
-		</div>
+	<div class="g1-four" align="center">
+		<table align="center" width="100%">
+			<tr>
+      		<td align = "center" width="20%" height="50px">
+         		<button class='w3-button w3-round w3-purple' onclick='btnRunMotor()' >ON MOTOR</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-green'  onclick='btnForward()'>FORWARD</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-blue'   onclick='btnStartGraph()'>ON GRAPH</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-yellow' onclick='btnStartScope()'>ON SCOPE</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-indigo' onclick='btnStartTest()'>ON TEST</button>
+      		</td>
+   		</tr> 
+   		<tr>
+      		<td align = "center" height="50px">
+         		<button class='w3-button w3-round w3-red'    onclick='btnStopMotor()'>OFF MOTOR</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-red'  onclick='btnBackward()'>BACKWARD</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-red'   onclick='btnStopGraph()'>OFF GRAPH</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-red' onclick='btnStopScope()'>OFF SCOPE</button>
+      		</td>
+      		<td align = "center">
+         		<button class='w3-button w3-round w3-red' onclick='btnStopTest()'>OFF TEST</button>
+      		</td>
+   		</tr> 
+		</table>
+	</div><!-- gi-four -->
+	<div class="gi-five" align="center">
+      <canvas id="gauge3" class='cssGauge' data-type="radial-gauge" data-value-box="true" data-width="200" data-height="200"></canvas>
+	</div>
+	<div class="g1-six" align="center">
+      <canvas id="gauge4" class='cssGauge' data-type="radial-gauge" data-value-box="true" data-width="200" data-height="200" align="left"></canvas>
+	</div>
+</div><!-- wrapper1 -->
 
-		<div id="cursorGroup">
-			<lavel id="vcurValue1">0000</label>
-			<input type="radio" id="vcursor1" name="scopeCursor" checked />V1 : 	
-			<lavel id="vcurValue2">0000</label>
-			<input type="radio" id="vcursor2" name="scopeCursor" />V2 :	
-			<lavel id="hcurValue1">0000</label>
-			<input type="radio" id="hcursor1" name="scopeCursor" />H1 :	
-			<lavel id="hcurValue2">0000</label>
-			<input type="radio" id="hcursor2" name="scopeCursor" />H2 	
-		</div>
-		<div id="scopeOffset" class="scope offset">
-			<input id='ch0Offset' type="number" class="offset" value="1800" min="1" step="1" size="3">
-			<label>CH0 : </label> 
-			<input id='ch1Offset' type="number" class="offset" value="1800" min="1" step="1" size="3">
-			<label>CH1 : </label>
-			<input id='ch2Offset' type="number" class="offset" value="1800" min="1" step="1" size="3">
-			<label>CH2 : </lavel>
-			<input id='ch3Offset' type="number" class="offset" value="1800" min="1" step="1" size="3">
-			<label>CH3</label> 
-		</div>
-
-	</div><!-- end of rightbox -->
+<div>
+<table align="center">
+	<tr>
+      <td height = "50" width="4%" align="center"> 경과 : </td>
+      <td width="20%" id = "clockRun">00시간 00분 00초</td>
+      <td width="4%" align="center"> 현재 : </td>
+      <td width="22%" id = "clockNow">2018:02:07: 10:10:00</td>
+      <td width="4%"align="center"> 시작 : </td>
+      <td width="20%" id = "clockStart">2018:02:07: 10:10:00</td>
+      <td width="4%"align="center"> 정지 : </td>
+      <td width="22%" id = "clockEnd">2019:00:00: 00:00:00</td>
+	</tr>
+</table>
 </div>
 
+<div class="wrapper2">
+
+	<div class="g2-one" align="right">
+		<div id='codeEditResult' class='csEditResult'>code result</div>
+		Code <input type="number" id="txtCodeEdit1" min="0" max="300" value="0"> 
+		Value <input type="number" id="txtCodeEdit2" min="0" max="8000" value="0">
+		<button id='btnReadCode' 	class='w3-circle w3-green'  onclick='btnReadCode()'>R</button>
+		<button id='btnWriteCode' 	class='w3-circle w3-red'    onclick='btnWriteCode()'>W</button>		 
+		</br>
+		</br>
+		<select id="idCmdSelect">
+			<option value="0">READ SENSOR ADC</option>
+			<option value="1">READ RPM etc </option>
+			<option value="2">RESET FROM TRIP</option>
+			<option value="3">READ ALL CODES</option>
+			<option value="4">SAVE TUNING</option>
+			<option value="5">RESET CODE VALUES</option>
+		</select>
+		<button id='btnWriteCode' 	class='w3-button w3-round w3-green' onclick='btnOptionSendCmd()'>Send</button>
+		</br>
+		</br>
+		<textarea id='txtCodeTable' class='csTxtCodeTable' rows="10" cols="38">	</textarea>
+	</div> <!-- one -->
+
+	<div class="g2-two" align="right">
+		<div id="oscope-parent" class="csOscope" align="center">
+			<canvas id="oscope" class="oscope-canvas" width='400' height='400' ></canvas>
+		</div>
+	</div> <!-- two -->
+
+	<div class="g2-three" align="left">
+
+<table id= "tabG2">
+	<tr>
+		<td>
+			<select name="ch1_list1" onChange="updateCh1Select(this.selectedIndex)">
+				<option selected> CH-1 </option> 
+				<option value='I'>Amp </option>
+				<option value='V'>Volt </option>
+				<option value='adc'>ADC </option>
+				<option value='pwm'>PWM </option>
+			</select>
+			<select name="ch1_list1_list2" onClick="selectScopeCh(0,this.options[this.options.selectedIndex].value)">
+			</select>
+		</td> 
+		<td> 
+			<select id="idScaleCh1">
+			   <option value="0.1"  >0.1/div</option>
+			   <option value="0.2"  >0.2/div</option>
+			   <option value="0.5"  >0.5/div</option>
+			   <option value="1.0"  >1.0/div</option>
+			   <option value="2.0"  >2.0/div</option>
+			   <option selected value="5.0">5.0/div</option>
+			   <option value="10." >10./div</option>
+			   <option value="20." >20./div</option>
+			   <option value="50." >50./div</option>
+			   <option value="100">100/div</option>
+			   <option value="200">200/div</option>
+			   <option value="500">500/div</option>
+         </select>
+		</td>
+	</tr>
+	<tr>
+		<td><font color="gold">OFFSET</font>
+			<!-- input id='idOffsetCh1' type="number" class="offset" min="0" max="9999" value="0" -->
+			<input id='idOffsetCh1' type="number" class="offset" value="0">
+		</td>
+		<td>
+			<button id='btnSetScopeCh1' class='w3-button w3-tiny w3-yellow' onclick='setScopeCh(0)'>SET</button>
+		</td>			
+	</tr>
+
+	<tr>
+		<td>
+			<select name="ch2_list1" onChange="updateCh2Select(this.selectedIndex)">
+				<option selected>CH-2</option>
+				<option value='I'>Amp</option>
+				<option value='V'>Volt</option>
+				<option value='adc'>ADC</option>
+				<option value='pwm'>PWM</option>
+			</select>
+			<select name="ch2_list1_list2" onClick="selectScopeCh(1,this.options[this.options.selectedIndex].value)">
+			</select>
+		</td> 
+		<td> 
+			<select id="idScaleCh2">
+				<option value="0.1">0.1/div</option>
+			   <option value="0.2">0.2/div</option>
+			   <option value="0.5">0.5/div</option>
+			   <option value="1.0">1.0/div</option>
+			   <option value="2.0">2.0/div</option>
+			   <option selected value="5.0">5.0/div</option>
+			   <option value="10.">10./div</option>
+			   <option value="20.">20./div</option>
+			   <option value="50." >50./div</option>
+			   <option value="100">100/div</option>
+			   <option value="500">500/div</option>
+         </select>
+		</td>
+	</tr>
+	<tr>
+		<td><font color="blue">OFFSET</font> 
+			<input id='idOffsetCh2' type="number" class="offset" value="0">
+		</td>
+		<td>
+			<button id='btnSetScopeCh2' class='w3-button w3-tiny w3-blue' onclick='setScopeCh(1)'>SET</button>
+		</td>			
+	</tr>
+	<tr>
+		<td>
+			<select name="ch3_list1" onChange="updateCh3Select(this.selectedIndex)">
+				<option selected>CH-3</option>
+				<option value='I'>Amp</option>
+				<option value='V'>Volt</option>
+				<option value='adc'>ADC</option>
+				<option value='pwm'>PWM</option>
+			</select>
+			<select name="ch3_list1_list2" onClick="selectScopeCh(2,this.options[this.options.selectedIndex].value)">
+			</select>
+		</td> 
+		<td> 
+			<select id="idScaleCh3">
+	      	<option value="0.1"  >  0.1/div</option>
+			   <option value="0.2"  >  0.2/div</option>
+			   <option value="0.5"  >  0.1/div</option>
+			   <option value="1.0"  >  1.0/div</option>
+			   <option value="2.0"  >  2.0/div</option>
+			   <option selected value="5.0"  >5.0/div</option>
+			   <option value="10." > 10./div</option>
+			   <option value="20." > 20./div</option>
+			   <option value="50." > 50./div</option>
+			   <option value="100">100/div</option>
+			   <option value="500">500/div</option>
+         </select>
+		</td>
+	</tr>
+	<tr>
+		<td><font color="hotpink">OFFSET</font>
+			<input id='idOffsetCh3' type="number" class="offset" value="0">
+		</td>
+		<td>
+			<button id='btnSetScopeCh3' class='w3-button w3-tiny w3-pink' onclick='setScopeCh(2)'>SET</button>
+		</td>			
+	</tr>
+	<tr>
+		<td>
+			<select name="ch4_list1" onChange="updateCh4Select(this.selectedIndex)">
+				<option selected>CH-4</option>
+				<option value='I'>Amp</option>
+				<option value='V'>Volt</option>
+				<option value='adc'>ADC</option>
+				<option value='pwm'>PWM</option>
+			</select>
+			<select name="ch4_list1_list2" onClick="selectScopeCh(3,this.options[this.options.selectedIndex].value)">
+			</select>
+		</td> 
+		<td> 
+			<select id="idScaleCh4">
+				<option value="0.1"  >  0.1/div</option>
+			   <option value="0.2"  >  0.2/div</option>
+			   <option value="1.0"  >  1.0/div</option>
+			   <option value="2.0"  >  2.0/div</option>
+			   <option selected value="5.0">5.0/div</option>
+			   <option value="10." > 10./div</option>
+			   <option value="20." > 20./div</option>
+			   <option value="50." > 50./div</option>
+			   <option value="100">100/div</option>
+			   <option value="500">500/div</option>
+         </select>
+		</td>
+	</tr>
+	<tr>
+		<td><font color="palegreen">OFFSET</font>
+			<input id='idOffsetCh4' type="number" class="offset" value="0">
+		</td>
+		<td>
+			<button id='btnSetScopeCh4' class='w3-button w3-tiny w3-green' onclick='setScopeCh(3)'>SET</button>
+		</td>			
+	</tr>
+</table>
+</div><!-- three -->
+
+</div><!-- wrapper -->
+
+<div align = "center" class='tail' style="margin:20px">
+	<span class="title1 titleName"> RS485 SIMULATOR by Dong-Ho Power Electronic ( T.E.L.82-51-262-7532 ) </span>
+</div> <!-- tail-->
+
+</div> <!-- container -->
 <!-- control handlers -->
 <script>
+
+function sendSetScopeChCmd(ch,point,scale,offset){
+
+   var returns = 'Invalid number';
+
+	var addr = 101 + 3*ch;
+   var sciCmd = '9:6:'+addr+':';
+   var codeData = (point*1.0).toExponential(3);
+
+   var setPoint = sciCmd + codeData;
+
+	if( setPoint.length !== 16 ){
+		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setPoint ;
+		return;
+	}	 
+
+	setTimeout(function(){
+		console.log('set Scope Point command =', setPoint);
+		socket.emit('codeEdit',setPoint);
+	},500);
+
+	//--- setScale
+	addr = 102 + 3*ch;
+   sciCmd = '9:6:'+addr+':';
+   codeData = (scale*1.0).toExponential(3);
+	var setScale = sciCmd + codeData;
+
+	if( setScale.length !== 16 ){
+		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setScale ;
+		return;
+	}	 
+
+	setTimeout(function(){
+		console.log('set Scope Scale command =', setScale);
+		socket.emit('codeEdit',setScale);
+	},1000);
+
+	//--- setOffset
+	addr = 103 + 3*ch;
+   sciCmd = '9:6:'+addr+':';
+   codeData = (offset*1.0).toExponential(3);
+	var setOffset = sciCmd + codeData;
+
+	if( setOffset.length !== 16 ){
+		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setOffset ;
+		return;
+	}	 
+
+	setTimeout(function(){
+		console.log('set Scope Offset command =', setOffset);
+		socket.emit('codeEdit',setOffset);
+	},1500);
+}
+
+
 var msgTx = { selVac: 0};
 var traceOnOff = 0;
 var monitorOnOff = 0;
@@ -231,130 +337,123 @@ var ch2_list = document.getElementsByName('ch2_list1_list2')[0];
 var ch3_list = document.getElementsByName('ch3_list1_list2')[0];
 var ch4_list = document.getElementsByName('ch4_list1_list2')[0];
 
-var ch1List = new Array();
-ch1List[0] ='';
-ch1List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch1List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch1List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch1List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-var ch2List = new Array();
-ch2List[0] ='';
-ch2List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch2List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch2List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch2List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-var ch3List = new Array();
-ch3List[0] ='';
-ch3List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch3List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch3List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch3List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-var ch4List = new Array();
-ch4List[0] ='';
-ch4List[1] = ['U|I_u','V|I_v','W|I_w','d|I_d','q|I_q','D|I_D','Q|I_Q'];
-ch4List[2] = ['U|V_u','V|V_v','W|V_w','d|V_d','q|V_q','D|V_D','Q|V_Q'];
-ch4List[3] = ['Iu|adcIu','Iv|adcIv','se|sensor','cmd|anaCmd','Vdc|adcVdc','T|adcTemp'];
-ch4List[4] = ['U|pwmRatioU','V|pwmRatioV','W|pwmRatioW'];
-
-function updateTestSelect(selectedGroup){
-    test_list.options.length=0;
-    if (selectedGroup>0){
-        for (i=0; i < testList[selectedGroup].length; i++)
-            test_list.options[test_list.options.length]=new Option(testList[selectedGroup][i].split("|")[0], testList[selectedGroup][i].split("|")[1]);
-    }
-}
+var chList = new Array();
+chList[0] ='';
+chList[1] = ['U|4','V|5','W|6','d|0','q|1','D|2','Q|3'];
+chList[2] = ['U|11','V|12','W|13','d|7','q|8','D|9','Q|10'];
+chList[3] = ['Iu|14','Iv|15','se|18','cmd|19','Vdc|16','T|17'];
+chList[4] = ['U|20','V|21','W|22'];
 
 function updateCh1Select(selectedGroup){
     ch1_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch1List[selectedGroup].length; i++)
-            ch1_list.options[ch1_list.options.length]=new Option(ch1List[selectedGroup][i].split("|")[0], ch1List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch1_list.options[ch1_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
 function updateCh2Select(selectedGroup){
     ch2_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch2List[selectedGroup].length; i++)
-            ch2_list.options[ch2_list.options.length]=new Option(ch2List[selectedGroup][i].split("|")[0], ch2List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch2_list.options[ch2_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
 function updateCh3Select(selectedGroup){
     ch3_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch3List[selectedGroup].length; i++)
-            ch3_list.options[ch3_list.options.length]=new Option(ch3List[selectedGroup][i].split("|")[0], ch3List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch3_list.options[ch3_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
 function updateCh4Select(selectedGroup){
     ch4_list.options.length=0;
     if (selectedGroup>0){
-        for (i=0; i < ch4List[selectedGroup].length; i++)
-            ch4_list.options[ch4_list.options.length]=new Option(ch4List[selectedGroup][i].split("|")[0], ch4List[selectedGroup][i].split("|")[1]);
+        for (i=0; i < chList[selectedGroup].length; i++)
+            ch4_list.options[ch4_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
     }
 }
 
+var chSelected = new Array();
+chSelected[0] = 0;
+chSelected[1] = 1;
+chSelected[2] = 2;
+chSelected[3] = 3;
 
-  function btnTraceOnOff(){
-		monitorOnOff = 0;
-		document.getElementById('btnMonitor').innerHTML = '모니터시작';
-
-		if( traceOnOff ){
-			traceOnOff = 0 ;
-			document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
-		}else{
-			traceOnOff = 1;
-	  		document.getElementById('btnTraceOnOff').innerHTML = '측정중지';
-		}
-		socket.emit('traceOnOff',traceOnOff);
-		
-	}
-
-function btnReadAll(){
-	socket.emit('getCodeList',0);
+function selectScopeCh(ch, selected){
+	chSelected[ch] = selected;
 }
 
-function btnMonitor(){
-	traceOnOff = 0;
-	document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
-	if( monitorOnOff ){
-		monitorOnOff = 0 ;
-		document.getElementById('btnMonitor').innerHTML = '모니터시작';
+function setScopeCh(ch){
+
+	var chanel = ch+1;
+	var selector = document.getElementById("idScaleCh"+chanel);
+	var scale = selector[selector.selectedIndex].value;
+
+	var setId = "idOffsetCh"+chanel;
+	console.log("setId = ",setId); 
+	var offset = document.getElementById(setId).value;
+
+	console.log(chSelected[ch],scale,offset);
+	sendSetScopeChCmd(ch,chSelected[ch],scale,offset);
+}
+
+function btnTraceOnOff(){
+	monitorOnOff = 0;
+	document.getElementById('btnMonitor').innerHTML = '모니터시작';
+
+	if( traceOnOff ){
+		traceOnOff = 0 ;
+		document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
 	}else{
-		monitorOnOff = 1;
-		document.getElementById('btnMonitor').innerHTML = '모니터정지';
+		traceOnOff = 1;
+		document.getElementById('btnTraceOnOff').innerHTML = '측정중지';
 	}
-	socket.emit('monitor',monitorOnOff);
+	socket.emit('traceOnOff',traceOnOff);		
 }
 
-function btnInvStart(){
+function btnStartGraph(){
+	socket.emit('graph',1);
+}
+
+function btnStopGraph(){
+	// onOff = 0 --> stop send grpah data 
+	socket.emit('graph',0);
+}
+
+function btnStartScope(){
+	socket.emit('scope',1);
+}
+function btnStopScope(){
+	socket.emit('scope',0);
+}
+
+function btnRunMotor(){
 	msgTx.selVac = 0;
 	socket.emit('btnClick',msgTx);
 }
 
-function btnInvStop(){
+function btnStopMotor(){
 	msgTx.selVac = 1;
 	socket.emit('btnClick',msgTx);
 }
 
-function btnTestOn(){
+function btnStartTest(){
 	msgTx.selVac = 2;
 	socket.emit('btnClick',msgTx);
 }
-function btnTestOff(){
+function btnStopTest(){
 	msgTx.selVac = 3;
 	socket.emit('btnClick',msgTx);
 }
-function btnArmOn(){
+
+function btnForward(){
 	msgTx.selVac = 4;
 	socket.emit('btnClick',msgTx);
 }
-function btnArmOff(){
+function btnBackward(){
 	msgTx.selVac = 5;
 	socket.emit('btnClick',msgTx);
 }
@@ -423,7 +522,7 @@ function btnWriteCode(){
 	}	 
 }
 
-function btnSendCmd(){
+function btnOptionSendCmd(){
 	var selector = document.getElementById("idCmdSelect");
 	var value = selector[selector.selectedIndex].value;
 	var cmd = '9:4:902:5.000e+0';
@@ -432,10 +531,19 @@ function btnSendCmd(){
 		cmd = '9:4:910:0.000e+0';	// read adc
 		socket.emit('codeEdit',cmd);
 	} else if(value == 1) { 
-		cmd = '9:6:900:4.000e+1';	// save
+		cmd = '9:4:909:0.000e+0';	// read RPM
 		socket.emit('codeEdit',cmd);
 	} else if(value == 2) { 
 		cmd = '9:4:902:5.000e+0';	// RESET
+		socket.emit('codeEdit',cmd);
+	} else if(value == 3) { 			// READ ALL CODE
+		cmd = '9:4:901:0.000e+0';	
+		socket.emit('codeEdit',cmd);
+	} else if(value == 4) { 
+		cmd = '9:6:900:4.000e+1';	// save
+		socket.emit('codeEdit',cmd);
+	} else if(value == 5) { 
+		cmd = '9:6:900:9.000e+1';	// reset all codes to factory setting
 		socket.emit('codeEdit',cmd);
 	}
 }
@@ -583,29 +691,24 @@ function changeNoVac(){
       }
   );
 
-socket.on('codeTable', function (msg) {
-   var testIn = msg.toString();
-   //testIn.replace(/:,/g,'\r\n');
-   var testIn1 = testIn.replace(/:/g,'\r\n');
-   var testOut = testIn1.replace(/,/g,'\t');
-   // console.log(testIn);
-   document.getElementById('txtCodeTable').innerHTML = testOut;
-});
 
-socket.on('codeEdit',function(msg){
+//--- socket processing
+
+
+socket.on('message',function(msg){
 	document.getElementById('codeEditResult').innerHTML = msg;
 });	
 
-var monitorCount=0;
+socket.on('codeList', function (msg) {
 
-socket.on('monitor',function(msg){
+	var msg1 = msg.substr(17);				// subtract uart command '9:6:900:5.000e+1:'
+   var testIn = msg1.toString();
 	
-	(monitorCount > 99 ) ? monitorCount = 0 : monitorCount++;
-
-	var msgOut = document.getElementById('stopRecord').innerHTML;
-	if((monitorCount %5) == 0 ) msgOut ='';  
-	document.getElementById('stopRecord').innerHTML = msgOut + '#'+ monitorCount +' '+ msg;
-});	
+   //testIn.replace(/:,/g,'\r\n');
+   var testIn1 = testIn.replace(/:/g,'\r\n');
+   var testOut = testIn1.replace(/,/g,'\t');
+   document.getElementById('txtCodeTable').innerHTML = testOut;
+});
 
 </script>
 {% endblock %}
