@@ -28,7 +28,7 @@
          		<button class='w3-button w3-round w3-purple' onclick='btnRunMotor()' >ON MOTOR</button>
       		</td>
       		<td align = "center">
-         		<button class='w3-button w3-round w3-green'  onclick='btnForward()'>FORWARD</button>
+         		<button class='w3-button w3-round w3-green'  onclick='btnSpeedUp()'>SPEED UP</button>
       		</td>
       		<td align = "center">
          		<button class='w3-button w3-round w3-blue'   onclick='btnStartGraph()'>ON GRAPH</button>
@@ -42,10 +42,10 @@
    		</tr> 
    		<tr>
       		<td align = "center" height="50px">
-         		<button class='w3-button w3-round w3-red'    onclick='btnStopMotor()'>OFF MOTOR</button>
+         		<button class='w3-button w3-round w3-red'    onclick='btnStopMotor()'>STOP MOTOR</button>
       		</td>
       		<td align = "center">
-         		<button class='w3-button w3-round w3-red'  onclick='btnBackward()'>BACKWARD</button>
+         		<button class='w3-button w3-round w3-red'  onclick='btnSpeedDown()'>SPEED DOWN</button>
       		</td>
       		<td align = "center">
          		<button class='w3-button w3-round w3-red'   onclick='btnStopGraph()'>OFF GRAPH</button>
@@ -99,6 +99,7 @@
 			<option value="3">READ ALL CODES</option>
 			<option value="4">SAVE TUNING</option>
 			<option value="5">RESET CODE VALUES</option>
+			<option value="6">READ TRIP RECORD</option>
 		</select>
 		<button id='btnWriteCode' 	class='w3-button w3-round w3-green' onclick='btnOptionSendCmd()'>Send</button>
 		</br>
@@ -431,13 +432,15 @@ function btnStopScope(){
 }
 
 function btnRunMotor(){
-	msgTx.selVac = 0;
-	socket.emit('btnClick',msgTx);
+	cmd = '9:4:905:0.000e+0';	// sciCmdStart
+	socket.emit('codeEdit',cmd);
 }
 
 function btnStopMotor(){
 	msgTx.selVac = 1;
 	socket.emit('btnClick',msgTx);
+	cmd = '9:4:905:1.000e+0';	// sciCmdStop
+	socket.emit('codeEdit',cmd);
 }
 
 function btnStartTest(){
@@ -449,13 +452,13 @@ function btnStopTest(){
 	socket.emit('btnClick',msgTx);
 }
 
-function btnForward(){
-	msgTx.selVac = 4;
-	socket.emit('btnClick',msgTx);
+function btnSpeedUp(){
+	cmd = '9:4:905:2.000e+0';	// sciCmdStart
+	socket.emit('codeEdit',cmd);
 }
-function btnBackward(){
-	msgTx.selVac = 5;
-	socket.emit('btnClick',msgTx);
+function btnSpeedDown(){
+	cmd = '9:4:905:3.000e+0';	// sciCmdStart
+	socket.emit('codeEdit',cmd);
 }
 
 function btnShutDown(){
@@ -544,6 +547,9 @@ function btnOptionSendCmd(){
 		socket.emit('codeEdit',cmd);
 	} else if(value == 5) { 
 		cmd = '9:6:900:9.000e+1';	// reset all codes to factory setting
+		socket.emit('codeEdit',cmd);
+	} else if(value == 6) { 
+		cmd = '9:4:900:1.000e+1';	// read trip record
 		socket.emit('codeEdit',cmd);
 	}
 }

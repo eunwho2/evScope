@@ -173,7 +173,7 @@ var graphInverter = (function() {
       d[0] = v[0] * w;
       d[1] = v[1] * h;
       return d;
-    });
+1    });
 
     // rescale cursor
     m_cursor = cursor_base.map(function(v) {
@@ -837,7 +837,8 @@ var oscope = (function() {
 
     // compute scale factors
     ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div);
-    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
+//    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
+    hs = 1;
 
     // compute horizonal scale
 
