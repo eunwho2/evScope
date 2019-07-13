@@ -157,7 +157,7 @@ io.on('connection', function (socket) {
 			testOn = true;
 		} else if( msgTx.selVac == 3){
 			testOn = false;
-	1	} else if( msgTx.selVac == 4){
+		} else if( msgTx.selVac == 4){
 			digiOut = digiOut | 4;			// clear ArmOff;
 			digiOut = digiOut & 0xfd;
 		} else if( msgTx.selVac == 5){
@@ -189,7 +189,7 @@ io.on('connection', function (socket) {
 		socket.emit('scope',data);
 	});    
 
-9});
+});
 
 var graphData = { rpm:0,Irms:0,P_toatal:0,RePower:0,ImPower:0};
 var scopeData = {Ch:0,data:[]};
@@ -284,7 +284,7 @@ setInterval(function(){
 
 setInterval(function() {
 	if(scopeOnOff)	  port.write('9:4:900:1.000e+2');
-},4000);
+},3000);
 
 setInterval(function(){
 	var stamp = new Date().toLocaleString();
