@@ -1,42 +1,36 @@
 "use strict";
-var oscope = (function() {
+var graphInverter = (function() {
   var m_canvas;
   var m_context;
   var m_width;
   var m_height;
-  var m_h2;
+  var m_h2;										// m_height/2
   var m_trace = [];
   var m_voffset = [];
-  // these must match the initial values of the controls
-  // doh! no two way data bindind
-  var m_seconds_per_div	   = 0.100;
-  var m_samples_per_second = 600;
+
+  var m_seconds_per_div	   = 60;
+  var m_samples_per_second = 1;
   var m_divisions          = 10;
   var m_yscale             = 2048;
   var m_sample_bits        = 12;
   var m_volts_per_div      = 1;
   var m_vrange             = 1;
-  var m_cursor_index       = 2;
+  var m_cursor_index       = 1;			// ?
   var m_cursor_seconds     = 0.0;
   var m_cursor_volts       = 0.0;
   var m_run                = true;
-  var m_size_index         = 0;
   var m_text_size          = 12;
-  var m_updates            = 0;
+  var m_updates            = 0;			// up count bottom of scope screen
 
   m_trace[0]           = null;
   m_trace[1]           = null;
   m_trace[2]           = null;
   m_trace[3]           = null;
 
-  m_voffset[0]         = 0;
-  m_voffset[1]         = 0;
-  m_voffset[2]         = 0;
-  m_voffset[3]         = 0;
-
   // ==============================================================
   // background display scaffolding
   // ==============================================================
+
   var outline_base = [
     [0.0,0.0],
     [1.0,0.0],
@@ -69,8 +63,7 @@ var oscope = (function() {
     [0.0,7.0/10.0,1.0,7.0/10.0],
     [0.0,8.0/10.0,1.0,8.0/10.0],
     [0.0,9.0/10.0,1.0,9.0/10.0]
-  ];
-	var hgrid;
+  ];var hgrid;
 
   var vgrid_base = [
     [1.0/10.0,0.0,1.0/10.0,1.0],
@@ -98,14 +91,12 @@ var oscope = (function() {
   // aspect ratio of available sizes needs to be 4 over 3
   // and must fit the twitter boostrap grid size allocated
   var canvas_size = [
-    {width:600,height:450}
+    {width:600,height:300}
   ];
 
   // responsive text size
   var text_size = [
       12,
-      8,
-      6
   ];
 
   function getCanvasSize(window_height,parent_width,parent_height) {
@@ -182,7 +173,7 @@ var oscope = (function() {
       d[0] = v[0] * w;
       d[1] = v[1] * h;
       return d;
-    });
+1    });
 
     // rescale cursor
     m_cursor = cursor_base.map(function(v) {
@@ -252,35 +243,7 @@ var oscope = (function() {
     drawLines(ctx,hgrid);
     drawLines(ctx,vgrid);
     ctx.restore();
-
-    // draw the x axes
-    ctx.save();
-    ctx.translate(0,voffset[0]);
-    ctx.strokeStyle = "magenta";
-    ctx.lineWidth   = 1;
-    drawLine(ctx,xaxis[0]);
     ctx.restore();
-
-    ctx.save();
-    ctx.translate(0,voffset[1]);
-    ctx.strokeStyle = "darkgoldenrod";
-    ctx.lineWidth   = 1;
-    drawLine(ctx,xaxis[1]);
-    ctx.restore();
-
-    // draw the cursors
-    ctx.save();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "MediumSeaGreen";
-    drawLine(ctx,m_cursor[0]);
-    drawLine(ctx,m_cursor[2]);
-    ctx.strokeStyle = "MediumSeaGreen";
-    drawLine(ctx,m_cursor[1]);
-    drawLine(ctx,m_cursor[3]);
-
-    ctx.restore();
-    ctx.restore();
-
   }
 
   function drawAnnotations(ctx,width,height,dy)
@@ -289,17 +252,33 @@ var oscope = (function() {
     var y;
 
     ctx.font = dy.toFixed(0) + "px monospace";
+
     ctx.fillStyle = "lime";
     y = dy + 1;
     ctx.fillText('seconds/div = ' + m_seconds_per_div.toFixed(4) + '    dS = ' + m_cursor_seconds.toFixed(4),2,y);
+
     y += dy + 1;
     ctx.fillText('volts/div   = ' + m_volts_per_div.toFixed(4)   + '    dV = ' + m_cursor_volts.toFixed(4) ,2,y);
+
+    ctx.fillStyle = "darkgoldenrod";
+    y += dy + 1;
+    ctx.fillText('CH1 : RPM 500 RPM / DIV ',440,10);
+
+    ctx.fillStyle = "indigo";
+    y += dy + 1;
+    ctx.fillText('CH2 : Irms 5A / DIV ',440,10+dy);
+
+    ctx.fillStyle = "red";
+    y += dy + 1;
+    ctx.fillText('CH3 : P_total 2kW / DIV ',440,10+ dy * 2);
+
+    ctx.fillStyle = "green";
+    y += dy + 1;
+    ctx.fillText('CH4 : P Power 2kW / DIV ',440,10 + dy * 3);
 
     t = (m_run) ? ("RUN : " + m_updates.toFixed(0)) : "STOP";
     ctx.fillStyle = (m_run) ? 'lime' : 'red';
     ctx.fillText(t,2,height-4);
-
-
   }
 
   function computeVerticalScale(vrange,yscale,height,volts) {
@@ -319,8 +298,7 @@ var oscope = (function() {
 
     // compute scale factors
     ys = computeVerticalScale(m_vrange,m_yscale,m_height,m_volts_per_div);
-//    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
-    hs = 1;
+    hs = computeHorizontalScale(m_seconds_per_div*m_divisions,m_samples_per_second,m_width);
 
     // compute horizonal scale
 
@@ -356,7 +334,6 @@ var oscope = (function() {
 
     // draw it
     drawPath(ctx,t);
-    
     ctx.restore();    
     // restore context
   }
@@ -502,21 +479,21 @@ var oscope = (function() {
   }
 
   function onResize() {
-    var parent = $("#oscope-parent");
+    var parent = $("#plot1-parent");
     var size = getCanvasSize($(window).height(),parent.width(),parent.height());
-    m_canvas = $("#oscope")[0];
-//    m_width  = m_canvas.width  = size.width;
-//    m_height = m_canvas.height = size.height;
+    m_text_size = 12;
+    m_canvas = $("#plot1")[0];
     m_width  = m_canvas.width  = 600;
-    m_height = m_canvas.height = 450;
+    m_height = m_canvas.height = 300;
     m_h2     = m_height / 2;
     rescale(m_width,m_height);
     onPaint(null);
   }
 
   function onInit() {
-    m_canvas  = $("#oscope")[0];
+    m_canvas  = $("#plot1")[0];
     m_context = m_canvas.getContext("2d");
+    // attach resize event
     $(window).resize(onResize);
     onResize();
     onPaint(null);
@@ -538,148 +515,4 @@ var oscope = (function() {
     onRunStop          : onRunStop,
   };
 })();
-
-
-//--- start the client application
-
-const dataLength = 600;
-
-var graphData = new Array();
-
-graphData[0] = { channel:0,length:dataLength,sample:[dataLength]};
-graphData[1] = { channel:1,length:dataLength,sample:[dataLength]};
-graphData[2] = { channel:2,length:dataLength,sample:[dataLength]};
-graphData[3] = { channel:3,length:dataLength,sample:[dataLength]};
-
-var scopeData = new Array();
-
-scopeData[0] = { channel:0,length:dataLength,sample:[dataLength]};
-scopeData[1] = { channel:1,length:dataLength,sample:[dataLength]};
-scopeData[2] = { channel:2,length:dataLength,sample:[dataLength]};
-scopeData[3] = { channel:3,length:dataLength,sample:[dataLength]};
-
- 
-var noVac = 1;
-
-var socket = io.connect();
-var messages = 0;
-
-socket.on('trace', function (msg) {
-
-	console.log(msg);
-  // oscope.onPaint(trace);
-
-});
-
-
-// var inputOffset = [1817,1817,2121,2009];
-var graphCount = 0;
-
-//socket.on('graph', function (msg) {
-
-function btnGraphClear(){
-	for( var j = 0 ; j < 4 ; j++){
-		for( var i = 0 ; i < 600 ; i++ )	graphData[j].sample[i] = 0;
-	}
-	graphCount = 0;
-	graphInverter.onPaint(graphData);
-}
-
-socket.on('graph', function (msg) {
- 
-	console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'ImPower = ',msg.ImPower);
-	graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
-
-	graphData[0].sample[graphCount] = msg.rpm ; 
-	graphData[1].sample[graphCount] = msg.Irms ; 
-	graphData[2].sample[graphCount] = msg.P_total; 
-	graphData[3].sample[graphCount] = msg.ImPower; 
-	graphInverter.onPaint(graphData);
-//convert to
-	var speed = 	((msg.rpm 		-2048)/ 2048) * 2000;
-	var power = 	((msg.P_total	-2048)/ 2048) * 10;
-	var I_rms = 	((msg.Irms		-2048)/ 2048) * 20;
-	var Q_power = 	((msg.ImPower	-2048)/ 2048) * 10;
-
-   $('#gauge1').attr('data-value', speed);
-   $('#gauge2').attr('data-value', power);
-   $('#gauge3').attr('data-value', I_rms);
-   $('#gauge4').attr('data-value', Q_power);
-});
-
-function btnScopeClear(){
-	for( var j = 0 ; j < 4 ; j++){
-		for( var i = 0 ; i < 600 ; i++ )	scopeData[j].sample[i] = 0;
-	}
-	graphInverter.onPaint(graphData);
-}
-
-socket.on('scope', function (msg) {
-
-	// console.log('socket on scope =',msg);
-
-	var chanel = msg.Ch - 49;
-
-	//console.log('chanel = ',chanel);
-	scopeData[chanel].sample = msg.data ;
-
-	if(chanel == 3 ){ 
-		oscope.onPaint(scopeData);
-	}
-
-});
-
-socket.on('disconnect',function() {
-  console.log('disconnected');
-});
-
-var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:0,max:2000,
-mTick:[0,500,1000,1500,2000],
-alarm:'[ {"from": 0, "to":1000,"color": "rgba(255,255,255,1.0)"},{"from": 1000,"to":1800, "color": "rgba(0,255,0,1)"},{"from":1800 ,"to":2000, "color": "rgba(255,0,0,1.0)"}]'
-}
-
-var gaugePower={id:'gauge2',unit:'[kW]',title:'Power',min:0,max:5,
-mTick:[0,1,2,3,4,5],
-alarm:'[ {"from": 0, "to":2.2,"color": "rgba(255,255,255,1.0)"},{"from": 2.2,  "to":3.0, "color": "rgba(255,0,0,.3)"},{"from": 3.0,  "to":5.0, "color": "rgba(255,0,0,1.0)"}]'
-}
-
-var gaugeI={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:20,
-mTick:[0,5,10,15,20],
-alarm:'[ {"from": 0, "to":10.0,"color": "rgba(255,255,255,1.0)"},{"from": 10.0,  "to":15.0, "color": "rgba(255,0,0,.3)"},{"from": 15.0,  "to":20.0, "color": "rgba(255,0,0,1.0)"}]'
-}
-
-var gaugeQ={id:'gauge4',unit:'[kW]',title:'Q kW',min:0,max:5,
-mTick:[0,1,2,3,4,5],
-alarm:'[ {"from": 0, "to":2.2,"color": "rgba(255,255,255,1.0)"},{"from": 2.2,  "to":3.0, "color": "rgba(255,0,0,.3)"},{"from": 3.0,  "to":5.0, "color": "rgba(255,0,0,1.0)"}]'
-}
-
-function gaugeInit(arg){
-   var a = 'canvas[id=' + arg.id + ']';
-
-   $(a).attr('data-units',arg.unit);
-   $(a).attr('data-title',arg.title);
-   $(a).attr('data-min-value',arg.min);
-   $(a).attr('data-max-value',arg.max);
-   $(a).attr('data-major-ticks',arg.mTick);
-// $(a).attr('data-minor-ticks',5);
-   $(a).attr('data-stroke-ticks',true);
-   $(a).attr('data-highlights',arg.alarm);
-}
-
-
-$("document").ready(function() {
-  if (oscope) {
-    oscope.init();
-  }
-	var dummy = {0:0};
-
-	graphInverter.init();
-
-	gaugeInit(gaugeSpeed);
-	gaugeInit(gaugePower);
-	gaugeInit(gaugeI);
-	gaugeInit(gaugeQ);
-
-});
-
-//---- end of oscope.js
+// --- end of ewGraph.js
