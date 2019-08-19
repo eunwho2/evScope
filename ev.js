@@ -204,6 +204,8 @@ parser.on('data',function (data){
 	var command_addr = parseInt(buff.slice(4,7));
 	var command_data = parseFloat(buff.slice(8,16));
 
+		console.log(data);
+
 	if(( buff.length < 16 ) || ( command_addr !== 900 )){
 		if( command_addr == 901 ){ 
 			myEmitter.emit('mCodeList', data);
@@ -213,6 +215,8 @@ parser.on('data',function (data){
 			return;
 		}
 	}
+
+
 	if ( command_data < 100 ) {
 		var rx_data = data.slice(17,24);
 		var buff2 = data.substr(24);
@@ -267,7 +271,7 @@ parser.on('data',function (data){
 		}
 		myEmitter.emit('mScope', scope);
 		return;
-	}
+	}	
 });
 
 function sleepFor( sleepDuration ){
