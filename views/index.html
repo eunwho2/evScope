@@ -118,12 +118,13 @@
 <table id= "tabG2">
 	<tr>
 		<td>
-			<select name="ch1_list1" onChange="updateCh1Select(this.selectedIndex)">
+			<select name="ch1_list1" onChange="updateCh1Select(this.options.selectedIndex)">
 				<option selected> CH-1 </option> 
 				<option value='I'>Amp </option>
 				<option value='V'>Volt </option>
 				<option value='adc'>ADC </option>
 				<option value='pwm'>PWM </option>
+				<option value='angle'>theta </option>
 			</select>
 			<select name="ch1_list1_list2" onClick="selectScopeCh(0,this.options[this.options.selectedIndex].value)">
 			</select>
@@ -163,6 +164,7 @@
 				<option value='V'>Volt</option>
 				<option value='adc'>ADC</option>
 				<option value='pwm'>PWM</option>
+				<option value='angle'>theta </option>
 			</select>
 			<select name="ch2_list1_list2" onClick="selectScopeCh(1,this.options[this.options.selectedIndex].value)">
 			</select>
@@ -199,6 +201,7 @@
 				<option value='V'>Volt</option>
 				<option value='adc'>ADC</option>
 				<option value='pwm'>PWM</option>
+				<option value='angle'>theta </option>
 			</select>
 			<select name="ch3_list1_list2" onClick="selectScopeCh(2,this.options[this.options.selectedIndex].value)">
 			</select>
@@ -235,6 +238,7 @@
 				<option value='V'>Volt</option>
 				<option value='adc'>ADC</option>
 				<option value='pwm'>PWM</option>
+				<option value='angle'>theta </option>
 			</select>
 			<select name="ch4_list1_list2" onClick="selectScopeCh(3,this.options[this.options.selectedIndex].value)">
 			</select>
@@ -268,453 +272,12 @@
 </div><!-- wrapper -->
 
 <div align = "center" class='tail' style="margin:20px">
-	<span class="title1 titleName"> RS485 SIMULATOR by Dong-Ho Power Electronic ( T.E.L.82-51-262-7532 ) </span>
+	<span class="title1 titleName"> Inverter Monitoring System by Dong-Ho Power Electronic ( T.E.L.82-51-262-7532 ) </span>
 </div> <!-- tail-->
 
 </div> <!-- container -->
 <!-- control handlers -->
 <script>
-
-function sendSetScopeChCmd(ch,point,scale,offset){
-
-   var returns = 'Invalid number';
-
-	var addr = 101 + 3*ch;
-   var sciCmd = '9:6:'+addr+':';
-   var codeData = (point*1.0).toExponential(3);
-
-   var setPoint = sciCmd + codeData;
-
-	if( setPoint.length !== 16 ){
-		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setPoint ;
-		return;
-	}	 
-
-	setTimeout(function(){
-		console.log('set Scope Point command =', setPoint);
-		socket.emit('codeEdit',setPoint);
-	},500);
-
-	//--- setScale
-	addr = 102 + 3*ch;
-   sciCmd = '9:6:'+addr+':';
-   codeData = (scale*1.0).toExponential(3);
-	var setScale = sciCmd + codeData;
-
-	if( setScale.length !== 16 ){
-		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setScale ;
-		return;
-	}	 
-
-	setTimeout(function(){
-		console.log('set Scope Scale command =', setScale);
-		socket.emit('codeEdit',setScale);
-	},1000);
-
-	//--- setOffset
-	addr = 103 + 3*ch;
-   sciCmd = '9:6:'+addr+':';
-   codeData = (offset*1.0).toExponential(3);
-	var setOffset = sciCmd + codeData;
-
-	if( setOffset.length !== 16 ){
-		document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setOffset ;
-		return;
-	}	 
-
-	setTimeout(function(){
-		console.log('set Scope Offset command =', setOffset);
-		socket.emit('codeEdit',setOffset);
-	},1500);
-}
-
-
-var msgTx = { selVac: 0};
-var traceOnOff = 0;
-var monitorOnOff = 0;
-
-var ch1_list = document.getElementsByName('ch1_list1_list2')[0];
-var ch2_list = document.getElementsByName('ch2_list1_list2')[0];
-var ch3_list = document.getElementsByName('ch3_list1_list2')[0];
-var ch4_list = document.getElementsByName('ch4_list1_list2')[0];
-
-var chList = new Array();
-chList[0] ='';
-chList[1] = ['U|4','V|5','W|6','d|0','q|1','D|2','Q|3'];
-chList[2] = ['U|11','V|12','W|13','d|7','q|8','D|9','Q|10'];
-chList[3] = ['Iu|14','Iv|15','se|18','cmd|19','Vdc|16','T|17'];
-chList[4] = ['U|20','V|21','W|22'];
-
-function updateCh1Select(selectedGroup){
-    ch1_list.options.length=0;
-    if (selectedGroup>0){
-        for (i=0; i < chList[selectedGroup].length; i++)
-            ch1_list.options[ch1_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
-    }
-}
-
-function updateCh2Select(selectedGroup){
-    ch2_list.options.length=0;
-    if (selectedGroup>0){
-        for (i=0; i < chList[selectedGroup].length; i++)
-            ch2_list.options[ch2_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
-    }
-}
-
-function updateCh3Select(selectedGroup){
-    ch3_list.options.length=0;
-    if (selectedGroup>0){
-        for (i=0; i < chList[selectedGroup].length; i++)
-            ch3_list.options[ch3_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
-    }
-}
-
-function updateCh4Select(selectedGroup){
-    ch4_list.options.length=0;
-    if (selectedGroup>0){
-        for (i=0; i < chList[selectedGroup].length; i++)
-            ch4_list.options[ch4_list.options.length]=new Option(chList[selectedGroup][i].split("|")[0], chList[selectedGroup][i].split("|")[1]);
-    }
-}
-
-var chSelected = new Array();
-chSelected[0] = 0;
-chSelected[1] = 1;
-chSelected[2] = 2;
-chSelected[3] = 3;
-
-function selectScopeCh(ch, selected){
-	chSelected[ch] = selected;
-}
-
-function setScopeCh(ch){
-
-	var chanel = ch+1;
-	var selector = document.getElementById("idScaleCh"+chanel);
-	var scale = selector[selector.selectedIndex].value;
-
-	var setId = "idOffsetCh"+chanel;
-	console.log("setId = ",setId); 
-	var offset = document.getElementById(setId).value;
-
-	console.log(chSelected[ch],scale,offset);
-	sendSetScopeChCmd(ch,chSelected[ch],scale,offset);
-}
-
-function btnTraceOnOff(){
-	monitorOnOff = 0;
-	document.getElementById('btnMonitor').innerHTML = '모니터시작';
-
-	if( traceOnOff ){
-		traceOnOff = 0 ;
-		document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
-	}else{
-		traceOnOff = 1;
-		document.getElementById('btnTraceOnOff').innerHTML = '측정중지';
-	}
-	socket.emit('traceOnOff',traceOnOff);		
-}
-
-function btnStartGraph(){
-	socket.emit('graph',1);
-}
-
-function btnStopGraph(){
-	// onOff = 0 --> stop send grpah data 
-	socket.emit('graph',0);
-}
-
-function btnStartScope(){
-	socket.emit('scope',1);
-}
-function btnStopScope(){
-	socket.emit('scope',0);
-}
-
-function btnRunMotor(){
-	cmd = '9:4:905:0.000e+0';	// sciCmdStart
-	socket.emit('codeEdit',cmd);
-}
-
-function btnStopMotor(){
-	msgTx.selVac = 1;
-	socket.emit('btnClick',msgTx);
-	cmd = '9:4:905:1.000e+0';	// sciCmdStop
-	socket.emit('codeEdit',cmd);
-}
-
-function btnStartTest(){
-	msgTx.selVac = 2;
-	socket.emit('btnClick',msgTx);
-}
-function btnStopTest(){
-	msgTx.selVac = 3;
-	socket.emit('btnClick',msgTx);
-}
-
-function btnSpeedUp(){
-	cmd = '9:4:905:2.000e+0';	// sciCmdStart
-	socket.emit('codeEdit',cmd);
-}
-function btnSpeedDown(){
-	cmd = '9:4:905:3.000e+0';	// sciCmdStart
-	socket.emit('codeEdit',cmd);
-}
-
-function btnShutDown(){
-	msgTx.selVac = 6;
-	socket.emit('btnClick',msgTx);
-}
-function btnRestart(){
-	msgTx.selVac = 7;
-	socket.emit('btnClick',msgTx);
-}
-
-// '9:4:901:0.000e+0'
-function getSciCmd( ){
-
-	var returns = 'Invalid number';
-	var tmp1 = document.getElementById('txtCodeEdit1').value;
-	var tmp2 = document.getElementById('txtCodeEdit2').value;
-
-	tmp1 = tmp1 * 1;
-	tmp2 = tmp2 * 1;
-
-	if(isNaN(tmp1)) return returns;
-	if(isNaN(tmp2)) return returns;
-	if(( tmp1 > 990 ) || ( tmp1 < 0 )) return returns;
-
-	var sciCmd = '9:4:';
-	if(tmp1 < 10){
-		sciCmd = sciCmd + '00';
-	} else if ( tmp1 < 100 ){ 
-		sciCmd = sciCmd + '0';
-	}
-
-	sciCmd = sciCmd + tmp1 + ':';
-
-	var codeData = tmp2.toExponential(3);
-	
-	sciCmd = sciCmd + codeData;
-
-	if((sciCmd.length) != 16) return returns;
-
-	return sciCmd;
-}
-
-function btnReadCode(){	
-	var returns = getSciCmd( );
-
-	//console.log(returns);
-
-	if( returns.length == 16 ){
-		socket.emit('codeEdit',returns);
-	} else {
-		document.getElementById('codeEditResult').innerHTML = returns;
-	}	 
-}
-
-function btnWriteCode(){
-	var returns = getSciCmd( );
-
-	if( returns.length == 16 ){
-		var test = returns.replace('4','6');
-		socket.emit('codeEdit',test);
-	} else {
-		document.getElementById('codeEditResult').innerHTML = returns;
-	}	 
-}
-
-function btnOptionSendCmd(){
-	var selector = document.getElementById("idCmdSelect");
-	var value = selector[selector.selectedIndex].value;
-	var cmd = '9:4:902:5.000e+0';
-
-	if(value == 0 ){
-		cmd = '9:4:910:0.000e+0';	// read adc
-		socket.emit('codeEdit',cmd);
-	} else if(value == 1) { 
-		cmd = '9:4:909:0.000e+0';	// read RPM
-		socket.emit('codeEdit',cmd);
-	} else if(value == 2) { 
-		cmd = '9:4:902:5.000e+0';	// RESET
-		socket.emit('codeEdit',cmd);
-	} else if(value == 3) { 			// READ ALL CODE
-		cmd = '9:4:901:0.000e+0';	
-		socket.emit('codeEdit',cmd);
-	} else if(value == 4) { 
-		cmd = '9:6:900:4.000e+1';	// save
-		socket.emit('codeEdit',cmd);
-	} else if(value == 5) { 
-		cmd = '9:6:900:9.000e+1';	// reset all codes to factory setting
-		socket.emit('codeEdit',cmd);
-	} else if(value == 6) { 
-		cmd = '9:4:900:1.000e+1';	// read trip record
-		socket.emit('codeEdit',cmd);
-	}
-}
-
-function changeNoVac(){
-
-	var msg = [];
-	for( var i = 0 ; i < 600 ; i++){
-		msg.push( 1500 + 50 * Math.sin( Math.PI / 30 * i ));
- 	}
-   traceData0.sample = msg;
-
-	msg =[];
-	for( var i = 0 ; i < 600 ; i++){
-		msg.push( 1600 + 50 * Math.sin( Math.PI / 30 * i ));
- 	}
-   traceData1.sample = msg;
-
-	msg =[];
-	for( var i = 0 ; i < 600 ; i++){
-		msg.push( 1700 + 50 * Math.sin( Math.PI / 30 * i ));
- 	}
-   traceData2.sample = msg;
-
-	msg =[];
-	for( var i = 0 ; i < 600 ; i++){
-		msg.push( -1800 + 50 * Math.sin( Math.PI / 30 * i ));
- 	}
-   traceData3.sample = msg;
-
-   oscope.onPaint(trace);
-}
-
-
-  //--- sampling bits
-// =============================================
-  // volts per division
-  // =============================================
-
-  $('#volts10' ).on('change',null,function() {oscope.onVoltsPerDiv(0.1 );});
-  $('#volts25' ).on('change',null,function() {oscope.onVoltsPerDiv(0.25);});
-  $('#volts50' ).on('change',null,function() {oscope.onVoltsPerDiv(0.5 );});
-  $('#volts100').on('change',null,function() {oscope.onVoltsPerDiv(1.0 );});
-
-  $('.vdiv' ).on('change',null,function(event) {
-        oscope.onVoltsPerDiv(parseFloat(event.target.parentElement.innerText));
-      }
-  );
-
-  // =============================================
-  // set offset 
-  // =============================================
-  $('#ch0Offset' ).on('change',null,
-		function(){
-			var temp = document.getElementById('ch0Offset').value;
-			//console.log(temp);
-			// oscope.onVerticalOffset(1,temp);
-		}
-  );
-
-  // =============================================
-  // canvas mouse event for cursor drag
-  // =============================================
-  var mouse_state = 0;
-  $('#oscope').on('mousedown',function(event) {
-    mouse_state = 1;
-
-    oscope.onCursorMove(event.offsetX,event.offsetY);
-  });
-
-  $('#oscope').on('mouseup',function() {
-    mouse_state = 0;
-
-  });
-
-  $('#oscope').on('mouseout',function() {
-    mouse_state = 0;
-  });
-
-  $('#oscope').on('mousemove',function(event) {
-    switch(mouse_state) {
-    case 0:
-      // do nothing
-      break;
-    case 1:
-      oscope.onCursorMove(event.offsetX,event.offsetY);
-		var temp = (225 - event.offsetY) * 4096 / 450;
-		var x = document.getElementById('vcursor1').checked;
-
-		if( x ) {
-			document.getElementById('curVerStartPosi').innerHTML = parseInt(temp);
-		}else{
-			document.getElementById('curVerEndPosi').innerHTML = parseInt(temp);
-		}
-      break;
-    }
-  });
-
-  // =============================================
-  // cursor select
-  // =============================================
-  $('#hcursor1' ).on('change',null,function() {oscope.onCursorSelect(0);});
-  $('#hcursor2' ).on('change',null,function() {oscope.onCursorSelect(1);});
-  $('#vcursor1' ).on('change',null,function() {oscope.onCursorSelect(2);});
-  $('#vcursor2' ).on('change',null,function() {oscope.onCursorSelect(3);});
-
-  function setChannelOffset(channel,element) {
-    var offset = parseInt(element.value);
-    if (offset < -4) {
-      element.value = "-4";
-      offset = -4;
-    }
-    if (offset > 4) {
-      element.value = "4";
-      offset = 4;
-    }
-    oscope.onVerticalOffset(channel,offset);
-  }
-
-  $('#channel1v').on('change',null,
-      function() {
-        var element = $('#channel1v')[0];
-        setChannelOffset(1,element);
-      }
-  );
-
-  $('#channel2v').on('change',null,
-      function() {
-        var element = $('#channel2v')[0];
-        setChannelOffset(2,element);
-      }
-  );
-
-  $('#channel3v').on('change',null,
-      function() {
-        var element = $('#channel3v')[0];
-        setChannelOffset(3,element);
-      }
-  );
-
-  $('#channel4v').on('change',null,
-      function() {
-        var element = $('#channel4v')[0];
-        setChannelOffset(4,element);
-      }
-  );
-
-
-//--- socket processing
-
-
-socket.on('message',function(msg){
-	document.getElementById('codeEditResult').innerHTML = msg;
-});	
-
-socket.on('codeList', function (msg) {
-
-	var msg1 = msg.substr(17);				// subtract uart command '9:6:900:5.000e+1:'
-   var testIn = msg1.toString();
-	
-   //testIn.replace(/:,/g,'\r\n');
-   var testIn1 = testIn.replace(/:/g,'\r\n');
-   var testOut = testIn1.replace(/,/g,'\t');
-   document.getElementById('txtCodeTable').innerHTML = testOut;
-});
 
 </script>
 {% endblock %}

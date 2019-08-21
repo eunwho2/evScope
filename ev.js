@@ -1,4 +1,5 @@
 //"use strict";
+const NO_SCOPE_DATA = 400;
 var inveStart = 0;
 var digiOut = 0xff;
 var graphOnOff = 0;
@@ -204,7 +205,7 @@ parser.on('data',function (data){
 	var command_addr = parseInt(buff.slice(4,7));
 	var command_data = parseFloat(buff.slice(8,16));
 
-		console.log(data);
+	//	console.log(data);
 
 	if(( buff.length < 16 ) || ( command_addr !== 900 )){
 		if( command_addr == 901 ){ 
@@ -263,7 +264,7 @@ parser.on('data',function (data){
 		var scope = {Ch:0,data:[]};
 
 		scope.Ch = buff[2];
-  		for ( i = 0; i < 600 ; i++){
+  		for ( i = 0; i < NO_SCOPE_DATA ; i++){
   			lsb = (buff[ i*3 + 2 + offset] & 0x0f) * 1 + (buff[i*3 + 1 + offset] & 0x0f) * 16;
   			msb = ( buff[i*3 + offset ] & 0x0f ) * 256;
   			tmp = msb + lsb - 2048;
