@@ -209,6 +209,7 @@ var msgTx = { selVac: 0};
 var traceOnOff = 0;
 var monitorOnOff = 0;
 
+/*
 var ch1_list = document.getElementsByName('ch1_list1_list2')[0];
 var ch2_list = document.getElementsByName('ch2_list1_list2')[0];
 var ch3_list = document.getElementsByName('ch3_list1_list2')[0];
@@ -225,7 +226,7 @@ ChList[5] = ['Theta|30','ThetaM|31','sinTheta|32','cosTheta|33','we|34','wr|35',
 function updateCh1Select(selectedGroup){
     if (selectedGroup>0){
         for (var i=0; i < ChList[selectedGroup].length; i++)
-            ch1_list.options[i]=new Option(ChList[selectedGroup][i].split("|")[0], ChList[selectedGroup][i].split("|")[1]);
+            ch1_list.options[i] = new Option(ChList[selectedGroup][i].split("|")[0], ChList[selectedGroup][i].split("|")[1]);
     }
 }
 
@@ -276,6 +277,9 @@ function setScopeCh(ch){
    console.log(chSelected[ch],scale,offset);
    sendSetScopeChCmd(ch,chSelected[ch],scale,offset);
 }
+
+*/
+
 // '9:4:901:0.000e+0'
 function getSciCmd( ){
 

@@ -277,7 +277,76 @@
 
 </div> <!-- container -->
 <!-- control handlers -->
+
 <script>
+
+var ch1_list = document.getElementsByName('ch1_list1_list2')[0];
+var ch2_list = document.getElementsByName('ch2_list1_list2')[0];
+var ch3_list = document.getElementsByName('ch3_list1_list2')[0];
+var ch4_list = document.getElementsByName('ch4_list1_list2')[0];
+
+var ChList = new Array();
+ChList[0] ='';
+ChList[1] = ['U|4','V|5','W|6','d|0','q|1','D|2','Q|3'];
+ChList[2] = ['U|11','V|12','W|13','d|7','q|8','D|9','Q|10'];
+ChList[3] = ['Iu|14','Iv|15','se|18','cmd|19','Vdc|16','T|17'];
+ChList[4] = ['U|20','V|21','W|22'];
+ChList[5] = ['Theta|30','ThetaM|31','sinTheta|32','cosTheta|33','we|34','wr|35','wr_m|36'];
+
+function updateCh1Select(selectedGroup){
+    if (selectedGroup>0){
+        for (var i=0; i < ChList[selectedGroup].length; i++)
+            ch1_list.options[i] = new Option(ChList[selectedGroup][i].split("|")[0], ChList[selectedGroup][i].split("|")[1]);
+    }
+}
+
+function updateCh2Select(selectedGroup){
+    if (selectedGroup>0){
+        for (i=0; i < ChList[selectedGroup].length; i++)
+            ch2_list.options[i]=new Option(ChList[selectedGroup][i].split("|")[0], ChList[selectedGroup][i].split("|")[1]);
+    }
+}
+
+function updateCh3Select(selectedGroup){
+    if (selectedGroup>0){
+        for (i=0; i < ChList[selectedGroup].length; i++)
+            ch3_list.options[i]=new Option(ChList[selectedGroup][i].split("|")[0], ChList[selectedGroup][i].split("|")[1]);
+    }
+}
+
+function updateCh4Select(selectedGroup){
+    ch4_list.options.length=0;
+    if (selectedGroup>0){
+        for (i=0; i < ChList[selectedGroup].length; i++)
+            ch4_list.options[i]=new Option(ChList[selectedGroup][i].split("|")[0], ChList[selectedGroup][i].split("|")[1]);
+    }
+}
+
+var chSelected = new Array();
+chSelected[0] = 0;
+chSelected[1] = 1;
+chSelected[2] = 2;
+chSelected[3] = 3;
+chSelected[4] = 4;
+chSelected[5] = 5;
+
+function selectScopeCh(ch, selected){
+   chSelected[ch] = selected;
+}
+
+function setScopeCh(ch){
+
+   var chanel = ch+1;
+   var selector = document.getElementById("idScaleCh"+chanel);
+   var scale = selector[selector.selectedIndex].value;
+
+   var setId = "idOffsetCh"+chanel;
+   console.log("setId = ",setId); 
+   var offset = document.getElementById(setId).value;
+
+   console.log(chSelected[ch],scale,offset);
+   sendSetScopeChCmd(ch,chSelected[ch],scale,offset);
+}
 
 </script>
 {% endblock %}
