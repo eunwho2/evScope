@@ -16,7 +16,8 @@ function shutdown(callback){
 
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
-const port = new SerialPort('/dev/ttyAMA0',{
+//const port = new SerialPort('/dev/ttyAMA0',{
+const port = new SerialPort('COM4',{
    //baudRate: 500000
    baudRate: 115200
 });
@@ -289,7 +290,7 @@ setInterval(function(){
 
 setInterval(function() {
 	if(scopeOnOff)	  port.write('9:4:900:1.000e+2');
-},3000);
+},4000);
 
 setInterval(function(){
 	var stamp = new Date().toLocaleString();

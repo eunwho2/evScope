@@ -55,9 +55,9 @@ mTick:[0,5,10,15,20],
 alarm:'[ {"from": 0, "to":10.0,"color": "rgba(255,255,255,1.0)"},{"from": 10.0,  "to":15.0, "color": "rgba(255,0,0,.3)"},{"from": 15.0,  "to":20.0, "color": "rgba(255,0,0,1.0)"}]'
 }
 
-var gaugeQ={id:'gauge4',unit:'[kW]',title:'Q kW',min:0,max:5,
-mTick:[0,1,2,3,4,5],
-alarm:'[ {"from": 0, "to":2.2,"color": "rgba(255,255,255,1.0)"},{"from": 2.2,  "to":3.0, "color": "rgba(255,0,0,.3)"},{"from": 3.0,  "to":5.0, "color": "rgba(255,0,0,1.0)"}]'
+var gaugeQ={id:'gauge4',unit:'[Vdc]',title:'Vdc',min:0,max:600,
+mTick:[0,100,200,300,400,500,600],
+alarm:'[ {"from": 0, "to":500,"color": "rgba(255,255,255,1.0)"},{"from": 501,  "to":550, "color": "rgba(255,0,0,.3)"},{"from": 550,  "to":600, "color": "rgba(255,0,0,1.0)"}]'
 }
 
 function gaugeInit(arg){
@@ -444,7 +444,7 @@ socket.on('trace', function (msg) {
 
 socket.on('graph', function (msg) {
  
-   console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'ImPower = ',msg.ImPower);
+   console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'Vdc = ',msg.ImPower);
    graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
    graphData[0].sample[graphCount] = msg.rpm ; 
@@ -456,7 +456,7 @@ socket.on('graph', function (msg) {
    var speed =    ((msg.rpm      -2048)/ 2048) * 2000;
    var power =    ((msg.P_total  -2048)/ 2048) * 10;
    var I_rms =    ((msg.Irms     -2048)/ 2048) * 20;
-   var Q_power =  ((msg.ImPower  -2048)/ 2048) * 10;
+   var Q_power =  ((msg.ImPower  -2048)/ 2048) * 100;
 
    $('#gauge1').attr('data-value', speed);
    $('#gauge2').attr('data-value', power);
