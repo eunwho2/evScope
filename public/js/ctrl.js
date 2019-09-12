@@ -152,17 +152,20 @@ function btnRestart(){
    socket.emit('btnClick',msgTx);
 }
 
+const SCOPE_ADDR_OFF = 61;
+
 function sendSetScopeChCmd(ch,point,scale,offset){
 
    var returns = 'Invalid number';
 
-   var addr = 101 + 3*ch;
-   var sciCmd = '9:6:'+addr+':';
+   var addr = SCOPE_ADDR_OFF + 3*ch;
+   var sciCmd = '9:6:'+ '0'+addr+':';
    var codeData = (point*1.0).toExponential(3);
 
    var setPoint = sciCmd + codeData;
 
    if( setPoint.length !== 16 ){
+      console.log('Err set Scope Point command =', setPoint);
       document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setPoint ;
       return;
    }   
@@ -173,12 +176,13 @@ function sendSetScopeChCmd(ch,point,scale,offset){
    },500);
 
    //--- setScale
-   addr = 102 + 3*ch;
-   sciCmd = '9:6:'+addr+':';
+   addr = SCOPE_ADDR_OFF + 1 + 3*ch;
+   sciCmd = '9:6:'+'0'+addr+':';
    codeData = (scale*1.0).toExponential(3);
    var setScale = sciCmd + codeData;
 
    if( setScale.length !== 16 ){
+      console.log('Err set scale command =', setScale);
       document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setScale ;
       return;
    }   
@@ -189,12 +193,13 @@ function sendSetScopeChCmd(ch,point,scale,offset){
    },1000);
 
    //--- setOffset
-   addr = 103 + 3*ch;
-   sciCmd = '9:6:'+addr+':';
+   addr = SCOPE_ADDR_OFF + 2 + 3*ch;
+   sciCmd = '9:6:'+'0'+addr+':';
    codeData = (offset*1.0).toExponential(3);
    var setOffset = sciCmd + codeData;
 
    if( setOffset.length !== 16 ){
+      console.log('Err set Scope Offset command =', setOffset);
       document.getElementById('codeEditResult').innerHTML = "Invalid scope Point : "+ setOffse$
       return;
    }   
