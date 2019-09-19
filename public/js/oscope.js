@@ -307,7 +307,7 @@ var oscope = (function() {
 
   function computeVerticalScale(vrange,yscale,height,volts) {
     // divide by 2 to make scale for signed value
-    return (vrange / yscale) * (height / volts) * 0.5;
+    return (vrange / yscale) * (height / volts) * 1.0;    
   }
 
   function computeHorizontalScale(seconds,samples_per_second,width) {

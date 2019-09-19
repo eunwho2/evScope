@@ -206,7 +206,7 @@ parser.on('data',function (data){
 	var command_addr = parseInt(buff.slice(4,7));
 	var command_data = parseFloat(buff.slice(8,16));
 
-	//	console.log(data);
+	console.log(data);
 
 	if(( buff.length < 16 ) || ( command_addr !== 900 )){
 		if( command_addr == 901 ){ 
