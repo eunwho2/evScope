@@ -40,9 +40,9 @@ function scopeClear(){
    graphInverter.onPaint(scopeData);
 }
 
-var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:0,max:2000,
-mTick:[0,500,1000,1500,2000],
-alarm:'[ {"from": 0, "to":1000,"color": "rgba(255,255,255,1.0)"},{"from": 1000,"to":1800, "color": "rgba(0,255,0,1)"},{"from":1800 ,"to":2000, "color": "rgba(255,0,0,1.0)"}]'
+var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:0,max:6000,
+mTick:[0,1000,2000,3000,4000,5000,6000],
+alarm:'[ {"from": 0, "to":1000,"color": "rgba(255,255,0,1.0)"},{"from": 1000,"to":4000, "color": "rgba(0,0,255,0.5)"},{"from":4000 ,"to":6000, "color": "rgba(255,0,0,0.5)"}]'
 }
 
 var gaugePower={id:'gauge2',unit:'[kW]',title:'Power',min:0,max:5,
