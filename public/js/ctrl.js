@@ -40,14 +40,15 @@ function scopeClear(){
    graphInverter.onPaint(scopeData);
 }
 
-var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:0,max:6000,
-mTick:[0,1000,2000,3000,4000,5000,6000],
-alarm:'[ {"from": 0, "to":1000,"color": "rgba(255,255,0,1.0)"},{"from": 1000,"to":4000, "color": "rgba(0,0,255,0.5)"},{"from":4000 ,"to":6000, "color": "rgba(255,0,0,0.5)"}]'
+var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:-6000,max:6000,
+mTick:[-6000,-4000,-2000,0,2000,4000,6000],
+//alarm:'[ {"from": -6000, "to":-4000, "color": "rgba(255,  0,  0, 1.0)"},{"from": -4000, "to":-2000, "color": "rgba(255,255,  0, 0.5)"}, {"from": -2000, "to": 2000, "color": "rgba(255,255,255, 0.5)"},{"from":  000 , "to": 4000, "color": "rgba(255,255,  0, 0.5)"}, {"from": 4000 , "to": 6000, "color": "rgba(255,  0,  0, 1.5)"}]'
+alarm:'[ {"from": -6000, "to":-4000, "color": "rgba(255,  0,  0, 1.0)"},{"from": -4000, "to":4000, "color": "rgba(255,255,255, 0.5)"}, {"from": 4000, "to": 6000, "color": "rgba(255,0,0, 1.0)"}]'
 }
 
-var gaugePower={id:'gauge2',unit:'[kW]',title:'Power',min:0,max:5,
-mTick:[0,1,2,3,4,5],
-alarm:'[ {"from": 0, "to":2.2,"color": "rgba(255,255,255,1.0)"},{"from": 2.2,  "to":3.0, "color": "rgba(255,0,0,.3)"},{"from": 3.0,  "to":5.0, "color": "rgba(255,0,0,1.0)"}]'
+var gaugeRefOut={id:'gauge2',unit:'[Rate %]',title:'Speed/Torq',min:-300,max:300,
+mTick:[-300,-200,-100,0,100,200,300],
+alarm:'[ {"from": -300, "to":-200,"color": "rgba(255,0,0,1.0)"},{"from": 200,  "to":300, "color": "rgba(255,0,0,1.0)"}]'
 }
 
 var gaugeI={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:20,
@@ -82,13 +83,11 @@ $("document").ready(function() {
    graphInverter.init();
 
    gaugeInit(gaugeSpeed);
-   gaugeInit(gaugePower);
+   gaugeInit(gaugeRefOut);
    gaugeInit(gaugeI);
    gaugeInit(gaugeQ);
 
 });
-
-
 
 function btnStartGraph(){
 
@@ -374,7 +373,7 @@ socket.on('trace', function (msg) {
 
 socket.on('graph', function (msg) {
  
-   console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' RePower = ',msg.RePower,'Vdc = ',msg.ImPower);
+   console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' ref_out = ',msg.RePower,'Vdc = ',msg.ImPower);
    graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
    graphData[0].sample[graphCount] = msg.rpm ; 
@@ -383,15 +382,15 @@ socket.on('graph', function (msg) {
    graphData[3].sample[graphCount] = msg.ImPower; 
    graphInverter.onPaint(graphData);
 //convert to
-   var speed =    ((msg.rpm      -2048)/ 2048) * 2000;
-   var power =    ((msg.P_total  -2048)/ 2048) * 10;
-   var I_rms =    ((msg.Irms     -2048)/ 2048) * 20;
-   var Q_power =  ((msg.ImPower  -2048)/ 2048) * 1000;
+   var speed =   ((msg.rpm      -2048)/ 2048) * 2000;
+   var ref_out = ((msg.RePower  -2048)/ 2048) * 500;
+   var I_rms =   ((msg.Irms     -2048)/ 2048) * 20;
+   var Vdc =     ((msg.ImPower  -2048)/ 2048) * 1000;
 
    $('#gauge1').attr('data-value', speed);
-   $('#gauge2').attr('data-value', power);
+   $('#gauge2').attr('data-value', Math.floor(ref_out + 0.5));
    $('#gauge3').attr('data-value', I_rms);
-   $('#gauge4').attr('data-value', Q_power);
+   $('#gauge4').attr('data-value', Vdc);
 });
 
 

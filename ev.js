@@ -17,7 +17,7 @@ function shutdown(callback){
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 //const port = new SerialPort('/dev/ttyAMA0',{
-const port = new SerialPort('COM4',{
+const port = new SerialPort('COM6',{
    //baudRate: 500000
    baudRate: 115200
 });
