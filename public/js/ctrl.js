@@ -51,9 +51,9 @@ mTick:[-300,-200,-100,0,100,200,300],
 alarm:'[ {"from": -300, "to":-200,"color": "rgba(255,0,0,1.0)"},{"from": 200,  "to":300, "color": "rgba(255,0,0,1.0)"}]'
 }
 
-var gaugeI={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:20,
-mTick:[0,5,10,15,20],
-alarm:'[ {"from": 0, "to":10.0,"color": "rgba(255,255,255,1.0)"},{"from": 10.0,  "to":15.0, "color": "rgba(255,0,0,.3)"},{"from": 15.0,  "to":20.0, "color": "rgba(255,0,0,1.0)"}]'
+var gaugeI={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:500,
+mTick:[0,100,200,300,400,500],
+alarm:'[ {"from": 0, "to":300.0,"color": "rgba(255,255,255,1.0)"},{"from": 300.0,  "to":400.0, "color": "rgba(255,0,0,.3)"},{"from": 400.0,  "to":500.0, "color": "rgba(255,0,0,1.0)"}]'
 }
 
 var gaugeQ={id:'gauge4',unit:'[Vdc]',title:'Vdc',min:0,max:600,
@@ -385,7 +385,7 @@ socket.on('graph', function (msg) {
 //convert to
    var speed =   ((msg.rpm      -2048)/ 2048) * 10000;
    var ref_out = ((msg.RePower  -2048)/ 2048) * 500;
-   var I_rms =   ((msg.Irms     -2048)/ 2048) * 20;
+   var I_rms =   ((msg.Irms     -2048)/ 2048) * 500;
    var Vdc =     ((msg.ImPower  -2048)/ 2048) * 1000;
 
    $('#gauge1').attr('data-value', speed);
