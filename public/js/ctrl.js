@@ -376,13 +376,14 @@ socket.on('graph', function (msg) {
    console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' ref_out = ',msg.RePower,'Vdc = ',msg.ImPower);
    graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
 
-   graphData[0].sample[graphCount] = msg.rpm ; 
+   graphData[0].sample[graphCount] = (msg.rpm -2048) *2.0 + 2048; 
+//   graphData[0].sample[graphCount] = msg.rpm; 
    graphData[1].sample[graphCount] = msg.Irms ; 
-   graphData[2].sample[graphCount] = msg.P_total; 
-   graphData[3].sample[graphCount] = msg.ImPower; 
+   //graphData[2].sample[graphCount] = msg.P_total; 
+   //graphData[3].sample[graphCount] = msg.ImPower; 
    graphInverter.onPaint(graphData);
 //convert to
-   var speed =   ((msg.rpm      -2048)/ 2048) * 2000;
+   var speed =   ((msg.rpm      -2048)/ 2048) * 10000;
    var ref_out = ((msg.RePower  -2048)/ 2048) * 500;
    var I_rms =   ((msg.Irms     -2048)/ 2048) * 20;
    var Vdc =     ((msg.ImPower  -2048)/ 2048) * 1000;
