@@ -262,7 +262,7 @@ var graphInverter = (function() {
 
     ctx.fillStyle = "darkgoldenrod";
     y += dy + 1;
-    ctx.fillText('CH1 : RPM 1000 RPM / DIV ',440,10);
+    ctx.fillText('CH1 : RPM 500 RPM / DIV ',440,10);
 
     ctx.fillStyle = "indigo";
     y += dy + 1;

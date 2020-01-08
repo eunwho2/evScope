@@ -16,8 +16,9 @@ function shutdown(callback){
 
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
-//const port = new SerialPort('/dev/ttyAMA0',{
-const port = new SerialPort('COM5',{
+//const port = new SerialPort('/dev/ttyUSB1',{
+//const port = new SerialPort('/dev/ttyAMA1',{
+const port = new SerialPort('COM6',{
    //baudRate: 500000
    baudRate: 115200
 });
@@ -121,28 +122,28 @@ io.on('connection', function (socket) {
 	console.log('connected to : ' + host);
 	socket.on('disconnect', function () {
   	console.log('disconnected from : ' + host);
-  });
+});
 
-	socket.on('graph',function(msg){
-		console.log('scoket on graph =',msg);
-		graphOnOff = msg;
-	});
+socket.on('graph',function(msg){
+	console.log('scoket on graph =',msg);
+	graphOnOff = msg;
+});
 
-	socket.on('scope',function(msg){
-		console.log('scoket on scope =',msg);
-		console.log(msg);
-		scopeOnOff = msg;
-	});
+socket.on('scope',function(msg){
+	console.log('scoket on scope =',msg);
+	console.log(msg);
+	scopeOnOff = msg;
+});
 
-	socket.on('codeEdit',function(msg){
-		console.log('scoket on codeEdit =',msg);
-		port.write(msg);
-	});
+socket.on('codeEdit',function(msg){
+	console.log('scoket on codeEdit =',msg);
+	port.write(msg);
+});
 
-	socket.on('getCodeList',function(msg){
-		console.log('scoket on codeList =',msg);
-		port.write('9:4:901:0.000e+0');
-	});
+socket.on('getCodeList',function(msg){
+	console.log('scoket on codeList =',msg);
+	port.write('9:4:901:0.000e+0');
+});
 
 /* use io */
 	socket.on('btnClick',function(msgTx){
