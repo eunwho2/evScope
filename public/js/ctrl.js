@@ -51,9 +51,13 @@ mTick:[-300,-200,-100,0,100,200,300],
 alarm:'[ {"from": -300, "to":-200,"color": "rgba(255,0,0,1.0)"},{"from": 200,  "to":300, "color": "rgba(255,0,0,1.0)"}]'
 }
 
-var gaugeI={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:500,
+var gaugeI500={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:500,
 mTick:[0,100,200,300,400,500],
 alarm:'[ {"from": 0, "to":300.0,"color": "rgba(255,255,255,1.0)"},{"from": 300.0,  "to":400.0, "color": "rgba(255,0,0,.3)"},{"from": 400.0,  "to":500.0, "color": "rgba(255,0,0,1.0)"}]'
+}
+var gaugeI50={id:'gauge3',unit:'[A]',title:'I_ac',min:0,max:50,
+mTick:[0,10,20,30,40,50],
+alarm:'[ {"from": 0, "to":30.0,"color": "rgba(255,255,255,1.0)"},{"from": 30.0,  "to":40.0, "color": "rgba(255,0,0,.3)"},{"from": 40.0,  "to":50.0, "color": "rgba(255,0,0,1.0)"}]'
 }
 
 var gaugeQ={id:'gauge4',unit:'[Vdc]',title:'Vdc',min:0,max:800,
@@ -84,7 +88,7 @@ $("document").ready(function() {
 
    gaugeInit(gaugeSpeed);
    gaugeInit(gaugeRefOut);
-   gaugeInit(gaugeI);
+   gaugeInit(gaugeI50);
    gaugeInit(gaugeQ);
 
 });
@@ -382,39 +386,31 @@ socket.on('codeList', function (msg) {
 
 socket.on('trace', function (msg) {
 
-   //console.log(msg);
+   console.log(msg);
   // oscope.onPaint(trace);
 
 });
 
 socket.on('graph', function (msg) {
  
-   //console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.P_total,' ref_out = ',msg.RePower,'Vdc = ',msg.ImPower);
+//   console.log('rpm =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.Power,' ref_out = ',msg.Ref,'Vdc = ',msg.Vdc);
+//   console.log('Graph1 =',msg.rpm,'Irms =',msg.Irms,'P_total =',msg.Power,' ref_out = ',msg.Ref,'Vdc = ',msg.Vdc);
    graphCount = ( graphCount < 600 ) ? graphCount + 1 : 0 ;
-
-/*
-   var temp = ( msg.rmp);
-   if( temp  < 0 ) { temp = 0
-   } else if( temp > 4095 ){ 
-	temp = 4095
-   }
-   graphData[0].sample[graphCount] = (temp -2048) *2.0 + 2048;
-*/
-
 
    graphData[0].sample[graphCount] = (msg.rpm -2048) *2.0 + 2048;
    graphData[1].sample[graphCount] = msg.Irms ; 
-   //graphData[2].sample[graphCount] = msg.P_total; 
-   //graphData[3].sample[graphCount] = msg.ImPower; 
+   graphData[2].sample[graphCount] = msg.Graph1; 
+   graphData[3].sample[graphCount] = msg.Graph2; 
    graphInverter.onPaint(graphData);
+
 //convert to
 
-   var speed =   ((msg.rpm      -2048)/ 2048) * 10000;
-   var ref_out = ((msg.RePower  -2048)/ 2048) * 500;
-   var I_rms =   ((msg.Irms     -2048)/ 2048) * 500;
-   var Vdc =     ((msg.ImPower  -2048)/ 2048) * 1000;
+   var speed =   ((msg.rpm  -2048)/ 2048) * 10000;
+   var ref_out = ((msg.Ref  -2048)/ 2048) * 500;
+   var I_rms =   ((msg.Irms -2048)/ 2048) * 500;
+   var Vdc =     ((msg.Vdc  -2048)/ 2048) * 1000;
 
-   //console.log('rpm =',speed,'Irms =',I_rms,' ref_out = ',ref_out,'Vdc = ',Vdc);
+   console.log('rpm =',speed,'Irms =',I_rms,' ref_out = ',ref_out,'Vdc = ',Vdc);
 
    if ( speed > 6000) speed = 6000;
    if ( speed < -6000) speed = -6000;
@@ -428,7 +424,6 @@ socket.on('graph', function (msg) {
    if ( Vdc  >  800 ) Vdc = 800;
    if ( Vdc  <    0 ) Vdc = 0;
   
-
    $('#gauge1').attr('data-value', speed);
    $('#gauge2').attr('data-value', Math.floor(ref_out + 0.5));
    $('#gauge3').attr('data-value', I_rms);
