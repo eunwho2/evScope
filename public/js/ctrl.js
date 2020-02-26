@@ -1,6 +1,6 @@
 
 //--- start the client application
-const I_SENS_VALUE = 40.0;
+const I_SENS_VALUE = 800.0;
 
 var noVac = 1;
 var socket = io.connect();
@@ -43,10 +43,10 @@ function scopeClear(){
    oscope.onPaint(scopeData);
 }
 
-var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:-6000,max:6000,
-mTick:[-6000,-4000,-2000,0,2000,4000,6000],
-//alarm:'[ {"from": -6000, "to":-4000, "color": "rgba(255,  0,  0, 1.0)"},{"from": -4000, "to":-2000, "color": "rgba(255,255,  0, 0.5)"}, {"from": -2000, "to": 2000, "color": "rgba(255,255,255, 0.5)"},{"from":  000 , "to": 4000, "color": "rgba(255,255,  0, 0.5)"}, {"from": 4000 , "to": 6000, "color": "rgba(255,  0,  0, 1.5)"}]'
-alarm:'[ {"from": -6000, "to":-4000, "color": "rgba(255,  0,  0, 1.0)"},{"from": -4000, "to":4000, "color": "rgba(255,255,255, 0.5)"}, {"from": 4000, "to": 6000, "color": "rgba(255,0,0, 1.0)"}]'
+var gaugeSpeed={id:'gauge1',unit:'[RPM]',title:'Speed',min:-10000,max:10000,
+mTick:[-10000,-7500,-5000,-2500,0,2500,5000,7500,10000],
+//alarm:'[ {"from": -10000, "to":-6000, "color": "rgba(255,  0,  0, 1.0)"},{"from": -6000, "to":-2000, "color": "rgba(255,255,  0, 0.5)"}, {"from": -2000, "to": 2000, "color": "rgba(255,255,255, 0.5)"},{"from":  000 , "to": 6000, "color": "rgba(255,255,  0, 0.5)"}, {"from": 6000 , "to": 10000, "color": "rgba(255,  0,  0, 1.5)"}]'
+alarm:'[ {"from": -10000, "to":-6000, "color": "rgba(255,  0,  0, 1.0)"},{"from": -6000, "to":6000, "color": "rgba(255,255,255, 0.5)"}, {"from": 6000, "to": 10000, "color": "rgba(255,0,0, 1.0)"}]'
 }
 
 var gaugeRefOut={id:'gauge2',unit:'[Rate %]',title:'Speed/Torq',min:-300,max:300,
@@ -102,7 +102,7 @@ $("document").ready(function() {
 
    gaugeInit(gaugeSpeed);
    gaugeInit(gaugeRefOut);
-   gaugeInit(gaugeI50);
+   gaugeInit(gaugeI500);
    gaugeInit(gaugeQ);
 
 });
@@ -425,15 +425,15 @@ socket.on('graph', function (msg) {
 
 //convert to
 
-   var speed =   ((msg.rpm  -2048)/ 2048) * 5000;
+   var speed =   ((msg.rpm  -2048)/ 2048) * 10000;
    var ref_out = ((msg.Ref  -2048)/ 2048) * 500;
    var I_rms =   ((msg.Irms -2048)/ 2048) * I_SENS_VALUE;
    var Vdc =     ((msg.Vdc  -2048)/ 2048) * 1000;
 
    console.log('rpm =',speed,'Irms =',I_rms,' ref_out = ',ref_out,'Vdc = ',Vdc);
 
-   if ( speed > 6000) speed = 6000;
-   if ( speed < -6000) speed = -6000;
+   if ( speed > 9000) speed = 9000;
+   if ( speed < -9000) speed = -9000;
 
    if ( ref_out >  300 ) ref_out = 300;
    if ( ref_out < -300 ) ref_out = -300;

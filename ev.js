@@ -20,7 +20,7 @@ const Readline = SerialPort.parsers.Readline;
 //const port = new SerialPort('/dev/ttyS0',{
 //const port = new SerialPort('/dev/ttyUSB0',{
 //const port = new SerialPort('/dev/ttyAMA1',{
-const port = new SerialPort('COM4',{
+const port = new SerialPort('COM5',{
    //baudRate: 500000
    baudRate: 115200
 });
